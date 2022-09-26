@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gabe565/nightscout-systray/internal/assets"
 	"github.com/gabe565/nightscout-systray/internal/nightscout"
 	"github.com/getlantern/systray"
 	"github.com/skratchdot/open-golang/open"
@@ -13,15 +14,19 @@ var updateHistory = make(chan []nightscout.Reading)
 var updateLastReading = make(chan time.Time)
 
 func onReady() {
+	systray.SetTemplateIcon(assets.Icon32, assets.Icon32)
 	systray.SetTitle("Nightscout")
 	systray.SetTooltip("Nightscout")
 
 	openNightscout := systray.AddMenuItem("Open Nightscout", "")
+	openNightscout.SetTemplateIcon(assets.SquareUpRight, assets.SquareUpRight)
 
 	history := systray.AddMenuItem("History", "")
+	history.SetTemplateIcon(assets.RectangleHistory, assets.RectangleHistory)
 	historyVals := make([]*systray.MenuItem, 0, 4)
 
 	lastReading := systray.AddMenuItem("Last Reading", "")
+	lastReading.SetTemplateIcon(assets.Calendar, assets.Calendar)
 	lastReadingVal := lastReading.AddSubMenuItem("", "")
 	lastReadingVal.Disable()
 
