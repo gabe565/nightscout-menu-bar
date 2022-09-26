@@ -16,6 +16,9 @@ for SRC in "$@"; do (
         "$SRC"
 
     mogrify \
+        -background transparent \
+        -gravity center \
+        -extent "${HEIGHT}x${HEIGHT}" \
         -units PixelsPerInch \
         -density "$DENSITY" \
         "$DEST"
