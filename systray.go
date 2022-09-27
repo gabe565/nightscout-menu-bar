@@ -39,38 +39,40 @@ func onReady() {
 
 	go tick()
 
-	for {
-		select {
-		case <-openNightscout.ClickedCh:
-			if err := open.Run(url); err != nil {
-				log.Println(err)
-			}
-		case <-exit.ClickedCh:
-			os.Exit(0)
-		case properties := <-updateChan:
-			errorEntry.Hide()
-
-			systray.SetTitle(properties.String())
-
-			for i, reading := range properties.Buckets {
-				var entry *systray.MenuItem
-				if i < len(historyVals) {
-					entry = historyVals[i]
-				} else {
-					entry = history.AddSubMenuItem("", "")
-					entry.Disable()
-					historyVals = append(historyVals, entry)
+	go func() {
+		for {
+			select {
+			case <-openNightscout.ClickedCh:
+				if err := open.Run(url); err != nil {
+					log.Println(err)
 				}
-				entry.SetTitle(reading.String())
-			}
+			case <-exit.ClickedCh:
+				os.Exit(0)
+			case properties := <-updateChan:
+				errorEntry.Hide()
 
-			lastReadingVal.SetTitle(properties.Bgnow.Time().String())
-		case err := <-errorChan:
-			systray.SetTitle("Error")
-			errorEntry.SetTitle(err.Error())
-			errorEntry.Show()
+				systray.SetTitle(properties.String())
+
+				for i, reading := range properties.Buckets {
+					var entry *systray.MenuItem
+					if i < len(historyVals) {
+						entry = historyVals[i]
+					} else {
+						entry = history.AddSubMenuItem("", "")
+						entry.Disable()
+						historyVals = append(historyVals, entry)
+					}
+					entry.SetTitle(reading.String())
+				}
+
+				lastReadingVal.SetTitle(properties.Bgnow.Time().String())
+			case err := <-errorChan:
+				systray.SetTitle("Error")
+				errorEntry.SetTitle(err.Error())
+				errorEntry.Show()
+			}
 		}
-	}
+	}()
 }
 
 func onExit() {
