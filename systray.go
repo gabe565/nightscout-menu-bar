@@ -38,7 +38,7 @@ func onReady() {
 	exit := systray.AddMenuItem("Quit Nightscout Systray", "")
 	exit.SetTemplateIcon(assets.Xmark, assets.Xmark)
 
-	go tick()
+	beginTick()
 
 	go func() {
 		for {

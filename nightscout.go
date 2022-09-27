@@ -49,13 +49,13 @@ func fetchFromNightscout() error {
 
 var ticker *time.Ticker
 
-func tick() {
-	if err := fetchFromNightscout(); err != nil {
-		log.Println(err)
-	}
-
+func beginTick() {
 	ticker = time.NewTicker(viper.GetDuration("interval"))
 	go func() {
+		if err := fetchFromNightscout(); err != nil {
+			log.Println(err)
+		}
+
 		for {
 			select {
 			case <-ticker.C:
