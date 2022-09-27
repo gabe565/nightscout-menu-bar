@@ -16,6 +16,7 @@ for SRC in "$@"; do (
         --export-type=png \
         --export-filename=- \
     | convert - \
+        -strip \
         -background transparent \
         -gravity center \
         -extent "${HEIGHT}x${HEIGHT}" \
