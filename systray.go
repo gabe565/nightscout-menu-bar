@@ -6,6 +6,7 @@ import (
 	"github.com/getlantern/systray"
 	"github.com/skratchdot/open-golang/open"
 	"log"
+	"os"
 )
 
 var updateChan = make(chan nightscout.Properties)
@@ -31,6 +32,11 @@ func onReady() {
 	lastReadingVal := lastReading.AddSubMenuItem("", "")
 	lastReadingVal.Disable()
 
+	systray.AddSeparator()
+
+	exit := systray.AddMenuItem("Quit Nightscout Systray", "")
+	exit.SetTemplateIcon(assets.Xmark, assets.Xmark)
+
 	go tick()
 
 	for {
@@ -39,6 +45,8 @@ func onReady() {
 			if err := open.Run(url); err != nil {
 				log.Println(err)
 			}
+		case <-exit.ClickedCh:
+			os.Exit(0)
 		case properties := <-updateChan:
 			errorEntry.Hide()
 

@@ -17,3 +17,7 @@ var RectangleHistory []byte
 //go:generate ./convert-images.sh square-up-right-solid.svg
 //go:embed square-up-right-solid.png
 var SquareUpRight []byte
+
+//go:generate ./convert-images.sh xmark-solid.svg
+//go:embed xmark-solid.png
+var Xmark []byte
