@@ -6,12 +6,10 @@ import (
 	"github.com/getlantern/systray"
 	"github.com/skratchdot/open-golang/open"
 	"log"
-	"time"
 )
 
-var updateTitle = make(chan string)
-var updateHistory = make(chan []nightscout.Reading)
-var updateLastReading = make(chan time.Time)
+var updateChan = make(chan nightscout.Properties)
+var errorChan = make(chan error)
 
 func onReady() {
 	systray.SetTemplateIcon(assets.IconMenuBar, assets.IconMenuBar)
@@ -38,10 +36,10 @@ func onReady() {
 			if err := open.Run(url); err != nil {
 				log.Println(err)
 			}
-		case v := <-updateTitle:
-			systray.SetTitle(v)
-		case v := <-updateHistory:
-			for i, reading := range v {
+		case properties := <-updateChan:
+			systray.SetTitle(properties.String())
+
+			for i, reading := range properties.Buckets {
 				var entry *systray.MenuItem
 				if i < len(historyVals) {
 					entry = historyVals[i]
@@ -52,8 +50,10 @@ func onReady() {
 				}
 				entry.SetTitle(reading.String())
 			}
-		case v := <-updateLastReading:
-			lastReadingVal.SetTitle(v.String())
+
+			lastReadingVal.SetTitle(properties.Bgnow.Time().String())
+		case <-errorChan:
+			systray.SetTitle("Error")
 		}
 	}
 }
