@@ -11,8 +11,6 @@ BASEHEIGHT="$(bc <<< "$HEIGHT - $PAD")"
 for SRC in "$@"; do (
     DEST="$(basename "${SRC%.*}.png")"
 
-    set -x
-
     inkscape \
         --export-height="$BASEHEIGHT" \
         --export-filename="$DEST" \
