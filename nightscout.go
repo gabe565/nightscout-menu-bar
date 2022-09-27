@@ -4,15 +4,22 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/gabe565/nightscout-systray/internal/nightscout"
+	flag "github.com/spf13/pflag"
+	"github.com/spf13/viper"
 	"log"
 	"net/http"
-	"os"
 	"time"
 )
 
-var url = os.Getenv("NIGHTSCOUT_URL")
+func init() {
+	flag.StringP("url", "u", "", "Nightscout base URL")
+	if err := viper.BindPFlag("url", flag.Lookup("url")); err != nil {
+		panic(err)
+	}
+}
 
 func fetchFromNightscout() error {
+	url := viper.GetString("url")
 	if url == "" {
 		return errors.New("url is required")
 	}

@@ -5,6 +5,7 @@ import (
 	"github.com/gabe565/nightscout-systray/internal/nightscout"
 	"github.com/getlantern/systray"
 	"github.com/skratchdot/open-golang/open"
+	"github.com/spf13/viper"
 	"log"
 	"os"
 )
@@ -43,6 +44,7 @@ func onReady() {
 		for {
 			select {
 			case <-openNightscout.ClickedCh:
+				url := viper.GetString("url")
 				if err := open.Run(url); err != nil {
 					log.Println(err)
 				}
