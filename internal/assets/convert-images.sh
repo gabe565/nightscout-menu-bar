@@ -2,8 +2,11 @@
 
 set -euo pipefail
 
-HEIGHT=26
+HEIGHT=32
+PAD=4
 DENSITY=144
+
+BASEHEIGHT="$(bc <<< "$HEIGHT - $PAD")"
 
 for SRC in "$@"; do (
     DEST="$(basename "${SRC%.*}.png")"
@@ -11,7 +14,7 @@ for SRC in "$@"; do (
     set -x
 
     inkscape \
-        --export-height="$HEIGHT" \
+        --export-height="$BASEHEIGHT" \
         --export-filename="$DEST" \
         "$SRC"
 
