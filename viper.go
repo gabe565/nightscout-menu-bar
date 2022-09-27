@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"github.com/fsnotify/fsnotify"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"strings"
@@ -22,6 +24,11 @@ func initViper() error {
 		viper.AddConfigPath("$HOME/.config")
 		viper.AddConfigPath(".")
 	}
+
+	viper.WatchConfig()
+	viper.OnConfigChange(func(e fsnotify.Event) {
+		fmt.Println("Config file changed:", e.Name)
+	})
 
 	viper.AutomaticEnv()
 	viper.SetEnvPrefix("nightscout")
