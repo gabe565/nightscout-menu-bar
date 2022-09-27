@@ -2,8 +2,9 @@ package assets
 
 import _ "embed"
 
-//go:embed icon-32.png
-var Icon32 []byte
+//go:generate ./convert-images.sh icon-menu-bar.svg
+//go:embed icon-menu-bar.png
+var IconMenuBar []byte
 
 //go:generate ./convert-images.sh calendar-solid.svg
 //go:embed calendar-solid.png

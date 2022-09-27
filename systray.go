@@ -14,7 +14,7 @@ var updateHistory = make(chan []nightscout.Reading)
 var updateLastReading = make(chan time.Time)
 
 func onReady() {
-	systray.SetTemplateIcon(assets.Icon32, assets.Icon32)
+	systray.SetTemplateIcon(assets.IconMenuBar, assets.IconMenuBar)
 	systray.SetTitle("Nightscout")
 	systray.SetTooltip("Nightscout")
 
