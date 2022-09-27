@@ -1,4 +1,5 @@
 .DS_Store
 .idea/
+dist/
 coverage.out
 nightscout-systray
