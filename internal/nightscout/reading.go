@@ -21,7 +21,10 @@ func (r Reading) Time() time.Time {
 }
 
 func (r Reading) Arrow() string {
-	direction := r.Sgvs[0].Direction
+	direction := "-"
+	if len(r.Sgvs) > 0 {
+		direction = r.Sgvs[0].Direction
+	}
 	switch direction {
 	case "FortyFiveUp":
 		direction = "↗"
