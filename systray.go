@@ -16,6 +16,9 @@ func onReady() {
 	systray.SetTitle("Nightscout")
 	systray.SetTooltip("Nightscout")
 
+	errorEntry := systray.AddMenuItem("", "")
+	errorEntry.Hide()
+
 	openNightscout := systray.AddMenuItem("Open Nightscout", "")
 	openNightscout.SetTemplateIcon(assets.SquareUpRight, assets.SquareUpRight)
 
@@ -37,6 +40,8 @@ func onReady() {
 				log.Println(err)
 			}
 		case properties := <-updateChan:
+			errorEntry.Hide()
+
 			systray.SetTitle(properties.String())
 
 			for i, reading := range properties.Buckets {
@@ -52,8 +57,10 @@ func onReady() {
 			}
 
 			lastReadingVal.SetTitle(properties.Bgnow.Time().String())
-		case <-errorChan:
+		case err := <-errorChan:
 			systray.SetTitle("Error")
+			errorEntry.SetTitle(err.Error())
+			errorEntry.Show()
 		}
 	}
 }
