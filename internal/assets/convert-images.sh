@@ -11,12 +11,11 @@ BASEHEIGHT="$(bc <<< "$HEIGHT - $PAD")"
 for SRC in "$@"; do (
     DEST="$(basename "${SRC%.*}.png")"
 
-    inkscape \
+    inkscape "$SRC" \
         --export-height="$BASEHEIGHT" \
-        --export-filename="$DEST" \
-        "$SRC"
-
-    mogrify \
+        --export-type=png \
+        --export-filename=- \
+    | convert - \
         -background transparent \
         -gravity center \
         -extent "${HEIGHT}x${HEIGHT}" \
