@@ -6,7 +6,7 @@ HEIGHT=26
 DENSITY=144
 
 for SRC in "$@"; do (
-    DEST="internal/assets/$(basename "${SRC%.*}.png")"
+    DEST="$(basename "${SRC%.*}.png")"
 
     set -x
 
