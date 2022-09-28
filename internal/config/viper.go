@@ -50,11 +50,7 @@ func InitViper() error {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
 
 	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			// Config file not found; ignore error if desired
-		} else {
-			return err
-		}
+		return err
 	}
 	log.Println("Loaded config:", viper.ConfigFileUsed())
 
