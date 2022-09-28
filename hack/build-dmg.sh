@@ -2,8 +2,6 @@
 
 BINARY_NAME='nightscout-menu-bar'
 APP_NAME='Nightscout Menu Bar'
-BUNDLE_ID='com.gabe565.nightscout-menu-bar'
-AUTHOR='gabe565'
 
 set -euo pipefail
 
@@ -21,15 +19,16 @@ echo Generate icons
 echo ...done
 
 echo Generate "$APP_NAME.app"
-cd "$DIST"
-appify \
-			-id "$BUNDLE_ID" \
-			-author "$AUTHOR" \
-			-name "$APP_NAME" \
-			-icon "$APP_NAME.icns" \
-			"$BINARY_NAME"
+APP_CONTENTS="$DIST/$APP_NAME.app/Contents"
+mkdir -p "$APP_CONTENTS"
+cp "$SCRIPT_DIR/../assets/info.plist" "$APP_CONTENTS"
+mkdir "$APP_CONTENTS/Resources"
+cp "$DIST/AppIcon.icns" "$APP_CONTENTS/Resources"
+mkdir "$APP_CONTENTS/MacOS"
+cp -p "$DIST/$BINARY_NAME" "$APP_CONTENTS/MacOS"
 echo ...done
 
 echo Zip "$APP_NAME.app"
+cd "$DIST"
 zip -r "$APP_NAME.zip" "$APP_NAME.app"
 echo ...done

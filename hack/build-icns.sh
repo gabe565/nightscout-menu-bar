@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-APP_NAME='Nightscout Menu Bar'
 SRC='../assets/icon.svg'
 DIST='../dist'
 
@@ -8,8 +7,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 
-ICONSET="$SCRIPT_DIR/$DIST/$APP_NAME.iconset"
-ICNS="$SCRIPT_DIR/$DIST/$APP_NAME.icns"
+ICONSET="$SCRIPT_DIR/$DIST/AppIcon.iconset"
+ICNS="$SCRIPT_DIR/$DIST/AppIcon.icns"
 
 rm -rf "$ICONSET" "$ICNS"
 mkdir -p "$ICONSET"
