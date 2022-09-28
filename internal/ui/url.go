@@ -6,9 +6,13 @@ import (
 )
 
 func PromptURL() (string, error) {
-	return zenity.Entry(
+	url, err := zenity.Entry(
 		"Enter new Nightscout URL:",
 		zenity.Title("Nightscout URL"),
 		zenity.EntryText(viper.GetString("url")),
 	)
+	if err != nil && err.Error() != "dialog canceled" {
+		return url, err
+	}
+	return url, nil
 }
