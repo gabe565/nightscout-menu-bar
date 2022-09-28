@@ -37,7 +37,7 @@ func onReady() {
 			case <-openNightscoutItem.ClickedCh:
 				url := viper.GetString("url")
 				if err := open.Run(url); err != nil {
-					log.Println(err)
+					Error <- err
 				}
 			case <-quitItem.ClickedCh:
 				systray.Quit()
