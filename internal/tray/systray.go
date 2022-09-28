@@ -15,7 +15,7 @@ func Run() {
 }
 
 var Update = make(chan nightscout.Properties)
-var Error = make(chan error)
+var Error = make(chan error, 1)
 
 func onReady() {
 	systray.SetTemplateIcon(assets.IconMenuBar, assets.IconMenuBar)
