@@ -31,7 +31,7 @@ func InitViper() error {
 	viper.WatchConfig()
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		fmt.Println("Config file changed:", e.Name)
-		tray.ResetTicker()
+		tray.ReloadConfig()
 	})
 
 	viper.AutomaticEnv()
