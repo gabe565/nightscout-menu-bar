@@ -32,18 +32,18 @@ func fetchFromNightscout() error {
 	// Fetch JSON
 	resp, err := http.Get(url + "/api/v2/properties/bgnow,buckets,delta,direction")
 	if err != nil {
-		errorChan <- err
+		Error <- err
 		return err
 	}
 
 	// Decode JSON
 	var properties nightscout.Properties
 	if err := json.NewDecoder(resp.Body).Decode(&properties); err != nil {
-		errorChan <- err
+		Error <- err
 		return err
 	}
 
-	updateChan <- properties
+	Update <- properties
 	return nil
 }
 

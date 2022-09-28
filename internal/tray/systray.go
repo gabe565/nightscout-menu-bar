@@ -13,8 +13,8 @@ func Run() {
 	systray.Run(onReady, onExit)
 }
 
-var updateChan = make(chan nightscout.Properties)
-var errorChan = make(chan error)
+var Update = make(chan nightscout.Properties)
+var Error = make(chan error)
 
 func onReady() {
 	systray.SetTemplateIcon(assets.IconMenuBar, assets.IconMenuBar)
@@ -53,7 +53,7 @@ func onReady() {
 				}
 			case <-exit.ClickedCh:
 				systray.Quit()
-			case properties := <-updateChan:
+			case properties := <-Update:
 				errorEntry.Hide()
 
 				systray.SetTitle(properties.String())
@@ -71,7 +71,7 @@ func onReady() {
 				}
 
 				lastReadingVal.SetTitle(properties.Bgnow.Time().String())
-			case err := <-errorChan:
+			case err := <-Error:
 				systray.SetTitle("Error")
 				errorEntry.SetTitle(err.Error())
 				errorEntry.Show()
