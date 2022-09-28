@@ -3,6 +3,7 @@ module github.com/gabe565/nightscout-systray
 go 1.19
 
 require (
+	github.com/emersion/go-autostart v0.0.0-20210130080809-00ed301c8e9a
 	github.com/fsnotify/fsnotify v1.5.4
 	github.com/getlantern/systray v1.2.1
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966

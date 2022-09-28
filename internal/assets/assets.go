@@ -18,6 +18,10 @@ var RectangleHistory []byte
 //go:embed square-up-right-solid.png
 var SquareUpRight []byte
 
+//go:generate ./convert-images.sh gear-solid.svg
+//go:embed gear-solid.png
+var Gear []byte
+
 //go:generate ./convert-images.sh xmark-solid.svg
 //go:embed xmark-solid.png
 var Xmark []byte

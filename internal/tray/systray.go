@@ -2,6 +2,7 @@ package tray
 
 import (
 	"github.com/gabe565/nightscout-systray/internal/assets"
+	"github.com/gabe565/nightscout-systray/internal/autostart"
 	"github.com/gabe565/nightscout-systray/internal/nightscout"
 	"github.com/gabe565/nightscout-systray/internal/tray/items"
 	"github.com/getlantern/systray"
@@ -27,6 +28,7 @@ func onReady() {
 	historyItem, historyVals := items.NewHistory()
 	lastReadingItem := items.NewLastReading()
 	systray.AddSeparator()
+	prefs := items.NewPreferences()
 	quitItem := items.NewQuit()
 
 	beginTick()
@@ -38,6 +40,18 @@ func onReady() {
 				url := viper.GetString("url")
 				if err := open.Run(url); err != nil {
 					Error <- err
+				}
+			case <-prefs.StartOnLogin.ClickedCh:
+				if prefs.StartOnLogin.Checked() {
+					if err := autostart.Disable(); err != nil {
+						Error <- err
+					}
+					prefs.StartOnLogin.Uncheck()
+				} else {
+					if err := autostart.Enable(); err != nil {
+						Error <- err
+					}
+					prefs.StartOnLogin.Check()
 				}
 			case <-quitItem.ClickedCh:
 				systray.Quit()
