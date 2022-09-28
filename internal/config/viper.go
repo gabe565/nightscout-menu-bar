@@ -1,12 +1,15 @@
 package config
 
 import (
-	"fmt"
+	"errors"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gabe565/nightscout-menu-bar/internal/ticker"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"log"
+	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -22,19 +25,25 @@ func InitViper() error {
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
 	} else {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return err
+		}
+		configDir := filepath.Join(home, ".config")
+
 		viper.SetConfigName("nightscout-menu-bar")
 		viper.SetConfigType("yaml")
 
-		viper.AddConfigPath("$HOME/.config")
-		viper.AddConfigPath(".")
-	}
+		viper.AddConfigPath(configDir)
 
-	viper.WatchConfig()
-	viper.OnConfigChange(func(e fsnotify.Event) {
-		fmt.Println("Config file changed:", e.Name)
-		ticker.ReloadConfig()
-		tray.ReloadConfig <- struct{}{}
-	})
+		if err := viper.SafeWriteConfig(); err != nil {
+			if !errors.Is(err, err.(viper.ConfigFileAlreadyExistsError)) {
+				return err
+			}
+		} else {
+			log.Println("Created config file")
+		}
+	}
 
 	viper.AutomaticEnv()
 	viper.SetEnvPrefix("nightscout")
@@ -47,5 +56,13 @@ func InitViper() error {
 			return err
 		}
 	}
+
+	viper.WatchConfig()
+	viper.OnConfigChange(func(e fsnotify.Event) {
+		log.Println("Config file changed:", e.Name)
+		ticker.ReloadConfig()
+		tray.ReloadConfig <- struct{}{}
+	})
+
 	return nil
 }
