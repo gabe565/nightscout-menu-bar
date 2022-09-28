@@ -1,10 +1,12 @@
 package items
 
 import (
+	"errors"
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
 	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
 	"github.com/gabe565/nightscout-menu-bar/internal/ui"
 	"github.com/getlantern/systray"
+	"github.com/ncruces/zenity"
 	"github.com/spf13/viper"
 )
 
@@ -52,14 +54,15 @@ func (n Url) UpdateTitle() {
 func (n Url) Prompt() error {
 	url, err := ui.PromptURL()
 	if err != nil {
+		if errors.Is(err, zenity.ErrCanceled) {
+			return nil
+		}
 		return err
 	}
 
-	if url != "" {
-		viper.Set("url", url)
-		if err := viper.WriteConfig(); err != nil {
-			return err
-		}
+	viper.Set("url", url)
+	if err := viper.WriteConfig(); err != nil {
+		return err
 	}
 	return nil
 }
