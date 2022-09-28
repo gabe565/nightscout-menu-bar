@@ -1,10 +1,12 @@
 package tray
 
 import (
+	"errors"
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
 	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray/items"
+	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	"github.com/getlantern/systray"
 	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/viper"
@@ -79,7 +81,11 @@ func onReady() {
 
 				lastReadingItem.SetTitle(properties.Bgnow.Time().String())
 			case err := <-Error:
-				systray.SetTitle("Error")
+				if errors.As(err, &util.SoftError{}) {
+					systray.SetTitle("Nightscout")
+				} else {
+					systray.SetTitle("Error")
+				}
 				errorItem.SetTitle(err.Error())
 				errorItem.Show()
 			}

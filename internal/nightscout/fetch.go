@@ -3,6 +3,7 @@ package nightscout
 import (
 	"encoding/json"
 	"errors"
+	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"net/http"
@@ -20,7 +21,7 @@ func Fetch() (Properties, error) {
 
 	url := viper.GetString("url")
 	if url == "" {
-		return properties, errors.New("url is required")
+		return properties, util.SoftError{Err: errors.New("please configure your Nightscout URL")}
 	}
 
 	// Fetch JSON
