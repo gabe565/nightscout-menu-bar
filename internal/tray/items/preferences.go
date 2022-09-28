@@ -55,9 +55,11 @@ func (n Url) Prompt() error {
 		return err
 	}
 
-	viper.Set("url", url)
-	if err := viper.WriteConfig(); err != nil {
-		return err
+	if url != "" {
+		viper.Set("url", url)
+		if err := viper.WriteConfig(); err != nil {
+			return err
+		}
 	}
 	return nil
 }
