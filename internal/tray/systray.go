@@ -1,4 +1,4 @@
-package main
+package tray
 
 import (
 	"github.com/gabe565/nightscout-systray/internal/assets"
@@ -8,6 +8,10 @@ import (
 	"github.com/spf13/viper"
 	"log"
 )
+
+func Run() {
+	systray.Run(onReady, onExit)
+}
 
 var updateChan = make(chan nightscout.Properties)
 var errorChan = make(chan error)

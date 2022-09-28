@@ -1,4 +1,4 @@
-package main
+package tray
 
 import (
 	"encoding/json"
@@ -67,7 +67,7 @@ func beginTick() {
 	}()
 }
 
-func resetTicker() {
+func ResetTicker() {
 	if ticker != nil {
 		ticker.Reset(viper.GetDuration("interval"))
 	}

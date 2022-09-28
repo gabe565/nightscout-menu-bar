@@ -1,8 +1,9 @@
-package main
+package config
 
 import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
+	"github.com/gabe565/nightscout-systray/internal/tray"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"strings"
@@ -14,7 +15,9 @@ func init() {
 	flag.StringVarP(&cfgFile, "config", "c", "", "Config file (default is $HOME/.config/nightscout-menu-bar.yaml)")
 }
 
-func initViper() error {
+func InitViper() error {
+	flag.Parse()
+
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
 	} else {
@@ -28,7 +31,7 @@ func initViper() error {
 	viper.WatchConfig()
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		fmt.Println("Config file changed:", e.Name)
-		resetTicker()
+		tray.ResetTicker()
 	})
 
 	viper.AutomaticEnv()
