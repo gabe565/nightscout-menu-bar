@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/gabe565/nightscout-systray/internal/config"
-	"github.com/gabe565/nightscout-systray/internal/ticker"
-	"github.com/gabe565/nightscout-systray/internal/tray"
+	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"github.com/gabe565/nightscout-menu-bar/internal/ticker"
+	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 )
 
 func main() {

@@ -1,9 +1,9 @@
 package items
 
 import (
-	"github.com/gabe565/nightscout-systray/internal/assets"
-	"github.com/gabe565/nightscout-systray/internal/autostart"
-	"github.com/gabe565/nightscout-systray/internal/ui"
+	"github.com/gabe565/nightscout-menu-bar/internal/assets"
+	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
+	"github.com/gabe565/nightscout-menu-bar/internal/ui"
 	"github.com/getlantern/systray"
 	"github.com/spf13/viper"
 )

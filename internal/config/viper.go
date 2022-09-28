@@ -3,8 +3,8 @@ package config
 import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
-	"github.com/gabe565/nightscout-systray/internal/ticker"
-	"github.com/gabe565/nightscout-systray/internal/tray"
+	"github.com/gabe565/nightscout-menu-bar/internal/ticker"
+	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"strings"

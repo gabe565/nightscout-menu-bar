@@ -1,10 +1,10 @@
 package tray
 
 import (
-	"github.com/gabe565/nightscout-systray/internal/assets"
-	"github.com/gabe565/nightscout-systray/internal/autostart"
-	"github.com/gabe565/nightscout-systray/internal/nightscout"
-	"github.com/gabe565/nightscout-systray/internal/tray/items"
+	"github.com/gabe565/nightscout-menu-bar/internal/assets"
+	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
+	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
+	"github.com/gabe565/nightscout-menu-bar/internal/tray/items"
 	"github.com/getlantern/systray"
 	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/viper"

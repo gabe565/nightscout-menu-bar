@@ -1,7 +1,7 @@
 package items
 
 import (
-	"github.com/gabe565/nightscout-systray/internal/assets"
+	"github.com/gabe565/nightscout-menu-bar/internal/assets"
 	"github.com/getlantern/systray"
 )
 

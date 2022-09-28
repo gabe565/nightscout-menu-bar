@@ -1,4 +1,4 @@
-module github.com/gabe565/nightscout-systray
+module github.com/gabe565/nightscout-menu-bar
 
 go 1.19
 

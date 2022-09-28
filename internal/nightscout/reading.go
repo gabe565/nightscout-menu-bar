@@ -2,7 +2,7 @@ package nightscout
 
 import (
 	"fmt"
-	"github.com/gabe565/nightscout-systray/internal/util"
+	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	"time"
 )
 
