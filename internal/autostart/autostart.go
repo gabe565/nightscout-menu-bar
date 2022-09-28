@@ -12,6 +12,7 @@ var initError error
 func init() {
 	executable, err := os.Executable()
 	if err != nil {
+		initError = err
 		log.Println(err)
 	}
 
