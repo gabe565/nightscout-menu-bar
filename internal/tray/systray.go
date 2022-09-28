@@ -3,6 +3,7 @@ package tray
 import (
 	"github.com/gabe565/nightscout-systray/internal/assets"
 	"github.com/gabe565/nightscout-systray/internal/nightscout"
+	"github.com/gabe565/nightscout-systray/internal/tray/items"
 	"github.com/getlantern/systray"
 	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/viper"
@@ -21,40 +22,27 @@ func onReady() {
 	systray.SetTitle("Nightscout")
 	systray.SetTooltip("Nightscout")
 
-	errorEntry := systray.AddMenuItem("", "")
-	errorEntry.Hide()
-
-	openNightscout := systray.AddMenuItem("Open Nightscout", "")
-	openNightscout.SetTemplateIcon(assets.SquareUpRight, assets.SquareUpRight)
-
-	history := systray.AddMenuItem("History", "")
-	history.SetTemplateIcon(assets.RectangleHistory, assets.RectangleHistory)
-	historyVals := make([]*systray.MenuItem, 0, 4)
-
-	lastReading := systray.AddMenuItem("Last Reading", "")
-	lastReading.SetTemplateIcon(assets.Calendar, assets.Calendar)
-	lastReadingVal := lastReading.AddSubMenuItem("", "")
-	lastReadingVal.Disable()
-
+	errorItem := items.NewError()
+	openNightscoutItem := items.NewOpenNightscout()
+	historyItem, historyVals := items.NewHistory()
+	lastReadingItem := items.NewLastReading()
 	systray.AddSeparator()
-
-	exit := systray.AddMenuItem("Quit Nightscout Systray", "")
-	exit.SetTemplateIcon(assets.Xmark, assets.Xmark)
+	quitItem := items.NewQuit()
 
 	beginTick()
 
 	go func() {
 		for {
 			select {
-			case <-openNightscout.ClickedCh:
+			case <-openNightscoutItem.ClickedCh:
 				url := viper.GetString("url")
 				if err := open.Run(url); err != nil {
 					log.Println(err)
 				}
-			case <-exit.ClickedCh:
+			case <-quitItem.ClickedCh:
 				systray.Quit()
 			case properties := <-Update:
-				errorEntry.Hide()
+				errorItem.Hide()
 
 				systray.SetTitle(properties.String())
 
@@ -63,18 +51,18 @@ func onReady() {
 					if i < len(historyVals) {
 						entry = historyVals[i]
 					} else {
-						entry = history.AddSubMenuItem("", "")
+						entry = historyItem.AddSubMenuItem("", "")
 						entry.Disable()
 						historyVals = append(historyVals, entry)
 					}
 					entry.SetTitle(reading.String())
 				}
 
-				lastReadingVal.SetTitle(properties.Bgnow.Time().String())
+				lastReadingItem.SetTitle(properties.Bgnow.Time().String())
 			case err := <-Error:
 				systray.SetTitle("Error")
-				errorEntry.SetTitle(err.Error())
-				errorEntry.Show()
+				errorItem.SetTitle(err.Error())
+				errorItem.Show()
 			}
 		}
 	}()
