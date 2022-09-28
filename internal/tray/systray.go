@@ -13,6 +13,10 @@ import (
 	"log"
 )
 
+func init() {
+	viper.SetDefault("title", "Nightscout")
+}
+
 func Run() {
 	systray.Run(onReady, onExit)
 }
@@ -23,8 +27,8 @@ var Error = make(chan error, 1)
 
 func onReady() {
 	systray.SetTemplateIcon(assets.IconMenuBar, assets.IconMenuBar)
-	systray.SetTitle("Nightscout")
-	systray.SetTooltip("Nightscout")
+	systray.SetTitle(viper.GetString("title"))
+	systray.SetTooltip(viper.GetString("title"))
 
 	errorItem := items.NewError()
 	openNightscoutItem := items.NewOpenNightscout()
@@ -82,7 +86,7 @@ func onReady() {
 				lastReadingItem.SetTitle(properties.Bgnow.Mills.String())
 			case err := <-Error:
 				if errors.As(err, &util.SoftError{}) {
-					systray.SetTitle("Nightscout")
+					systray.SetTitle(viper.GetString("title"))
 				} else {
 					systray.SetTitle("Error")
 				}
