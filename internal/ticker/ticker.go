@@ -1,9 +1,10 @@
-package tray
+package ticker
 
 import (
+	"github.com/gabe565/nightscout-systray/internal/nightscout"
+	"github.com/gabe565/nightscout-systray/internal/tray"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	"log"
 	"time"
 )
 
@@ -16,20 +17,25 @@ func init() {
 
 var ticker *time.Ticker
 
-func beginTick() {
+func BeginTick() {
 	ticker = time.NewTicker(viper.GetDuration("interval"))
 	go func() {
-		if err := fetchFromNightscout(); err != nil {
-			log.Println(err)
-		}
+		Tick()
 
 		for {
 			select {
 			case <-ticker.C:
-				if err := fetchFromNightscout(); err != nil {
-					log.Println(err)
-				}
+				Tick()
 			}
 		}
 	}()
+}
+
+func Tick() {
+	properties, err := nightscout.Fetch()
+	if err != nil {
+		tray.Error <- err
+		return
+	}
+	tray.Update <- properties
 }

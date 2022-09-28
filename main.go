@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gabe565/nightscout-systray/internal/config"
+	"github.com/gabe565/nightscout-systray/internal/ticker"
 	"github.com/gabe565/nightscout-systray/internal/tray"
 )
 
@@ -12,5 +13,6 @@ func main() {
 		}()
 	}
 
+	ticker.BeginTick()
 	tray.Run()
 }

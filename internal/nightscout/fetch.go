@@ -1,9 +1,8 @@
-package tray
+package nightscout
 
 import (
 	"encoding/json"
 	"errors"
-	"github.com/gabe565/nightscout-systray/internal/nightscout"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"net/http"
@@ -16,26 +15,24 @@ func init() {
 	}
 }
 
-func fetchFromNightscout() error {
+func Fetch() (Properties, error) {
+	var properties Properties
+
 	url := viper.GetString("url")
 	if url == "" {
-		return errors.New("url is required")
+		return properties, errors.New("url is required")
 	}
 
 	// Fetch JSON
 	resp, err := http.Get(url + "/api/v2/properties/bgnow,buckets,delta,direction")
 	if err != nil {
-		Error <- err
-		return err
+		return properties, err
 	}
 
 	// Decode JSON
-	var properties nightscout.Properties
 	if err := json.NewDecoder(resp.Body).Decode(&properties); err != nil {
-		Error <- err
-		return err
+		return properties, err
 	}
 
-	Update <- properties
-	return nil
+	return properties, nil
 }

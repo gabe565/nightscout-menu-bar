@@ -16,6 +16,7 @@ func Run() {
 }
 
 var Update = make(chan nightscout.Properties)
+var ReloadConfig = make(chan struct{})
 var Error = make(chan error, 1)
 
 func onReady() {
@@ -31,8 +32,6 @@ func onReady() {
 	prefs := items.NewPreferences()
 	quitItem := items.NewQuit()
 
-	beginTick()
-
 	go func() {
 		for {
 			select {
@@ -41,6 +40,14 @@ func onReady() {
 				if err := open.Run(url); err != nil {
 					Error <- err
 				}
+			case <-prefs.Url.ClickedCh:
+				go func() {
+					if err := prefs.Url.Prompt(); err != nil {
+						Error <- err
+					}
+				}()
+			case <-ReloadConfig:
+				prefs.Url.UpdateTitle()
 			case <-prefs.StartOnLogin.ClickedCh:
 				if prefs.StartOnLogin.Checked() {
 					if err := autostart.Disable(); err != nil {

@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
+	"github.com/gabe565/nightscout-systray/internal/ticker"
 	"github.com/gabe565/nightscout-systray/internal/tray"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -31,7 +32,8 @@ func InitViper() error {
 	viper.WatchConfig()
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		fmt.Println("Config file changed:", e.Name)
-		tray.ReloadConfig()
+		ticker.ReloadConfig()
+		tray.ReloadConfig <- struct{}{}
 	})
 
 	viper.AutomaticEnv()
