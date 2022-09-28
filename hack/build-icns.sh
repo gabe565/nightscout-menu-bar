@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 SRC='../assets/icon.svg'
-DIST='../dist'
+DIST='../assets'
 
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 
-ICONSET="$SCRIPT_DIR/$DIST/AppIcon.iconset"
-ICNS="$SCRIPT_DIR/$DIST/AppIcon.icns"
+ICONSET="$SCRIPT_DIR/$DIST/Nightscout.iconset"
+ICNS="$SCRIPT_DIR/$DIST/Nightscout.icns"
 
 rm -rf "$ICONSET" "$ICNS"
 mkdir -p "$ICONSET"

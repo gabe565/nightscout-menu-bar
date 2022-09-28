@@ -7,6 +7,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 DIST="$SCRIPT_DIR/../dist"
+ASSETS="$SCRIPT_DIR/../assets"
 
 rm -rf "$DIST"/*
 
@@ -14,16 +15,12 @@ echo Build "$BINARY_NAME"
 go build -ldflags='-w -s' -o "$DIST/$BINARY_NAME" "$(git rev-parse --show-toplevel)"
 echo ...done
 
-echo Generate icons
-"$SCRIPT_DIR/build-icns.sh"
-echo ...done
-
 echo Generate "$APP_NAME.app"
 APP_CONTENTS="$DIST/$APP_NAME.app/Contents"
 mkdir -p "$APP_CONTENTS"
-cp "$SCRIPT_DIR/../assets/info.plist" "$APP_CONTENTS"
+cp "$ASSETS/info.plist" "$APP_CONTENTS"
 mkdir "$APP_CONTENTS/Resources"
-cp "$DIST/AppIcon.icns" "$APP_CONTENTS/Resources"
+cp "$ASSETS/Nightscout.icns" "$APP_CONTENTS/Resources"
 mkdir "$APP_CONTENTS/MacOS"
 cp -p "$DIST/$BINARY_NAME" "$APP_CONTENTS/MacOS"
 echo ...done
