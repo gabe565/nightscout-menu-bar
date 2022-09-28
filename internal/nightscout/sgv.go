@@ -6,7 +6,7 @@ type SGV struct {
 	Direction  string `json:"direction"`
 	Filtered   int    `json:"filtered"`
 	Mgdl       int    `json:"mgdl"`
-	Mills      int    `json:"mills"`
+	Mills      Mills  `json:"mills"`
 	Noise      int    `json:"noise"`
 	Rssi       int    `json:"rssi"`
 	Scaled     int    `json:"scaled"`

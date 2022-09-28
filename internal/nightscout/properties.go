@@ -18,6 +18,6 @@ func (p Properties) String() string {
 		p.Bgnow.Last,
 		p.Bgnow.Arrow(),
 		p.Delta.Display,
-		util.MinAgo(p.Bgnow.Time()),
+		util.MinAgo(p.Bgnow.Mills.Time),
 	)
 }

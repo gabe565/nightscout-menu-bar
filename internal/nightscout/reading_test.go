@@ -1,7 +1,6 @@
 package nightscout
 
 import (
-	"reflect"
 	"testing"
 	"time"
 )
@@ -10,10 +9,10 @@ func TestReading_Arrow(t *testing.T) {
 	type fields struct {
 		Mean      int
 		Last      int
-		Mills     int
+		Mills     Mills
 		Index     int
-		FromMills int
-		ToMills   int
+		FromMills Mills
+		ToMills   Mills
 		Sgvs      []SGV
 	}
 	tests := []struct {
@@ -47,51 +46,14 @@ func TestReading_Arrow(t *testing.T) {
 	}
 }
 
-func TestReading_Time(t *testing.T) {
-	now := time.Now().Truncate(time.Second)
-
-	type fields struct {
-		Mean      int
-		Last      int
-		Mills     int
-		Index     int
-		FromMills int
-		ToMills   int
-		Sgvs      []SGV
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   time.Time
-	}{
-		{"simple", fields{Mills: int(now.UnixMilli())}, now},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			r := Reading{
-				Mean:      tt.fields.Mean,
-				Last:      tt.fields.Last,
-				Mills:     tt.fields.Mills,
-				Index:     tt.fields.Index,
-				FromMills: tt.fields.FromMills,
-				ToMills:   tt.fields.ToMills,
-				Sgvs:      tt.fields.Sgvs,
-			}
-			if got := r.Time(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Time() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestReading_String(t *testing.T) {
 	type fields struct {
 		Mean      int
 		Last      int
-		Mills     int
+		Mills     Mills
 		Index     int
-		FromMills int
-		ToMills   int
+		FromMills Mills
+		ToMills   Mills
 		Sgvs      []SGV
 	}
 	tests := []struct {
@@ -103,7 +65,7 @@ func TestReading_String(t *testing.T) {
 			"simple",
 			fields{
 				Last:  100,
-				Mills: int(time.Now().UnixMilli()),
+				Mills: Mills{time.Now()},
 				Sgvs:  []SGV{{Direction: "Flat"}},
 			},
 			"100 → [0m]",

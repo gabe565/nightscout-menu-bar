@@ -22,7 +22,7 @@ func TestProperties_String(t *testing.T) {
 			fields{
 				Bgnow: Reading{
 					Last:  100,
-					Mills: int(time.Now().UnixMilli()),
+					Mills: Mills{time.Now()},
 					Sgvs:  []SGV{{Direction: "Flat"}},
 				},
 				Delta: Delta{Display: "+1"},

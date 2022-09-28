@@ -79,7 +79,7 @@ func onReady() {
 					}
 				}
 
-				lastReadingItem.SetTitle(properties.Bgnow.Time().String())
+				lastReadingItem.SetTitle(properties.Bgnow.Mills.String())
 			case err := <-Error:
 				if errors.As(err, &util.SoftError{}) {
 					systray.SetTitle("Nightscout")

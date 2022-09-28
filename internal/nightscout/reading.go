@@ -3,21 +3,16 @@ package nightscout
 import (
 	"fmt"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
-	"time"
 )
 
 type Reading struct {
 	Mean      int   `json:"mean"`
 	Last      int   `json:"last"`
-	Mills     int   `json:"mills"`
+	Mills     Mills `json:"mills"`
 	Index     int   `json:"index"`
-	FromMills int   `json:"fromMills"`
-	ToMills   int   `json:"toMills"`
+	FromMills Mills `json:"fromMills"`
+	ToMills   Mills `json:"toMills"`
 	Sgvs      []SGV `json:"sgvs"`
-}
-
-func (r Reading) Time() time.Time {
-	return time.Unix(int64(r.Mills/1000), 0)
 }
 
 func (r Reading) Arrow() string {
@@ -49,6 +44,6 @@ func (r Reading) String() string {
 		"%d %s [%s]",
 		r.Last,
 		r.Arrow(),
-		util.MinAgo(r.Time()),
+		util.MinAgo(r.Mills.Time),
 	)
 }
