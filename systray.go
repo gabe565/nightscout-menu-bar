@@ -7,7 +7,6 @@ import (
 	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/viper"
 	"log"
-	"os"
 )
 
 var updateChan = make(chan nightscout.Properties)
@@ -49,7 +48,7 @@ func onReady() {
 					log.Println(err)
 				}
 			case <-exit.ClickedCh:
-				os.Exit(0)
+				systray.Quit()
 			case properties := <-updateChan:
 				errorEntry.Hide()
 
