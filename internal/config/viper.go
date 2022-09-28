@@ -56,6 +56,7 @@ func InitViper() error {
 			return err
 		}
 	}
+	log.Println("Loaded config:", viper.ConfigFileUsed())
 
 	viper.WatchConfig()
 	viper.OnConfigChange(func(e fsnotify.Event) {
