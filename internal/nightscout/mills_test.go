@@ -11,7 +11,7 @@ func TestMills_MarshalJSON(t *testing.T) {
 	unix0 := time.Unix(0, 0)
 
 	now := time.Now()
-	nowStr := strconv.Itoa(int(now.Unix()))
+	nowStr := strconv.Itoa(int(now.UnixMilli()))
 
 	type fields struct {
 		Time time.Time
@@ -43,7 +43,7 @@ func TestMills_MarshalJSON(t *testing.T) {
 }
 
 func TestMills_UnmarshalJSON(t *testing.T) {
-	now := time.Now().Truncate(time.Second)
+	now := time.Now().Truncate(time.Millisecond)
 
 	type args struct {
 		bytes []byte

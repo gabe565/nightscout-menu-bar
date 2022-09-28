@@ -14,10 +14,10 @@ func (m *Mills) UnmarshalJSON(bytes []byte) error {
 	if err := json.Unmarshal(bytes, &mills); err != nil {
 		return err
 	}
-	m.Time = time.Unix(int64(mills/1000), 0)
+	m.Time = time.UnixMilli(mills)
 	return nil
 }
 
 func (m *Mills) MarshalJSON() ([]byte, error) {
-	return json.Marshal(m.Unix())
+	return json.Marshal(m.UnixMilli())
 }
