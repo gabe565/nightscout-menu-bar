@@ -47,15 +47,13 @@ func onReady() {
 				systray.SetTitle(properties.String())
 
 				for i, reading := range properties.Buckets {
-					var entry *systray.MenuItem
 					if i < len(historyVals) {
-						entry = historyVals[i]
+						historyVals[i].SetTitle(reading.String())
 					} else {
-						entry = historyItem.AddSubMenuItem("", "")
+						entry := historyItem.AddSubMenuItem(reading.String(), "")
 						entry.Disable()
 						historyVals = append(historyVals, entry)
 					}
-					entry.SetTitle(reading.String())
 				}
 
 				lastReadingItem.SetTitle(properties.Bgnow.Time().String())
