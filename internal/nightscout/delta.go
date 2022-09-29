@@ -5,7 +5,7 @@ type Delta struct {
 	Display      string  `json:"display"`
 	ElapsedMins  float64 `json:"elapsedMins"`
 	Interpolated bool    `json:"interpolated"`
-	Mean5MinsAgo int     `json:"mean5MinsAgo"`
+	Mean5MinsAgo float64 `json:"mean5MinsAgo"`
 	Mgdl         int     `json:"mgdl"`
 	Previous     Reading `json:"previous"`
 	Scaled       int     `json:"scaled"`
