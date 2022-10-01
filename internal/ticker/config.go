@@ -5,9 +5,10 @@ import (
 )
 
 func ReloadConfig() {
+	Fetch()
+
 	if ticker != nil {
 		ticker.Reset(viper.GetDuration("interval"))
 	}
 
-	Tick()
 }

@@ -17,20 +17,19 @@ func init() {
 }
 
 var etag string
-var prevProperties Properties
 
-func Fetch() (Properties, error) {
+func Fetch() (*Properties, error) {
 	var properties Properties
 
 	url := viper.GetString("url")
 	if url == "" {
-		return properties, util.SoftError{Err: errors.New("please configure your Nightscout URL")}
+		return &properties, util.SoftError{Err: errors.New("please configure your Nightscout URL")}
 	}
 
 	// Fetch JSON
 	req, err := http.NewRequest("GET", url+"/api/v2/properties/bgnow,buckets,delta,direction", nil)
 	if err != nil {
-		return properties, err
+		return &properties, err
 	}
 	if etag != "" {
 		req.Header.Set("If-None-Match", etag)
@@ -38,21 +37,20 @@ func Fetch() (Properties, error) {
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return properties, err
+		return &properties, err
 	}
 
 	if resp.StatusCode == http.StatusNotModified {
-		return prevProperties, nil
+		return nil, nil
 	}
 
 	// Decode JSON
 	if err := json.NewDecoder(resp.Body).Decode(&properties); err != nil {
 		etag = ""
-		return properties, err
+		return &properties, err
 	}
 
 	etag = resp.Header.Get("etag")
-	prevProperties = properties
 
-	return properties, nil
+	return &properties, nil
 }

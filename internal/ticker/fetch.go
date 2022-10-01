@@ -17,25 +17,27 @@ func init() {
 
 var ticker *time.Ticker
 
-func BeginTick() {
-	ticker = time.NewTicker(viper.GetDuration("interval"))
+func BeginFetch() {
 	go func() {
-		Tick()
+		ticker = time.NewTicker(viper.GetDuration("interval"))
+		Fetch()
 
 		for {
 			select {
 			case <-ticker.C:
-				Tick()
+				Fetch()
 			}
 		}
 	}()
 }
 
-func Tick() {
+func Fetch() {
 	properties, err := nightscout.Fetch()
 	if err != nil {
 		tray.Error <- err
 		return
 	}
-	tray.Update <- properties
+	if properties != nil {
+		RenderCh <- properties
+	}
 }

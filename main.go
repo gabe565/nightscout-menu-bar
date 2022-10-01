@@ -13,6 +13,7 @@ func main() {
 		}()
 	}
 
-	ticker.BeginTick()
+	ticker.BeginRender()
+	ticker.BeginFetch()
 	tray.Run()
 }

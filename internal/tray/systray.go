@@ -21,7 +21,7 @@ func Run() {
 	systray.Run(onReady, onExit)
 }
 
-var Update = make(chan nightscout.Properties)
+var Update = make(chan *nightscout.Properties)
 var ReloadConfig = make(chan struct{})
 var Error = make(chan error, 1)
 

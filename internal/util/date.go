@@ -15,3 +15,8 @@ func MinAgo(t time.Time) string {
 	}
 	return str
 }
+
+func GetNextMinChange(t time.Time) time.Duration {
+	duration := time.Since(t)
+	return time.Minute - duration%time.Minute
+}
