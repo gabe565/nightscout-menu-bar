@@ -16,6 +16,9 @@ func init() {
 	}
 }
 
+var etag string
+var prevProperties Properties
+
 func Fetch() (Properties, error) {
 	var properties Properties
 
@@ -25,15 +28,31 @@ func Fetch() (Properties, error) {
 	}
 
 	// Fetch JSON
-	resp, err := http.Get(url + "/api/v2/properties/bgnow,buckets,delta,direction")
+	req, err := http.NewRequest("GET", url+"/api/v2/properties/bgnow,buckets,delta,direction", nil)
+	if err != nil {
+		return properties, err
+	}
+	if etag != "" {
+		req.Header.Set("If-None-Match", etag)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return properties, err
 	}
 
+	if resp.StatusCode == http.StatusNotModified {
+		return prevProperties, nil
+	}
+
 	// Decode JSON
 	if err := json.NewDecoder(resp.Body).Decode(&properties); err != nil {
+		etag = ""
 		return properties, err
 	}
+
+	etag = resp.Header.Get("etag")
+	prevProperties = properties
 
 	return properties, nil
 }
