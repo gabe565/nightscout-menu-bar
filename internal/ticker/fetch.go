@@ -22,11 +22,8 @@ func BeginFetch() {
 		ticker = time.NewTicker(viper.GetDuration("interval"))
 		Fetch()
 
-		for {
-			select {
-			case <-ticker.C:
-				Fetch()
-			}
+		for range ticker.C {
+			Fetch()
 		}
 	}()
 }
