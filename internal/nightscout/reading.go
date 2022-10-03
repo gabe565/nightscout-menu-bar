@@ -33,7 +33,7 @@ func (r Reading) Arrow() string {
 		direction = r.Sgvs[0].Direction
 	}
 	switch direction {
-	case "DoubleUp":
+	case "DoubleUp", "TripleUp":
 		direction = viper.GetString("arrows.double-up")
 	case "SingleUp":
 		direction = viper.GetString("arrows.single-up")
@@ -45,7 +45,7 @@ func (r Reading) Arrow() string {
 		direction = viper.GetString("arrows.forty-five-down")
 	case "SingleDown":
 		direction = viper.GetString("arrows.single-down")
-	case "DoubleDown":
+	case "DoubleDown", "TripleDown":
 		direction = viper.GetString("arrows.double-down")
 	default:
 		direction = viper.GetString("arrows.unknown")
