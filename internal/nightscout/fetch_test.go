@@ -40,7 +40,7 @@ func TestFetch(t *testing.T) {
 		wantEtag string
 		wantErr  bool
 	}{
-		{"no url", "", "", &Properties{}, "", true},
+		{"no url", "", "", nil, "", true},
 		{"success", server.URL, "", properties, propertiesEtag, false},
 		{"same etag", server.URL, propertiesEtag, nil, propertiesEtag, false},
 		{"different etag", server.URL, differentEtag, properties, propertiesEtag, false},

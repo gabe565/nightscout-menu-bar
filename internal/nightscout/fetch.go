@@ -19,17 +19,15 @@ func init() {
 var lastEtag string
 
 func Fetch() (*Properties, error) {
-	var properties Properties
-
 	url := viper.GetString("url")
 	if url == "" {
-		return &properties, util.SoftError{Err: errors.New("please configure your Nightscout URL")}
+		return nil, util.SoftError{Err: errors.New("please configure your Nightscout URL")}
 	}
 
 	// Fetch JSON
 	req, err := http.NewRequest("GET", url+"/api/v2/properties/bgnow,buckets,delta,direction", nil)
 	if err != nil {
-		return &properties, err
+		return nil, err
 	}
 	if lastEtag != "" {
 		req.Header.Set("If-None-Match", lastEtag)
@@ -37,7 +35,7 @@ func Fetch() (*Properties, error) {
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return &properties, err
+		return nil, err
 	}
 
 	if resp.StatusCode == http.StatusNotModified {
@@ -45,9 +43,10 @@ func Fetch() (*Properties, error) {
 	}
 
 	// Decode JSON
+	var properties Properties
 	if err := json.NewDecoder(resp.Body).Decode(&properties); err != nil {
 		lastEtag = ""
-		return &properties, err
+		return nil, err
 	}
 
 	lastEtag = resp.Header.Get("etag")
