@@ -1,5 +1,10 @@
 package nightscout
 
+type Times struct {
+	Previous Mills `json:"previous"`
+	Recent   Mills `json:"recent"`
+}
+
 type Delta struct {
 	Absolute     int     `json:"absolute"`
 	Display      string  `json:"display"`
@@ -9,8 +14,5 @@ type Delta struct {
 	Mgdl         int     `json:"mgdl"`
 	Previous     Reading `json:"previous"`
 	Scaled       int     `json:"scaled"`
-	Times        struct {
-		Previous int `json:"previous"`
-		Recent   int `json:"recent"`
-	} `json:"times"`
+	Times        Times   `json:"times"`
 }
