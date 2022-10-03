@@ -14,7 +14,13 @@ func TestMinAgo(t *testing.T) {
 		args args
 		want string
 	}{
-		{"simple", args{time.Now().Add(-time.Minute)}, "1m"},
+		{"0m", args{time.Now()}, "0m"},
+		{"59s", args{time.Now().Add(-59 * time.Second)}, "0m"},
+		{"1m", args{time.Now().Add(-time.Minute)}, "1m"},
+		{"1m30s", args{time.Now().Add(-time.Minute - 30*time.Second)}, "1m"},
+		{"2m35s", args{time.Now().Add(-2*time.Minute - 35*time.Second)}, "2m"},
+		{"4m15s", args{time.Now().Add(-4*time.Minute - 15*time.Second)}, "4m"},
+		{"5m1s", args{time.Now().Add(-5*time.Minute - time.Second)}, "5m"},
 		{"now", args{time.Now()}, "0m"},
 	}
 	for _, tt := range tests {
