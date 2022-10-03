@@ -7,12 +7,12 @@ import (
 )
 
 func init() {
-	viper.SetDefault("arrows.forty-five-up", "↗")
-	viper.SetDefault("arrows.forty-five-down", "↘")
-	viper.SetDefault("arrows.single-up", "↑")
-	viper.SetDefault("arrows.single-down", "↓")
-	viper.SetDefault("arrows.flat", "→")
 	viper.SetDefault("arrows.double-up", "⇈")
+	viper.SetDefault("arrows.single-up", "↑")
+	viper.SetDefault("arrows.forty-five-up", "↗")
+	viper.SetDefault("arrows.flat", "→")
+	viper.SetDefault("arrows.forty-five-down", "↘")
+	viper.SetDefault("arrows.single-down", "↓")
 	viper.SetDefault("arrows.double-down", "⇊")
 	viper.SetDefault("arrows.unknown", "-")
 }
@@ -33,18 +33,18 @@ func (r Reading) Arrow() string {
 		direction = r.Sgvs[0].Direction
 	}
 	switch direction {
-	case "FortyFiveUp":
-		direction = viper.GetString("arrows.forty-five-up")
-	case "FortyFiveDown":
-		direction = viper.GetString("arrows.forty-five-down")
-	case "SingleUp":
-		direction = viper.GetString("arrows.single-up")
-	case "SingleDown":
-		direction = viper.GetString("arrows.single-down")
-	case "Flat":
-		direction = viper.GetString("arrows.flat")
 	case "DoubleUp":
 		direction = viper.GetString("arrows.double-up")
+	case "SingleUp":
+		direction = viper.GetString("arrows.single-up")
+	case "FortyFiveUp":
+		direction = viper.GetString("arrows.forty-five-up")
+	case "Flat":
+		direction = viper.GetString("arrows.flat")
+	case "FortyFiveDown":
+		direction = viper.GetString("arrows.forty-five-down")
+	case "SingleDown":
+		direction = viper.GetString("arrows.single-down")
 	case "DoubleDown":
 		direction = viper.GetString("arrows.double-down")
 	default:
