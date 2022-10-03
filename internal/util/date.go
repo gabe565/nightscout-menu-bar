@@ -7,7 +7,7 @@ import (
 
 func MinAgo(t time.Time) string {
 	// Drop resolution to minutes
-	duration := time.Since(t).Truncate(time.Minute)
+	duration := time.Since(t).Round(time.Minute)
 	str := duration.String()
 	str = strings.TrimSuffix(str, "0s")
 	if str == "" {
@@ -17,6 +17,13 @@ func MinAgo(t time.Time) string {
 }
 
 func GetNextMinChange(t time.Time) time.Duration {
+	// Offset time by 30s since output is rounded
+	t = t.Add(-30 * time.Second)
+	// Time since last update
 	duration := time.Since(t)
-	return time.Minute - duration%time.Minute
+	// Only keep seconds
+	duration = duration % time.Minute
+	// Time until rounded output changes
+	duration = time.Minute - duration
+	return duration
 }
