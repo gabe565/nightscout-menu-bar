@@ -1,6 +1,7 @@
 package ticker
 
 import (
+	"errors"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 	flag "github.com/spf13/pflag"
@@ -30,7 +31,7 @@ func BeginFetch() {
 
 func Fetch() {
 	properties, err := nightscout.Fetch()
-	if err != nil {
+	if err != nil && !errors.Is(err, nightscout.ErrNotModified) {
 		tray.Error <- err
 		return
 	}

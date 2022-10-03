@@ -18,6 +18,8 @@ func init() {
 
 var lastEtag string
 
+var ErrNotModified = errors.New("not modified")
+
 func Fetch() (*Properties, error) {
 	url := viper.GetString("url")
 	if url == "" {
@@ -39,7 +41,7 @@ func Fetch() (*Properties, error) {
 	}
 
 	if resp.StatusCode == http.StatusNotModified {
-		return nil, nil
+		return nil, ErrNotModified
 	}
 
 	// Decode JSON
