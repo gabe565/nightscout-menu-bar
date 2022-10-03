@@ -16,7 +16,7 @@ func init() {
 	}
 }
 
-var etag string
+var lastEtag string
 
 func Fetch() (*Properties, error) {
 	var properties Properties
@@ -31,8 +31,8 @@ func Fetch() (*Properties, error) {
 	if err != nil {
 		return &properties, err
 	}
-	if etag != "" {
-		req.Header.Set("If-None-Match", etag)
+	if lastEtag != "" {
+		req.Header.Set("If-None-Match", lastEtag)
 	}
 
 	resp, err := http.DefaultClient.Do(req)
@@ -46,11 +46,11 @@ func Fetch() (*Properties, error) {
 
 	// Decode JSON
 	if err := json.NewDecoder(resp.Body).Decode(&properties); err != nil {
-		etag = ""
+		lastEtag = ""
 		return &properties, err
 	}
 
-	etag = resp.Header.Get("etag")
+	lastEtag = resp.Header.Get("etag")
 
 	return &properties, nil
 }

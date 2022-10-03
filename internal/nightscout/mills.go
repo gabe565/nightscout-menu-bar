@@ -21,3 +21,7 @@ func (m *Mills) UnmarshalJSON(bytes []byte) error {
 func (m *Mills) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m.UnixMilli())
 }
+
+func (m *Mills) GoString() string {
+	return "nightscout.Mills{" + m.Time.GoString() + "}"
+}
