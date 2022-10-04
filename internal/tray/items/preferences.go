@@ -20,10 +20,12 @@ func NewPreferences() Preferences {
 	}
 	nightscoutUrl := item.AddSubMenuItem(urlTitle, "")
 
+	autostartEnabled, _ := autostart.IsEnabled()
+
 	startOnLogin := item.AddSubMenuItemCheckbox(
 		"Start on login",
 		"",
-		autostart.IsEnabled(),
+		autostartEnabled,
 	)
 
 	return Preferences{
