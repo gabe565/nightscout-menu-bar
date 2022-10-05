@@ -28,7 +28,7 @@ type Reading struct {
 }
 
 func (r Reading) Arrow() string {
-	direction := ""
+	var direction string
 	if len(r.Sgvs) > 0 {
 		direction = r.Sgvs[0].Direction
 	}
