@@ -10,5 +10,4 @@ func ReloadConfig() {
 	if ticker != nil {
 		ticker.Reset(viper.GetDuration("interval"))
 	}
-
 }
