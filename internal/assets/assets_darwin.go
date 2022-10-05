@@ -1,11 +1,9 @@
-//go:build !(darwin || windows)
-
 package assets
 
 import _ "embed"
 
-//go:generate ./convert-icon.sh nightscout-filled.svg nightscout-filled.png
-//go:embed nightscout-filled.png
+//go:generate ./convert-icon.sh nightscout-transparent.svg nightscout-transparent.png
+//go:embed nightscout-transparent.png
 var Nightscout []byte
 
 //go:generate ./convert-icon.sh calendar-solid.svg calendar-solid.png
