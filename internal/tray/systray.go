@@ -26,7 +26,7 @@ var ReloadConfig = make(chan struct{})
 var Error = make(chan error, 1)
 
 func onReady() {
-	systray.SetTemplateIcon(assets.IconMenuBar, assets.IconMenuBar)
+	systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
 	systray.SetTitle(viper.GetString("title"))
 	systray.SetTooltip(viper.GetString("title"))
 
