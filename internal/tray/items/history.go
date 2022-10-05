@@ -7,7 +7,7 @@ import (
 
 func NewHistory() (*systray.MenuItem, []*systray.MenuItem) {
 	item := systray.AddMenuItem("History", "")
-	item.SetTemplateIcon(assets.RectangleHistory, assets.RectangleHistory)
+	item.SetTemplateIcon(assets.History, assets.History)
 	vals := make([]*systray.MenuItem, 0, 4)
 	return item, vals
 }

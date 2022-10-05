@@ -7,6 +7,6 @@ import (
 
 func NewOpenNightscout() *systray.MenuItem {
 	item := systray.AddMenuItem("Open Nightscout", "")
-	item.SetTemplateIcon(assets.SquareUpRight, assets.SquareUpRight)
+	item.SetTemplateIcon(assets.Open, assets.Open)
 	return item
 }
