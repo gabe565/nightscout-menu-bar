@@ -33,6 +33,7 @@ func Fetch() {
 	properties, err := nightscout.Fetch()
 	if err != nil && !errors.Is(err, nightscout.ErrNotModified) {
 		tray.Error <- err
+		RenderCh <- nil
 		return
 	}
 	if properties != nil {
