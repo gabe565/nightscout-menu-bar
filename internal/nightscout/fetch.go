@@ -23,12 +23,14 @@ var ErrNotModified = errors.New("not modified")
 func Fetch() (*Properties, error) {
 	url := viper.GetString("url")
 	if url == "" {
+		lastEtag = ""
 		return nil, util.SoftError{Err: errors.New("please configure your Nightscout URL")}
 	}
 
 	// Fetch JSON
 	req, err := http.NewRequest("GET", url+"/api/v2/properties/bgnow,buckets,delta,direction", nil)
 	if err != nil {
+		lastEtag = ""
 		return nil, err
 	}
 	if lastEtag != "" {
@@ -37,6 +39,7 @@ func Fetch() (*Properties, error) {
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
+		lastEtag = ""
 		return nil, err
 	}
 
