@@ -91,3 +91,40 @@ func TestReading_String(t *testing.T) {
 		})
 	}
 }
+
+func TestReading_DisplayBg(t *testing.T) {
+	type fields struct {
+		Mean      int
+		Last      int
+		Mills     Mills
+		Index     int
+		FromMills Mills
+		ToMills   Mills
+		Sgvs      []SGV
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		{"95", fields{Last: 95}, "95"},
+		{"LOW", fields{Last: 39}, "LOW"},
+		{"HIGH", fields{Last: 401}, "HIGH"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r := &Reading{
+				Mean:      tt.fields.Mean,
+				Last:      tt.fields.Last,
+				Mills:     tt.fields.Mills,
+				Index:     tt.fields.Index,
+				FromMills: tt.fields.FromMills,
+				ToMills:   tt.fields.ToMills,
+				Sgvs:      tt.fields.Sgvs,
+			}
+			if got := r.DisplayBg(); got != tt.want {
+				t.Errorf("DisplayBg() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

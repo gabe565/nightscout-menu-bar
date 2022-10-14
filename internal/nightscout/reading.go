@@ -1,9 +1,16 @@
 package nightscout
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	"github.com/spf13/viper"
+	"strconv"
+)
+
+const (
+	LowReading  = 39
+	HighReading = 401
 )
 
 func init() {
@@ -27,7 +34,7 @@ type Reading struct {
 	Sgvs      []SGV `json:"sgvs"`
 }
 
-func (r Reading) Arrow() string {
+func (r *Reading) Arrow() string {
 	var direction string
 	if len(r.Sgvs) > 0 {
 		direction = r.Sgvs[0].Direction
@@ -53,11 +60,38 @@ func (r Reading) Arrow() string {
 	return direction
 }
 
-func (r Reading) String() string {
+func (r *Reading) String() string {
 	return fmt.Sprintf(
-		"%d %s [%s]",
-		r.Last,
+		"%s %s [%s]",
+		r.DisplayBg(),
 		r.Arrow(),
 		util.MinAgo(r.Mills.Time),
 	)
+}
+
+func (r *Reading) UnmarshalJSON(bytes []byte) error {
+	type rawReading Reading
+	if err := json.Unmarshal(bytes, (*rawReading)(r)); err != nil {
+		return err
+	}
+
+	// Last is unset if reading is out of range.
+	// Will be set from sgvs.
+	if r.Last == 0 && len(r.Sgvs) > 0 {
+		r.Last = r.Sgvs[0].Mgdl
+		r.Mills = r.Sgvs[0].Mills
+	}
+
+	return nil
+}
+
+func (r *Reading) DisplayBg() string {
+	switch r.Last {
+	case LowReading:
+		return "LOW"
+	case HighReading:
+		return "HIGH"
+	default:
+		return strconv.Itoa(r.Last)
+	}
 }

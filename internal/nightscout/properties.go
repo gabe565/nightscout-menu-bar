@@ -14,8 +14,8 @@ type Properties struct {
 
 func (p Properties) String() string {
 	return fmt.Sprintf(
-		"%d %s %s [%s]",
-		p.Bgnow.Last,
+		"%s %s %s [%s]",
+		p.Bgnow.DisplayBg(),
 		p.Bgnow.Arrow(),
 		p.Delta.Display,
 		util.MinAgo(p.Bgnow.Mills.Time),
