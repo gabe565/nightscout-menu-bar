@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/emersion/go-autostart v0.0.0-20210130080809-00ed301c8e9a
-	github.com/fsnotify/fsnotify v1.5.4
+	github.com/fsnotify/fsnotify v1.6.0
 	github.com/getlantern/systray v1.2.1
 	github.com/hhsnopek/etag v0.0.0-20171206181245-aea95f647346
 	github.com/ncruces/zenity v0.9.0
@@ -37,7 +37,7 @@ require (
 	github.com/subosito/gotenv v1.4.1 // indirect
 	github.com/tj/assert v0.0.3 // indirect
 	golang.org/x/image v0.0.0-20220722155232-062f8c9fd539 // indirect
-	golang.org/x/sys v0.0.0-20220808155132-1c4a2a72c664 // indirect
+	golang.org/x/sys v0.0.0-20220908164124-27713097b956 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
