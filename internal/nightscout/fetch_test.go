@@ -42,7 +42,7 @@ func TestFetch(t *testing.T) {
 	}{
 		{"no url", "", "", nil, "", true},
 		{"success", server.URL, "", properties, propertiesEtag, false},
-		{"same etag", server.URL, propertiesEtag, nil, propertiesEtag, false},
+		{"same etag", server.URL, propertiesEtag, nil, propertiesEtag, true},
 		{"different etag", server.URL, differentEtag, properties, propertiesEtag, false},
 	}
 	for _, tt := range tests {
