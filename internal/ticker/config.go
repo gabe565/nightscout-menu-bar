@@ -5,6 +5,7 @@ import (
 )
 
 func ReloadConfig() {
+	timer.Reset(0)
 	Fetch()
 
 	if ticker != nil {
