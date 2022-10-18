@@ -17,7 +17,7 @@ func (p Properties) String() string {
 		"%s %s %s [%s]",
 		p.Bgnow.DisplayBg(),
 		p.Bgnow.Arrow(),
-		p.Delta.Display,
+		p.Delta.Display(),
 		util.MinAgo(p.Bgnow.Mills.Time),
 	)
 }

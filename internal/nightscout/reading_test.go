@@ -1,6 +1,8 @@
 package nightscout
 
 import (
+	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"github.com/spf13/viper"
 	"testing"
 	"time"
 )
@@ -93,6 +95,10 @@ func TestReading_String(t *testing.T) {
 }
 
 func TestReading_DisplayBg(t *testing.T) {
+	defer func() {
+		viper.Set(config.UnitsKey, config.UnitsMgdl)
+	}()
+
 	type fields struct {
 		Mean      int
 		Last      int
@@ -102,16 +108,27 @@ func TestReading_DisplayBg(t *testing.T) {
 		ToMills   Mills
 		Sgvs      []SGV
 	}
+	type args struct {
+		units string
+	}
 	tests := []struct {
 		name   string
+		args   args
 		fields fields
 		want   string
 	}{
-		{"95", fields{Last: 95}, "95"},
-		{"LOW", fields{Last: 39}, "LOW"},
-		{"HIGH", fields{Last: 401}, "HIGH"},
+		{"95", args{config.UnitsMgdl}, fields{Last: 95}, "95"},
+		{"LOW", args{config.UnitsMgdl}, fields{Last: 39}, "LOW"},
+		{"HIGH", args{config.UnitsMgdl}, fields{Last: 401}, "HIGH"},
+		{"mmol", args{config.UnitsMmol}, fields{Last: 100}, "5.6"},
 	}
 	for _, tt := range tests {
+		switch tt.args.units {
+		case config.UnitsMgdl:
+			viper.Set(config.UnitsKey, config.UnitsMgdl)
+		case config.UnitsMmol:
+			viper.Set(config.UnitsKey, config.UnitsMmol)
+		}
 		t.Run(tt.name, func(t *testing.T) {
 			r := &Reading{
 				Mean:      tt.fields.Mean,

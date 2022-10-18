@@ -52,8 +52,15 @@ func onReady() {
 						Error <- err
 					}
 				}()
+			case <-prefs.Units.ClickedCh:
+				go func() {
+					if err := prefs.Units.Prompt(); err != nil {
+						Error <- err
+					}
+				}()
 			case <-ReloadConfig:
 				prefs.Url.UpdateTitle()
+				prefs.Units.UpdateTitle()
 			case <-prefs.StartOnLogin.ClickedCh:
 				if prefs.StartOnLogin.Checked() {
 					if err := autostart.Disable(); err != nil {
