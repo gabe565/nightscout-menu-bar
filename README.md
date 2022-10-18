@@ -1,5 +1,7 @@
 # Nightscout Menu Bar
 
+[![Build](https://github.com/gabe565/nightscout-menu-bar/actions/workflows/build.yml/badge.svg)](https://github.com/gabe565/nightscout-menu-bar/actions/workflows/build.yml)
+
 A small application that displays live blood sugar data from Nightscout on your menu bar.
 Should be supported by macOS, Linux, and Windows, but only macOS has been tested so far.
 
