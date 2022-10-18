@@ -5,7 +5,7 @@ APP_NAME='Nightscout Menu Bar'
 
 set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+SCRIPT_DIR="$(dirname "$0")"
 DIST="$SCRIPT_DIR/../dist"
 ASSETS="$SCRIPT_DIR/../assets"
 
