@@ -41,8 +41,8 @@ jobs:
           TZ: America/Chicago
         run: go test ./...
 
-  build:
-    name: Build
+  build-linux:
+    name: Build (Linux)
     runs-on: ubuntu-latest
     needs: [lint, test]
     steps:
@@ -58,3 +58,33 @@ jobs:
           sudo apt-get install gcc libgtk-3-dev libayatana-appindicator3-dev
       - name: Build
         run: go build -ldflags='-w -s'
+
+  build-windows:
+    name: Build (Windows)
+    runs-on: windows-latest
+    needs: [lint, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Build
+        run: go build -ldflags='-w -s'
+
+  build-macos:
+    name: Build (macOS)
+    runs-on: macos-12
+    needs: [lint, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Build
+        run: ./hack/build-app.sh
