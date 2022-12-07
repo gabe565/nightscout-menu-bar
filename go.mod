@@ -7,7 +7,7 @@ require (
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/getlantern/systray v1.2.1
 	github.com/hhsnopek/etag v0.0.0-20171206181245-aea95f647346
-	github.com/ncruces/zenity v0.9.3
+	github.com/ncruces/zenity v0.10.0
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.14.0
