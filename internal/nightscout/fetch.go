@@ -3,6 +3,7 @@ package nightscout
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -18,14 +19,12 @@ func init() {
 
 var lastEtag string
 
-var ErrNotModified = errors.New("not modified")
+var (
+	ErrHttp        = errors.New("unexpected HTTP error")
+	ErrNotModified = errors.New("not modified")
+)
 
 func Fetch() (*Properties, error) {
-	var etag string
-	defer func() {
-		lastEtag = etag
-	}()
-
 	url := viper.GetString("url")
 	if url == "" {
 		return nil, util.SoftError{Err: errors.New("please configure your Nightscout URL")}
@@ -45,17 +44,20 @@ func Fetch() (*Properties, error) {
 		return nil, err
 	}
 
-	if resp.StatusCode == http.StatusNotModified {
-		etag = lastEtag
+	switch resp.StatusCode {
+	case http.StatusNotModified:
 		return nil, ErrNotModified
-	}
+	case http.StatusOK:
+		// Decode JSON
+		var properties Properties
+		if err := json.NewDecoder(resp.Body).Decode(&properties); err != nil {
+			return nil, err
+		}
 
-	// Decode JSON
-	var properties Properties
-	if err := json.NewDecoder(resp.Body).Decode(&properties); err != nil {
-		return nil, err
+		lastEtag = resp.Header.Get("etag")
+		return &properties, nil
+	default:
+		lastEtag = ""
+		return nil, fmt.Errorf("%w: %d", ErrHttp, resp.StatusCode)
 	}
-
-	etag = resp.Header.Get("etag")
-	return &properties, nil
 }
