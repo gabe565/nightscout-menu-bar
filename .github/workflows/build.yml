@@ -16,6 +16,7 @@ jobs:
           cache: true
       - name: Install systray dependencies
         run: |
+          sudo apt-get update
           sudo apt-get install gcc libgtk-3-dev libayatana-appindicator3-dev
       - name: Lint
         uses: golangci/golangci-lint-action@v3
@@ -37,6 +38,7 @@ jobs:
           cache: true
       - name: Install systray dependencies
         run: |
+          sudo apt-get update
           sudo apt-get install gcc libgtk-3-dev libayatana-appindicator3-dev
       - name: Test
         env:
@@ -57,6 +59,7 @@ jobs:
           cache: true
       - name: Install systray dependencies
         run: |
+          sudo apt-get update
           sudo apt-get install gcc libgtk-3-dev libayatana-appindicator3-dev
       - name: Build
         run: go build -ldflags='-w -s'
