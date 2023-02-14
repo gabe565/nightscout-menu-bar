@@ -7,6 +7,7 @@ import (
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"io"
 	"net/http"
 )
 
@@ -43,6 +44,10 @@ func Fetch() (*Properties, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer func() {
+		_, _ = io.Copy(io.Discard, resp.Body)
+		_ = resp.Body.Close()
+	}()
 
 	switch resp.StatusCode {
 	case http.StatusNotModified:
