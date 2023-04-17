@@ -1,9 +1,10 @@
 package nightscout
 
 import (
+	"testing"
+
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/spf13/viper"
-	"testing"
 )
 
 func TestDelta_Display(t *testing.T) {

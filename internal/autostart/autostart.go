@@ -1,8 +1,9 @@
 package autostart
 
 import (
-	"github.com/emersion/go-autostart"
 	"os"
+
+	"github.com/emersion/go-autostart"
 )
 
 func NewApp() (autostart.App, error) {

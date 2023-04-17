@@ -2,6 +2,7 @@ package nightscout
 
 import (
 	"fmt"
+
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 )
 

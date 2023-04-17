@@ -3,11 +3,12 @@ package nightscout
 import (
 	"encoding/json"
 	"fmt"
+	"math"
+	"strconv"
+
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	"github.com/spf13/viper"
-	"math"
-	"strconv"
 )
 
 const (

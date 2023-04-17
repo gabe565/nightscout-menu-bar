@@ -2,6 +2,7 @@ package preferences
 
 import (
 	"errors"
+
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/ui"
 	"github.com/getlantern/systray"

@@ -2,10 +2,11 @@ package nightscout
 
 import (
 	"fmt"
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/spf13/viper"
 	"testing"
 	"time"
+
+	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"github.com/spf13/viper"
 )
 
 func TestReading_Arrow(t *testing.T) {

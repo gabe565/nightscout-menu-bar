@@ -2,6 +2,8 @@ package tray
 
 import (
 	"errors"
+	"log"
+
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
 	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
@@ -10,7 +12,6 @@ import (
 	"github.com/getlantern/systray"
 	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/viper"
-	"log"
 )
 
 func init() {
@@ -21,9 +22,11 @@ func Run() {
 	systray.Run(onReady, onExit)
 }
 
-var Update = make(chan *nightscout.Properties)
-var ReloadConfig = make(chan struct{})
-var Error = make(chan error, 1)
+var (
+	Update       = make(chan *nightscout.Properties)
+	ReloadConfig = make(chan struct{})
+	Error        = make(chan error, 1)
+)
 
 func onReady() {
 	systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)

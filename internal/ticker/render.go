@@ -1,14 +1,17 @@
 package ticker
 
 import (
+	"time"
+
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
-	"time"
 )
 
-var timer *time.Timer
-var RenderCh = make(chan *nightscout.Properties)
+var (
+	timer    *time.Timer
+	RenderCh = make(chan *nightscout.Properties)
+)
 
 func BeginRender() {
 	go func() {

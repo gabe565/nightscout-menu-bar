@@ -2,11 +2,12 @@ package ticker
 
 import (
 	"errors"
+	"time"
+
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	"time"
 )
 
 func init() {

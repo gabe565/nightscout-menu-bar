@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
+
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	"io"
-	"net/http"
 )
 
 func init() {

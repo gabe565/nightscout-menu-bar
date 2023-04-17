@@ -2,15 +2,16 @@ package main
 
 import (
 	"errors"
+	"log"
+	"os"
+	"path/filepath"
+	"strings"
+
 	"github.com/fsnotify/fsnotify"
 	"github.com/gabe565/nightscout-menu-bar/internal/ticker"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	"log"
-	"os"
-	"path/filepath"
-	"strings"
 )
 
 var cfgFile string

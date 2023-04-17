@@ -2,10 +2,11 @@ package nightscout
 
 import (
 	"fmt"
+	"math"
+
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	"github.com/spf13/viper"
-	"math"
 )
 
 type Times struct {
