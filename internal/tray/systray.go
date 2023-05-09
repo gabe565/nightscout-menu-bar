@@ -95,7 +95,7 @@ func onReady() {
 
 				lastReadingItem.SetTitle(properties.Bgnow.Mills.String())
 			case err := <-Error:
-				if errors.As(err, &util.SoftError{}) {
+				if errors.Is(err, &util.SoftError{}) {
 					systray.SetTitle(viper.GetString("title"))
 				} else {
 					systray.SetTitle("Error")
