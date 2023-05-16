@@ -17,13 +17,10 @@ func init() {
 	}
 }
 
-var fetchTimer *time.Timer
+var fetchTimer = time.NewTimer(0)
 
 func BeginFetch() {
 	go func() {
-		fetchTimer = time.NewTimer(0)
-		Fetch()
-
 		for range fetchTimer.C {
 			Fetch()
 			fetchTimer.Reset(viper.GetDuration("interval"))

@@ -9,13 +9,12 @@ import (
 )
 
 var (
-	renderTimer *time.Timer
+	renderTimer = time.NewTimer(5 * time.Minute)
 	RenderCh    = make(chan *nightscout.Properties)
 )
 
 func BeginRender() {
 	go func() {
-		renderTimer = time.NewTimer(5 * time.Minute)
 		var properties *nightscout.Properties
 		for {
 			select {
