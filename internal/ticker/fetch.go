@@ -17,15 +17,16 @@ func init() {
 	}
 }
 
-var ticker *time.Ticker
+var fetchTimer *time.Timer
 
 func BeginFetch() {
 	go func() {
-		ticker = time.NewTicker(viper.GetDuration("interval"))
+		fetchTimer = time.NewTimer(0)
 		Fetch()
 
-		for range ticker.C {
+		for range fetchTimer.C {
 			Fetch()
+			fetchTimer.Reset(viper.GetDuration("interval"))
 		}
 	}()
 }

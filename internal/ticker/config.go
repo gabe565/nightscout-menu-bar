@@ -5,10 +5,10 @@ import (
 )
 
 func ReloadConfig() {
-	timer.Reset(0)
+	renderTimer.Reset(0)
 	Fetch()
 
-	if ticker != nil {
-		ticker.Reset(viper.GetDuration("interval"))
+	if fetchTimer != nil {
+		fetchTimer.Reset(viper.GetDuration("interval"))
 	}
 }
