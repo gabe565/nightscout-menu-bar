@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/emersion/go-autostart v0.0.0-20210130080809-00ed301c8e9a
 	github.com/fsnotify/fsnotify v1.6.0
-	github.com/getlantern/systray v1.2.1
+	github.com/getlantern/systray v1.2.2
 	github.com/hhsnopek/etag v0.0.0-20171206181245-aea95f647346
 	github.com/ncruces/zenity v0.10.8
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
