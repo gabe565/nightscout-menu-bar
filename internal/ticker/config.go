@@ -5,7 +5,9 @@ import (
 )
 
 func ReloadConfig() {
-	renderTimer.Reset(0)
+	if renderTimer != nil {
+		renderTimer.Reset(0)
+	}
 	Fetch()
 
 	if fetchTimer != nil {
