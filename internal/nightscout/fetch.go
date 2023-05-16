@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	flag "github.com/spf13/pflag"
@@ -26,6 +27,10 @@ var (
 	ErrNotModified = errors.New("not modified")
 )
 
+var client = &http.Client{
+	Timeout: time.Minute,
+}
+
 func Fetch() (*Properties, error) {
 	url := viper.GetString("url")
 	if url == "" {
@@ -41,7 +46,7 @@ func Fetch() (*Properties, error) {
 		req.Header.Set("If-None-Match", lastEtag)
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
