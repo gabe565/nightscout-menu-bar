@@ -1,8 +1,8 @@
 package items
 
 import (
+	"fyne.io/systray"
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
-	"github.com/getlantern/systray"
 )
 
 func NewHistory() (*systray.MenuItem, []*systray.MenuItem) {

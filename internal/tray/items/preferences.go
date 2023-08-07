@@ -1,11 +1,11 @@
 package items
 
 import (
+	"fyne.io/systray"
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
 	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray/items/preferences"
-	"github.com/getlantern/systray"
 	"github.com/spf13/viper"
 )
 

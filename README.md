@@ -10,7 +10,7 @@ Should be supported by macOS, Linux, and Windows, but only macOS has been tested
 ## Build
 
 The systray menu is provided by
-[getlantern/systray](https://github.com/getlantern/systray). See
+[fyne.io/systray](https://github.com/fyne-io/systray). See
 [systray's platform notes](https://github.com/getlantern/systray#platform-notes)
 for required dependencies.
 

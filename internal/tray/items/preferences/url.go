@@ -3,8 +3,8 @@ package preferences
 import (
 	"errors"
 
+	"fyne.io/systray"
 	"github.com/gabe565/nightscout-menu-bar/internal/ui"
-	"github.com/getlantern/systray"
 	"github.com/ncruces/zenity"
 	"github.com/spf13/viper"
 )

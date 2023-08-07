@@ -4,12 +4,12 @@ import (
 	"errors"
 	"log"
 
+	"fyne.io/systray"
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
 	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray/items"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
-	"github.com/getlantern/systray"
 	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/viper"
 )
