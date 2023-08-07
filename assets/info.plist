@@ -22,5 +22,7 @@
 		<string>Nightscout.icns</string>
 		<key>LSUIElement</key>
 		<true/>
+		<key>LSRequiresNativeExecution</key>
+		<true/>
 	</dict>
 </plist>
