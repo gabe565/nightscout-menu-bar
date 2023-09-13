@@ -33,10 +33,11 @@ func onReady() {
 	systray.SetTitle(viper.GetString("title"))
 	systray.SetTooltip(viper.GetString("title"))
 
+	lastReadingItem := items.NewLastReading()
 	errorItem := items.NewError()
+	systray.AddSeparator()
 	openNightscoutItem := items.NewOpenNightscout()
 	historyItem, historyVals := items.NewHistory()
-	lastReadingItem := items.NewLastReading()
 	systray.AddSeparator()
 	prefs := items.NewPreferences()
 	quitItem := items.NewQuit()
@@ -81,7 +82,9 @@ func onReady() {
 			case properties := <-Update:
 				errorItem.Hide()
 
-				systray.SetTitle(properties.String())
+				value := properties.String()
+				systray.SetTitle(value)
+				lastReadingItem.SetTitle(value)
 
 				for i, reading := range properties.Buckets {
 					if i < len(historyVals) {
@@ -92,8 +95,6 @@ func onReady() {
 						historyVals = append(historyVals, entry)
 					}
 				}
-
-				lastReadingItem.SetTitle(properties.Bgnow.Mills.String())
 			case err := <-Error:
 				if errors.Is(err, &util.SoftError{}) {
 					systray.SetTitle(viper.GetString("title"))

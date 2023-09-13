@@ -7,8 +7,6 @@ import (
 
 func NewLastReading() *systray.MenuItem {
 	item := systray.AddMenuItem("Last Reading", "")
-	item.SetTemplateIcon(assets.Calendar, assets.Calendar)
-	val := item.AddSubMenuItem("", "")
-	val.Disable()
-	return val
+	item.SetTemplateIcon(assets.Droplet, assets.Droplet)
+	return item
 }
