@@ -15,7 +15,7 @@ mkdir -p "$DIST"
 export GOOS=darwin CGO_ENABLED=1
 for ARCH in amd64 arm64; do
   echo Build "$BINARY_NAME-$ARCH"
-  GOARCH="$ARCH" go build -ldflags='-w -s' -o "$DIST/$BINARY_NAME-$ARCH" "$(git rev-parse --show-toplevel)"
+  GOARCH="$ARCH" go build -ldflags='-w -s' -trimpath -o "$DIST/$BINARY_NAME-$ARCH" "$(git rev-parse --show-toplevel)"
 done
 lipo -create -output "$DIST/$BINARY_NAME" "$DIST/$BINARY_NAME-amd64" "$DIST/$BINARY_NAME-arm64"
 echo ...done
