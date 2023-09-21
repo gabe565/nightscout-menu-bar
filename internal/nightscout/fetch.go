@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
@@ -34,7 +33,7 @@ var client = &http.Client{
 func Fetch() (*Properties, error) {
 	url := viper.GetString("url")
 	if url == "" {
-		return nil, util.SoftError{Err: errors.New("please configure your Nightscout URL")}
+		return nil, errors.New("please configure your Nightscout URL")
 	}
 
 	// Fetch JSON

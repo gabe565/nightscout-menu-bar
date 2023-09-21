@@ -1,7 +1,6 @@
 package tray
 
 import (
-	"errors"
 	"log"
 
 	"fyne.io/systray"
@@ -9,7 +8,6 @@ import (
 	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray/items"
-	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/viper"
 )
@@ -96,11 +94,6 @@ func onReady() {
 					}
 				}
 			case err := <-Error:
-				if errors.Is(err, &util.SoftError{}) {
-					systray.SetTitle(viper.GetString("title"))
-				} else {
-					systray.SetTitle("Error")
-				}
 				errorItem.SetTitle(err.Error())
 				errorItem.Show()
 			}
