@@ -10,13 +10,22 @@ import (
 	"github.com/spf13/viper"
 )
 
+func NewUnits(parent *systray.MenuItem) Units {
+	var item Units
+	item.MenuItem = parent.AddSubMenuItem(item.GetTitle(), "")
+	return item
+}
+
 type Units struct {
 	*systray.MenuItem
 }
 
+func (n Units) GetTitle() string {
+	return "Units: " + viper.GetString(config.UnitsKey)
+}
+
 func (n Units) UpdateTitle() {
-	title := "Units: " + viper.GetString(config.UnitsKey)
-	n.SetTitle(title)
+	n.SetTitle(n.GetTitle())
 }
 
 func (n Units) Prompt() error {
