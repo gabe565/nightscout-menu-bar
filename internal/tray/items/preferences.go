@@ -11,6 +11,10 @@ func NewPreferences() Preferences {
 	item := systray.AddMenuItem("Preferences", "")
 	item.SetTemplateIcon(assets.Gear, assets.Gear)
 
+	url := preferences.NewUrl(item)
+	token := preferences.NewToken(item)
+	units := preferences.NewUnits(item)
+
 	autostartEnabled, _ := autostart.IsEnabled()
 	startOnLogin := item.AddSubMenuItemCheckbox(
 		"Start on login",
@@ -20,9 +24,9 @@ func NewPreferences() Preferences {
 
 	return Preferences{
 		Item:         item,
-		Url:          preferences.NewUrl(item),
-		Token:        preferences.NewToken(item),
-		Units:        preferences.NewUnits(item),
+		Url:          url,
+		Token:        token,
+		Units:        units,
 		StartOnLogin: startOnLogin,
 	}
 }
