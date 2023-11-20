@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"path"
 	"time"
 
 	flag "github.com/spf13/pflag"
@@ -30,14 +32,17 @@ var client = &http.Client{
 	Timeout: time.Minute,
 }
 
+var u *url.URL
+
 func Fetch() (*Properties, error) {
-	url := viper.GetString("url")
-	if url == "" {
-		return nil, errors.New("please configure your Nightscout URL")
+	if u == nil {
+		if err := UpdateUrl(); err != nil {
+			return nil, err
+		}
 	}
 
 	// Fetch JSON
-	req, err := http.NewRequest("GET", url+"/api/v2/properties/bgnow,buckets,delta,direction", nil)
+	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -70,4 +75,25 @@ func Fetch() (*Properties, error) {
 		lastEtag = ""
 		return nil, fmt.Errorf("%w: %d", ErrHttp, resp.StatusCode)
 	}
+}
+
+func UpdateUrl() error {
+	conf := viper.GetString("url")
+	if conf == "" {
+		return errors.New("please configure your Nightscout URL")
+	}
+
+	newUrl, err := url.Parse(conf)
+	if err != nil {
+		return err
+	}
+
+	newUrl.Path = path.Join(newUrl.Path, "api", "v2", "properties", "bgnow,buckets,delta,direction")
+
+	u = newUrl
+	return nil
+}
+
+func ClearUrl() {
+	u = nil
 }
