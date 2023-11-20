@@ -77,18 +77,16 @@ func Fetch() (*Properties, error) {
 	}
 }
 
-func UpdateUrl() error {
+func BuildUrl() (*url.URL, error) {
 	conf := viper.GetString("url")
 	if conf == "" {
-		return errors.New("please configure your Nightscout URL")
+		return nil, errors.New("please configure your Nightscout URL")
 	}
 
 	newUrl, err := url.Parse(conf)
 	if err != nil {
-		return err
+		return nil, err
 	}
-
-	newUrl.Path = path.Join(newUrl.Path, "api", "v2", "properties", "bgnow,buckets,delta,direction")
 
 	if token := viper.GetString("token"); token != "" {
 		query := newUrl.Query()
@@ -96,6 +94,16 @@ func UpdateUrl() error {
 		newUrl.RawQuery = query.Encode()
 	}
 
+	return newUrl, err
+}
+
+func UpdateUrl() error {
+	newUrl, err := BuildUrl()
+	if err != nil {
+		return err
+	}
+
+	newUrl.Path = path.Join(newUrl.Path, "api", "v2", "properties", "bgnow,buckets,delta,direction")
 	u = newUrl
 	return nil
 }

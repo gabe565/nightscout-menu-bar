@@ -44,10 +44,16 @@ func onReady() {
 		for {
 			select {
 			case <-openNightscoutItem.ClickedCh:
-				url := viper.GetString("url")
-				if err := open.Run(url); err != nil {
-					Error <- err
-				}
+				go func() {
+					u, err := nightscout.BuildUrl()
+					if err != nil {
+						Error <- err
+						return
+					}
+					if err := open.Run(u.String()); err != nil {
+						Error <- err
+					}
+				}()
 			case <-prefs.Url.ClickedCh:
 				go func() {
 					if err := prefs.Url.Prompt(); err != nil {
