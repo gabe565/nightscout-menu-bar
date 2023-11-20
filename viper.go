@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/ticker"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 	flag "github.com/spf13/pflag"
@@ -60,7 +59,6 @@ func InitViper() error {
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		log.Println("Config file changed:", e.Name)
 		ticker.ReloadConfig()
-		nightscout.ClearUrl()
 		tray.ReloadConfig <- struct{}{}
 	})
 
