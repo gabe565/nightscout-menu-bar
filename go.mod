@@ -5,7 +5,7 @@ go 1.21
 require (
 	fyne.io/systray v1.10.0
 	github.com/emersion/go-autostart v0.0.0-20210130080809-00ed301c8e9a
-	github.com/fsnotify/fsnotify v1.6.0
+	github.com/fsnotify/fsnotify v1.7.0
 	github.com/hhsnopek/etag v0.0.0-20171206181245-aea95f647346
 	github.com/ncruces/zenity v0.10.10
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
