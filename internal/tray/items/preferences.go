@@ -21,6 +21,7 @@ func NewPreferences() Preferences {
 	return Preferences{
 		Item:         item,
 		Url:          preferences.NewUrl(item),
+		Token:        preferences.NewToken(item),
 		Units:        preferences.NewUnits(item),
 		StartOnLogin: startOnLogin,
 	}
@@ -29,6 +30,7 @@ func NewPreferences() Preferences {
 type Preferences struct {
 	Item         *systray.MenuItem
 	Url          preferences.Url
+	Token        preferences.Token
 	Units        preferences.Units
 	StartOnLogin *systray.MenuItem
 }

@@ -54,6 +54,12 @@ func onReady() {
 						Error <- err
 					}
 				}()
+			case <-prefs.Token.ClickedCh:
+				go func() {
+					if err := prefs.Token.Prompt(); err != nil {
+						Error <- err
+					}
+				}()
 			case <-prefs.Units.ClickedCh:
 				go func() {
 					if err := prefs.Units.Prompt(); err != nil {
@@ -62,6 +68,7 @@ func onReady() {
 				}()
 			case <-ReloadConfig:
 				prefs.Url.UpdateTitle()
+				prefs.Token.UpdateTitle()
 				prefs.Units.UpdateTitle()
 			case <-prefs.StartOnLogin.ClickedCh:
 				if prefs.StartOnLogin.Checked() {

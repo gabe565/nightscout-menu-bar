@@ -90,6 +90,12 @@ func UpdateUrl() error {
 
 	newUrl.Path = path.Join(newUrl.Path, "api", "v2", "properties", "bgnow,buckets,delta,direction")
 
+	if token := viper.GetString("token"); token != "" {
+		query := newUrl.Query()
+		query.Set("token", token)
+		newUrl.RawQuery = query.Encode()
+	}
+
 	u = newUrl
 	return nil
 }
