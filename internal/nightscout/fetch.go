@@ -32,7 +32,10 @@ var client = &http.Client{
 	Timeout: time.Minute,
 }
 
-var u *url.URL
+var (
+	u     *url.URL
+	token string
+)
 
 func Fetch() (*Properties, error) {
 	if u == nil {
@@ -48,6 +51,10 @@ func Fetch() (*Properties, error) {
 	}
 	if lastEtag != "" {
 		req.Header.Set("If-None-Match", lastEtag)
+	}
+
+	if token != "" {
+		req.Header.Set("Api-Secret", token)
 	}
 
 	resp, err := client.Do(req)
@@ -88,12 +95,6 @@ func BuildUrl() (*url.URL, error) {
 		return nil, err
 	}
 
-	if token := viper.GetString("token"); token != "" {
-		query := newUrl.Query()
-		query.Set("token", token)
-		newUrl.RawQuery = query.Encode()
-	}
-
 	return newUrl, err
 }
 
@@ -105,6 +106,9 @@ func UpdateUrl() error {
 
 	newUrl.Path = path.Join(newUrl.Path, "api", "v2", "properties", "bgnow,buckets,delta,direction")
 	u = newUrl
+
+	token = viper.GetString("token")
+
 	return nil
 }
 
