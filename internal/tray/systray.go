@@ -45,7 +45,7 @@ func onReady() {
 			select {
 			case <-openNightscoutItem.ClickedCh:
 				go func() {
-					u, err := nightscout.BuildUrl()
+					u, err := nightscout.BuildUrlWithToken()
 					if err != nil {
 						Error <- err
 						return

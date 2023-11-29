@@ -98,6 +98,21 @@ func BuildUrl() (*url.URL, error) {
 	return newUrl, err
 }
 
+func BuildUrlWithToken() (*url.URL, error) {
+	u, err := BuildUrl()
+	if err != nil {
+		return u, err
+	}
+
+	if token != "" {
+		query := u.Query()
+		query.Set("token", token)
+		u.RawQuery = query.Encode()
+	}
+
+	return u, nil
+}
+
 func UpdateUrl() error {
 	newUrl, err := BuildUrl()
 	if err != nil {
