@@ -1,6 +1,7 @@
 package nightscout
 
 import (
+	"crypto/sha1"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -33,8 +34,9 @@ var client = &http.Client{
 }
 
 var (
-	u     *url.URL
-	token string
+	u             *url.URL
+	token         string
+	tokenChecksum string
 )
 
 func Fetch() (*Properties, error) {
@@ -53,8 +55,8 @@ func Fetch() (*Properties, error) {
 		req.Header.Set("If-None-Match", lastEtag)
 	}
 
-	if token != "" {
-		req.Header.Set("Api-Secret", token)
+	if tokenChecksum != "" {
+		req.Header.Set("Api-Secret", tokenChecksum)
 	}
 
 	resp, err := client.Do(req)
@@ -123,6 +125,7 @@ func UpdateUrl() error {
 	u = newUrl
 
 	token = viper.GetString("token")
+	tokenChecksum = fmt.Sprintf("%x", sha1.Sum([]byte(token)))
 
 	return nil
 }
