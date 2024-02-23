@@ -48,7 +48,7 @@ func InitViper() error {
 		}
 
 		if err := viper.SafeWriteConfig(); err != nil {
-			if !errors.Is(err, err.(viper.ConfigFileAlreadyExistsError)) {
+			if err, ok := err.(viper.ConfigFileAlreadyExistsError); !ok {
 				return err
 			}
 		} else {
