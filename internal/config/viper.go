@@ -27,11 +27,16 @@ func InitViper() error {
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
 	} else {
-		home, err := os.UserHomeDir()
-		if err != nil {
-			return err
+		var configDir string
+		if xdgConfigHome := os.Getenv("XDG_CONFIG_HOME"); xdgConfigHome != "" {
+			configDir = filepath.Join(xdgConfigHome, "nightscout-menu-bar")
+		} else {
+			home, err := os.UserHomeDir()
+			if err != nil {
+				return err
+			}
+			configDir = filepath.Join(home, ".config", "nightscout-menu-bar")
 		}
-		configDir := filepath.Join(home, ".config", "nightscout-menu-bar")
 
 		viper.SetConfigName("config")
 		viper.SetConfigType("yaml")
