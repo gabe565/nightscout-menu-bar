@@ -1,6 +1,8 @@
 package local_file
 
 import (
+	"errors"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -26,15 +28,22 @@ var (
 	Enabled bool
 	path    string
 	format  string
+	cleanup bool
 )
 
 func ReloadConfig() {
 	Enabled = viper.GetBool("local-file.enabled")
 	format = viper.GetString("local-file.format")
+	cleanup = viper.GetBool("local-file.cleanup")
 	var newPath string
 	if Enabled {
 		newPath = viper.GetString("local-file.path")
 		newPath = strings.ReplaceAll(newPath, "$TMPDIR/", os.TempDir())
+	}
+	if newPath != path {
+		if err := Cleanup(); err != nil {
+			log.Println(err)
+		}
 	}
 	path = newPath
 }
@@ -50,4 +59,13 @@ func Write(last *nightscout.Properties) error {
 	segment := Format(format, last)
 	err := os.WriteFile(path, []byte(segment), 0o600)
 	return err
+}
+
+func Cleanup() error {
+	if cleanup && path != "" {
+		if err := os.Remove(path); err != nil && !errors.Is(err, os.ErrNotExist) {
+			return err
+		}
+	}
+	return nil
 }

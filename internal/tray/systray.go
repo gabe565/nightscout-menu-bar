@@ -6,6 +6,7 @@ import (
 	"fyne.io/systray"
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
 	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
+	"github.com/gabe565/nightscout-menu-bar/internal/local_file"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray/items"
 	"github.com/skratchdot/open-golang/open"
@@ -114,4 +115,7 @@ func onReady() {
 
 func onExit() {
 	log.Println("exiting")
+	if err := local_file.Cleanup(); err != nil {
+		log.Println(err)
+	}
 }
