@@ -2,8 +2,10 @@ package ticker
 
 import (
 	"errors"
+	"log"
 	"time"
 
+	"github.com/gabe565/nightscout-menu-bar/internal/local_file"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 	flag "github.com/spf13/pflag"
@@ -36,5 +38,10 @@ func Fetch() {
 	}
 	if properties != nil {
 		RenderCh <- properties
+		if local_file.Enabled {
+			if err := local_file.Write(properties); err != nil {
+				log.Println(err)
+			}
+		}
 	}
 }
