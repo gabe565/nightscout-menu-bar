@@ -1,6 +1,8 @@
 package local_file
 
 import (
+	"path/filepath"
+
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
@@ -27,7 +29,8 @@ func init() {
 		panic(err)
 	}
 
-	flag.String(PathFlag, "$TMPDIR/nightscout.csv", "Write blood sugar to a local file")
+	defaultPath := filepath.Join("$TMPDIR", "nightscout.csv")
+	flag.String(PathFlag, defaultPath, "Write blood sugar to a local file")
 	if err := viper.BindPFlag(PathKey, flag.Lookup(PathFlag)); err != nil {
 		panic(err)
 	}

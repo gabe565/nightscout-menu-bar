@@ -38,7 +38,7 @@ func ReloadConfig() {
 	var newPath string
 	if Enabled {
 		newPath = viper.GetString(PathKey)
-		newPath = strings.ReplaceAll(newPath, "$TMPDIR/", os.TempDir())
+		newPath = strings.ReplaceAll(newPath, "$TMPDIR"+string(os.PathSeparator), os.TempDir())
 	}
 	if newPath != path {
 		if err := Cleanup(); err != nil {
