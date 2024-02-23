@@ -1,19 +1,44 @@
 package local_file
 
-import "github.com/spf13/viper"
+import (
+	flag "github.com/spf13/pflag"
+	"github.com/spf13/viper"
+)
 
 const (
-	EnabledKey = "local-file.enabled"
-	PathKey    = "local-file.path"
+	EnabledFlag = "local-file"
+	EnabledKey  = "local-file.enabled"
+
+	PathFlag = "local-file-path"
+	PathKey  = "local-file.path"
+
+	FormatFlag = "local-file-format"
 	FormatKey  = "local-file.format"
-	CleanupKey = "local-file.cleanup"
+
+	CleanupFlag = "local-file-cleanup"
+	CleanupKey  = "local-file.cleanup"
 )
 
 const FormatCsv = "csv"
 
 func init() {
-	viper.SetDefault(EnabledKey, false)
-	viper.SetDefault(PathKey, "$TMPDIR/nightscout.csv")
-	viper.SetDefault(FormatKey, FormatCsv)
-	viper.SetDefault(CleanupKey, true)
+	flag.Bool(EnabledFlag, false, "Write blood sugar to a local file")
+	if err := viper.BindPFlag(EnabledKey, flag.Lookup(EnabledFlag)); err != nil {
+		panic(err)
+	}
+
+	flag.String(PathFlag, "$TMPDIR/nightscout.csv", "Write blood sugar to a local file")
+	if err := viper.BindPFlag(PathKey, flag.Lookup(PathFlag)); err != nil {
+		panic(err)
+	}
+
+	flag.String(FormatFlag, FormatCsv, "Local file format (one of: csv)")
+	if err := viper.BindPFlag(FormatKey, flag.Lookup(FormatFlag)); err != nil {
+		panic(err)
+	}
+
+	flag.Bool(CleanupFlag, true, "Clean up local file on exit")
+	if err := viper.BindPFlag(CleanupKey, flag.Lookup(CleanupFlag)); err != nil {
+		panic(err)
+	}
 }

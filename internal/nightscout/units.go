@@ -1,6 +1,9 @@
 package nightscout
 
-import "github.com/spf13/viper"
+import (
+	flag "github.com/spf13/pflag"
+	"github.com/spf13/viper"
+)
 
 const (
 	UnitsKey  = "units"
@@ -9,5 +12,8 @@ const (
 )
 
 func init() {
-	viper.SetDefault(UnitsKey, UnitsMgdl)
+	flag.String("units", UnitsMgdl, "Units to use (one of: mg/dL, mmol/L)")
+	if err := viper.BindPFlag(UnitsKey, flag.Lookup(UnitsKey)); err != nil {
+		panic(err)
+	}
 }

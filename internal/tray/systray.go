@@ -10,13 +10,17 @@ import (
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray/items"
 	"github.com/skratchdot/open-golang/open"
+	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
 const TitleKey = "title"
 
 func init() {
-	viper.SetDefault(TitleKey, "Nightscout")
+	flag.String(TitleKey, "Nightscout", "Title and hover text")
+	if err := viper.BindPFlag(TitleKey, flag.Lookup(TitleKey)); err != nil {
+		panic(err)
+	}
 }
 
 func Run() {

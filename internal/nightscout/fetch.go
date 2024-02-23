@@ -25,6 +25,11 @@ func init() {
 	if err := viper.BindPFlag(UrlKey, flag.Lookup(UrlKey)); err != nil {
 		panic(err)
 	}
+
+	flag.StringP(TokenKey, "t", "", "Nightscout token")
+	if err := viper.BindPFlag(TokenKey, flag.Lookup(TokenKey)); err != nil {
+		panic(err)
+	}
 }
 
 var lastEtag string
