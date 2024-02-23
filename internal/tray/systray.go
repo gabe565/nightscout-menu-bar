@@ -13,8 +13,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+const TitleKey = "title"
+
 func init() {
-	viper.SetDefault("title", "Nightscout")
+	viper.SetDefault(TitleKey, "Nightscout")
 }
 
 func Run() {
@@ -29,8 +31,8 @@ var (
 
 func onReady() {
 	systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
-	systray.SetTitle(viper.GetString("title"))
-	systray.SetTooltip(viper.GetString("title"))
+	systray.SetTitle(viper.GetString(TitleKey))
+	systray.SetTooltip(viper.GetString(TitleKey))
 
 	lastReadingItem := items.NewLastReading()
 	errorItem := items.NewError()

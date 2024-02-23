@@ -12,9 +12,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+const IntervalKey = "interval"
+
 func init() {
-	flag.DurationP("interval", "i", 30*time.Second, "Refresh interval")
-	if err := viper.BindPFlag("interval", flag.Lookup("interval")); err != nil {
+	flag.DurationP(IntervalKey, "i", 30*time.Second, "Refresh interval")
+	if err := viper.BindPFlag(IntervalKey, flag.Lookup(IntervalKey)); err != nil {
 		panic(err)
 	}
 }
@@ -25,7 +27,7 @@ func BeginFetch() {
 	go func() {
 		for range fetchTimer.C {
 			Fetch()
-			fetchTimer.Reset(viper.GetDuration("interval"))
+			fetchTimer.Reset(viper.GetDuration(IntervalKey))
 		}
 	}()
 }

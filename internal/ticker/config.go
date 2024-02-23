@@ -13,6 +13,6 @@ func ReloadConfig() {
 	Fetch()
 
 	if fetchTimer != nil {
-		fetchTimer.Reset(viper.GetDuration("interval"))
+		fetchTimer.Reset(viper.GetDuration(IntervalKey))
 	}
 }

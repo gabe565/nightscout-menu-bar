@@ -32,12 +32,12 @@ var (
 )
 
 func ReloadConfig() {
-	Enabled = viper.GetBool("local-file.enabled")
-	format = viper.GetString("local-file.format")
-	cleanup = viper.GetBool("local-file.cleanup")
+	Enabled = viper.GetBool(EnabledKey)
+	format = viper.GetString(FormatKey)
+	cleanup = viper.GetBool(CleanupKey)
 	var newPath string
 	if Enabled {
-		newPath = viper.GetString("local-file.path")
+		newPath = viper.GetString(PathKey)
 		newPath = strings.ReplaceAll(newPath, "$TMPDIR/", os.TempDir())
 	}
 	if newPath != path {

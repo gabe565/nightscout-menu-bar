@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"fyne.io/systray"
+	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/ui"
 	"github.com/ncruces/zenity"
 	"github.com/spf13/viper"
@@ -21,7 +22,7 @@ type Url struct {
 
 func (n Url) GetTitle() string {
 	title := "Nightscout URL"
-	if url := viper.GetString("url"); url != "" {
+	if url := viper.GetString(nightscout.UrlKey); url != "" {
 		title += ": " + url
 	}
 	return title

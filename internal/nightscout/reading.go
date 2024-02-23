@@ -11,19 +11,30 @@ import (
 )
 
 const (
+	DoubleUpKey      = "arrows.double-up"
+	SingleUpKey      = "arrows.single-up"
+	FortyFiveUpKey   = "arrows.forty-five-up"
+	FlatKey          = "arrows.flat"
+	FortyFiveDownKey = "arrows.forty-five-down"
+	SingleDownKey    = "arrows.single-down"
+	DoubleDownKey    = "arrows.double-down"
+	UnknownKey       = "arrows.unknown"
+)
+
+const (
 	LowReading  = 39
 	HighReading = 401
 )
 
 func init() {
-	viper.SetDefault("arrows.double-up", "⇈")
-	viper.SetDefault("arrows.single-up", "↑")
-	viper.SetDefault("arrows.forty-five-up", "↗")
-	viper.SetDefault("arrows.flat", "→")
-	viper.SetDefault("arrows.forty-five-down", "↘")
-	viper.SetDefault("arrows.single-down", "↓")
-	viper.SetDefault("arrows.double-down", "⇊")
-	viper.SetDefault("arrows.unknown", "-")
+	viper.SetDefault(DoubleUpKey, "⇈")
+	viper.SetDefault(SingleUpKey, "↑")
+	viper.SetDefault(FortyFiveUpKey, "↗")
+	viper.SetDefault(FlatKey, "→")
+	viper.SetDefault(FortyFiveDownKey, "↘")
+	viper.SetDefault(SingleDownKey, "↓")
+	viper.SetDefault(DoubleDownKey, "⇊")
+	viper.SetDefault(UnknownKey, "-")
 }
 
 type Reading struct {
@@ -43,21 +54,21 @@ func (r *Reading) Arrow() string {
 	}
 	switch direction {
 	case "DoubleUp", "TripleUp":
-		direction = viper.GetString("arrows.double-up")
+		direction = viper.GetString(DoubleUpKey)
 	case "SingleUp":
-		direction = viper.GetString("arrows.single-up")
+		direction = viper.GetString(SingleUpKey)
 	case "FortyFiveUp":
-		direction = viper.GetString("arrows.forty-five-up")
+		direction = viper.GetString(FortyFiveUpKey)
 	case "Flat":
-		direction = viper.GetString("arrows.flat")
+		direction = viper.GetString(FlatKey)
 	case "FortyFiveDown":
-		direction = viper.GetString("arrows.forty-five-down")
+		direction = viper.GetString(FortyFiveDownKey)
 	case "SingleDown":
-		direction = viper.GetString("arrows.single-down")
+		direction = viper.GetString(SingleDownKey)
 	case "DoubleDown", "TripleDown":
-		direction = viper.GetString("arrows.double-down")
+		direction = viper.GetString(DoubleDownKey)
 	default:
-		direction = viper.GetString("arrows.unknown")
+		direction = viper.GetString(UnknownKey)
 	}
 	return direction
 }

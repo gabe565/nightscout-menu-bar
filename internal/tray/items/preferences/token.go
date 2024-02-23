@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"fyne.io/systray"
+	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/ui"
 	"github.com/ncruces/zenity"
 	"github.com/spf13/viper"
@@ -21,7 +22,7 @@ type Token struct {
 
 func (n Token) GetTitle() string {
 	title := "API Token"
-	if url := viper.GetString("token"); url != "" {
+	if url := viper.GetString(nightscout.TokenKey); url != "" {
 		title += ": " + url
 	}
 	return title
@@ -40,7 +41,7 @@ func (n Token) Prompt() error {
 		return err
 	}
 
-	viper.Set("token", url)
+	viper.Set(nightscout.TokenKey, url)
 	if err := viper.WriteConfig(); err != nil {
 		return err
 	}
