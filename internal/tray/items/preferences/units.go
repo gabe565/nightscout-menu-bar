@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"fyne.io/systray"
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/ui"
 	"github.com/ncruces/zenity"
 	"github.com/spf13/viper"
@@ -21,7 +21,7 @@ type Units struct {
 }
 
 func (n Units) GetTitle() string {
-	return "Units: " + viper.GetString(config.UnitsKey)
+	return "Units: " + viper.GetString(nightscout.UnitsKey)
 }
 
 func (n Units) UpdateTitle() {
@@ -37,7 +37,7 @@ func (n Units) Prompt() error {
 		return err
 	}
 
-	viper.Set(config.UnitsKey, unit)
+	viper.Set(nightscout.UnitsKey, unit)
 	if err := viper.WriteConfig(); err != nil {
 		return err
 	}

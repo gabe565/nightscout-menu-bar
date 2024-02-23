@@ -3,13 +3,12 @@ package nightscout
 import (
 	"testing"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/spf13/viper"
 )
 
 func TestDelta_Display(t *testing.T) {
 	defer func() {
-		viper.Set(config.UnitsKey, config.UnitsMgdl)
+		viper.Set(UnitsKey, UnitsMgdl)
 	}()
 
 	type fields struct {
@@ -34,13 +33,13 @@ func TestDelta_Display(t *testing.T) {
 	}{
 		{
 			"mgdl",
-			args{config.UnitsMgdl},
+			args{UnitsMgdl},
 			fields{DisplayVal: "+1"},
 			"+1",
 		},
 		{
 			"mmol",
-			args{config.UnitsMmol},
+			args{UnitsMmol},
 			fields{Scaled: 9},
 			"+0.5",
 		},
@@ -48,10 +47,10 @@ func TestDelta_Display(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			switch tt.args.units {
-			case config.UnitsMgdl:
-				viper.Set(config.UnitsKey, config.UnitsMgdl)
-			case config.UnitsMmol:
-				viper.Set(config.UnitsKey, config.UnitsMmol)
+			case UnitsMgdl:
+				viper.Set(UnitsKey, UnitsMgdl)
+			case UnitsMmol:
+				viper.Set(UnitsKey, UnitsMmol)
 			}
 			d := Delta{
 				Absolute:     tt.fields.Absolute,

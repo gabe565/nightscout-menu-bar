@@ -1,4 +1,4 @@
-package config
+package nightscout
 
 import "github.com/spf13/viper"
 

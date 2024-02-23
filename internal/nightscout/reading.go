@@ -6,7 +6,6 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	"github.com/spf13/viper"
 )
@@ -96,7 +95,7 @@ func (r *Reading) DisplayBg() string {
 		return "HIGH"
 	}
 
-	if u := viper.GetString(config.UnitsKey); u == config.UnitsMmol {
+	if u := viper.GetString(UnitsKey); u == UnitsMmol {
 		mmol := util.ToMmol(r.Last)
 		mmol = math.Round(mmol*10) / 10
 		return strconv.FormatFloat(mmol, 'f', 1, 64)
