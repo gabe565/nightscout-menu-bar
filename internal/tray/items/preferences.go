@@ -22,12 +22,15 @@ func NewPreferences() Preferences {
 		autostartEnabled,
 	)
 
+	localFile := preferences.NewLocalFile(item)
+
 	return Preferences{
 		Item:         item,
 		Url:          url,
 		Token:        token,
 		Units:        units,
 		StartOnLogin: startOnLogin,
+		LocalFile:    localFile,
 	}
 }
 
@@ -37,4 +40,5 @@ type Preferences struct {
 	Token        preferences.Token
 	Units        preferences.Units
 	StartOnLogin *systray.MenuItem
+	LocalFile    preferences.LocalFile
 }

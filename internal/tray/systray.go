@@ -94,6 +94,10 @@ func onReady() {
 				}
 				prefs.StartOnLogin.Check()
 			}
+		case <-prefs.LocalFile.ClickedCh:
+			if err := prefs.LocalFile.Toggle(); err != nil {
+				Error <- err
+			}
 		case <-quitItem.ClickedCh:
 			systray.Quit()
 		case properties := <-Update:
