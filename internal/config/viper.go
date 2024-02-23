@@ -18,7 +18,7 @@ import (
 var cfgFile string
 
 func init() {
-	flag.StringVarP(&cfgFile, "config", "c", "", "Config file (default is $HOME/.config/nightscout-menu-bar.yaml)")
+	flag.StringVarP(&cfgFile, "config", "c", "", "Config file (default $HOME/.config/nightscout-menu-bar/config.yaml)")
 }
 
 func InitViper() error {
@@ -31,12 +31,16 @@ func InitViper() error {
 		if err != nil {
 			return err
 		}
-		configDir := filepath.Join(home, ".config")
+		configDir := filepath.Join(home, ".config", "nightscout-menu-bar")
 
-		viper.SetConfigName("nightscout-menu-bar")
+		viper.SetConfigName("config")
 		viper.SetConfigType("yaml")
 
 		viper.AddConfigPath(configDir)
+
+		if err := os.MkdirAll(configDir, 0o700); err != nil && !errors.Is(err, os.ErrExist) {
+			return err
+		}
 
 		if err := viper.SafeWriteConfig(); err != nil {
 			if !errors.Is(err, err.(viper.ConfigFileAlreadyExistsError)) {
@@ -45,6 +49,7 @@ func InitViper() error {
 		} else {
 			log.Println("Created config file")
 		}
+
 	}
 
 	viper.AutomaticEnv()
