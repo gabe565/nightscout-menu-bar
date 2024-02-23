@@ -39,7 +39,7 @@ func InitViper() error {
 		}
 
 		viper.SetConfigName("config")
-		viper.SetConfigType("yaml")
+		viper.SetConfigType("toml")
 
 		viper.AddConfigPath(configDir)
 
