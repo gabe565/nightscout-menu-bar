@@ -39,7 +39,6 @@ func InitViper() error {
 		}
 
 		viper.SetConfigName("config")
-		viper.SetConfigType("toml")
 
 		viper.AddConfigPath(configDir)
 
@@ -47,14 +46,13 @@ func InitViper() error {
 			return err
 		}
 
-		if err := viper.SafeWriteConfig(); err != nil {
-			if err, ok := err.(viper.ConfigFileAlreadyExistsError); !ok {
+		oldConfigPath := filepath.Join(filepath.Dir(configDir), "nightscout-menu-bar.yaml")
+		if _, err := os.Stat(oldConfigPath); err == nil {
+			log.Println("Moving config")
+			if err := os.Rename(oldConfigPath, filepath.Join(configDir, "config.yaml")); err != nil {
 				return err
 			}
-		} else {
-			log.Println("Created config file")
 		}
-
 	}
 
 	viper.AutomaticEnv()
@@ -62,7 +60,19 @@ func InitViper() error {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
 
 	if err := viper.ReadInConfig(); err != nil {
-		return err
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			viper.SetConfigType("toml")
+			if err := viper.SafeWriteConfig(); err != nil {
+				if err, ok := err.(viper.ConfigFileAlreadyExistsError); !ok {
+					return err
+				}
+			} else {
+				log.Println("Created config file")
+			}
+			_ = viper.ReadInConfig()
+		} else {
+			return err
+		}
 	}
 	log.Println("Loaded config:", viper.ConfigFileUsed())
 
