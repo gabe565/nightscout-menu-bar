@@ -18,3 +18,7 @@ for required dependencies.
 
 To generate a Mac app, run [hack/build-app.sh](hack/build-app.sh).
 An app will be created in the `dist` directory.
+
+## Contrib
+
+Integrations with external tools are available in the [contrib](contrib) directory.
