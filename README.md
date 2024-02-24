@@ -5,7 +5,7 @@
 A small application that displays live blood sugar data from Nightscout on your menu bar.
 Should be supported by macOS, Linux, and Windows, but only macOS has been tested so far.
 
-![macOS Screenshot](../assets/macos-screenshot.png?raw=true)
+![macOS Screenshot](assets/macos-screenshot.webp?raw=true)
 
 ## Build
 
