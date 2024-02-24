@@ -38,8 +38,6 @@ func InitViper() error {
 			configDir = filepath.Join(home, ".config", "nightscout-menu-bar")
 		}
 
-		viper.SetConfigName("config")
-
 		viper.AddConfigPath(configDir)
 
 		if err := os.MkdirAll(configDir, 0o700); err != nil && !errors.Is(err, os.ErrExist) {
