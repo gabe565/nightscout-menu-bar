@@ -7,13 +7,13 @@ import (
 )
 
 type Config struct {
-	Title     string    `toml:"title"`
-	URL       string    `toml:"url"`
-	Token     string    `toml:"token"`
-	Units     string    `toml:"units"`
-	Interval  Duration  `toml:"interval"`
-	Arrows    Arrows    `toml:"arrows"`
-	LocalFile LocalFile `toml:"local-file"`
+	Title     string    `toml:"title" comment:"Tray title."`
+	URL       string    `toml:"url" comment:"Nightscout URL. (required)"`
+	Token     string    `toml:"token" comment:"Nightscout token. Using an access token is recommended instead of the API secret."`
+	Units     string    `toml:"units" comment:"Blood sugar unit. (one of: mg/dL, mmol/L)"`
+	Interval  Duration  `toml:"interval" comment:"Update interval."`
+	Arrows    Arrows    `toml:"arrows" comment:"Customize the arrows."`
+	LocalFile LocalFile `toml:"local-file" comment:"Enables writing the latest blood sugar to a local temporary file."`
 }
 
 type Arrows struct {
@@ -29,9 +29,9 @@ type Arrows struct {
 
 type LocalFile struct {
 	Enabled bool   `toml:"enabled"`
-	Format  string `toml:"format"`
-	Path    string `toml:"path"`
-	Cleanup bool   `toml:"cleanup"`
+	Format  string `toml:"format" comment:"Local file format. (one of: csv)"`
+	Path    string `toml:"path" comment:"Local file path. $TMPDIR will be replaced with the current temp directory."`
+	Cleanup bool   `toml:"cleanup" comment:"If enabled, the local file will be cleaned up when Nightscout Menu Bar is closed."`
 }
 
 var configDir = "nightscout-menu-bar"
