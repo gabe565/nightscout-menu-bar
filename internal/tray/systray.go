@@ -42,7 +42,7 @@ func onReady() {
 	lastReadingItem := items.NewLastReading()
 	errorItem := items.NewError()
 	systray.AddSeparator()
-	openNightscoutItem := items.NewOpenNightscout()
+	openNightscoutItem := items.NewOpenNightscout(title)
 	historyItem, historyVals := items.NewHistory()
 	systray.AddSeparator()
 	prefs := items.NewPreferences()
