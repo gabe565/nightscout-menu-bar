@@ -10,7 +10,7 @@ require (
 	github.com/knadh/koanf/providers/rawbytes v0.1.0
 	github.com/knadh/koanf/providers/structs v0.1.0
 	github.com/knadh/koanf/v2 v2.1.0
-	github.com/ncruces/zenity v0.10.11
+	github.com/ncruces/zenity v0.10.12
 	github.com/pelletier/go-toml/v2 v2.1.1
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/spf13/pflag v1.0.5
@@ -32,5 +32,5 @@ require (
 	github.com/randall77/makefat v0.0.0-20210315173500-7ddd0e42c844 // indirect
 	github.com/tj/assert v0.0.3 // indirect
 	golang.org/x/image v0.15.0 // indirect
-	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/sys v0.17.0 // indirect
 )
