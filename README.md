@@ -16,7 +16,7 @@ for required dependencies.
 
 ### macOS
 
-To generate a Mac app, run [hack/build-app.sh](hack/build-app.sh).
+To generate a Mac app, run [hack/build-darwin.sh](hack/build-darwin.sh).
 An app will be created in the `dist` directory.
 
 ## Contrib

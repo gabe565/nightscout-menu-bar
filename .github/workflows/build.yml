@@ -92,4 +92,4 @@ jobs:
           go-version-file: go.mod
           cache: true
       - name: Build
-        run: ./hack/build-app.sh
+        run: ./hack/build-darwin.sh
