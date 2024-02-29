@@ -2,8 +2,8 @@
 
 BINARY_NAME='nightscout-menu-bar'
 APP_NAME='Nightscout Menu Bar'
-ICONSET=Nightscout.iconset
-ICNS=Nightscout.icns
+ICONSET=darwin/Nightscout.iconset
+ICNS=darwin/Nightscout.icns
 
 set -euo pipefail
 
@@ -34,7 +34,7 @@ echo ...done
 echo Generate "$APP_NAME.app"
 APP_CONTENTS="dist/$APP_NAME.app/Contents"
 mkdir -p "$APP_CONTENTS"
-cp assets/info.plist "$APP_CONTENTS"
+cp assets/darwin/info.plist "$APP_CONTENTS"
 mkdir "$APP_CONTENTS/Resources"
 cp "assets/$ICNS" "$APP_CONTENTS/Resources"
 mkdir "$APP_CONTENTS/MacOS"
