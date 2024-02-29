@@ -62,7 +62,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install gcc libgtk-3-dev libayatana-appindicator3-dev
       - name: Build
-        run: go build -ldflags='-w -s' -trimpath
+        run: go build -ldflags='-w -s' -trimpath -o dist/nightscout-menu-bar-amd64
+      - name: Compress
+        run: tar -cvf nightscout-menu-bar.tar -C dist .
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: nightscout-menu-bar.tar
 
   build-windows:
     name: Build (Windows)
@@ -77,7 +84,14 @@ jobs:
           go-version-file: go.mod
           cache: true
       - name: Build
-        run: go build -ldflags='-w -s' -trimpath
+        run: go build -ldflags='-w -s' -trimpath -o dist/nightscout-menu-bar-amd64.exe
+      - name: Compress
+        run: tar -cvf nightscout-menu-bar.tar -C dist .
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: nightscout-menu-bar.tar
 
   build-macos:
     name: Build (macOS)
@@ -93,3 +107,10 @@ jobs:
           cache: true
       - name: Build
         run: ./hack/build-darwin.sh
+      - name: Compress
+        run: tar -cvf nightscout-menu-bar.tar -C dist .
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: darwin
+          path: nightscout-menu-bar.tar
