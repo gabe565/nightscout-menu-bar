@@ -1,6 +1,7 @@
 # Nightscout Menu Bar
 
 [![Build](https://github.com/gabe565/nightscout-menu-bar/actions/workflows/build.yml/badge.svg)](https://github.com/gabe565/nightscout-menu-bar/actions/workflows/build.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/gabe565/nightscout-menu-bar)](https://goreportcard.com/report/github.com/gabe565/nightscout-menu-bar)
 
 A small application that displays live blood sugar data from Nightscout on your menu bar.
 
