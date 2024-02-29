@@ -30,7 +30,9 @@ func ReloadConfig() {
 	var newPath string
 	if config.Default.LocalFile.Enabled {
 		newPath = config.Default.LocalFile.Path
-		newPath = strings.ReplaceAll(newPath, "$TMPDIR"+string(os.PathSeparator), os.TempDir())
+		if strings.HasPrefix(newPath, "$TMPDIR") {
+			newPath = strings.Replace(newPath, "$TMPDIR"+string(os.PathSeparator), os.TempDir(), 1)
+		}
 	}
 	if newPath != path {
 		if err := Cleanup(); err != nil {
