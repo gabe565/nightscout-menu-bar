@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"math"
 
+	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
-	"github.com/spf13/viper"
 )
 
 type Times struct {
@@ -26,7 +26,7 @@ type Delta struct {
 }
 
 func (d Delta) Display() string {
-	if u := viper.GetString(UnitsKey); u == UnitsMmol {
+	if config.Default.Units == config.UnitsMmol {
 		mmol := util.ToMmol(d.Scaled)
 		mmol = math.Round(mmol*10) / 10
 		return fmt.Sprintf("%+.1f", mmol)

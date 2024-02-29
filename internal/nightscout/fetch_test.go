@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/hhsnopek/etag"
-	"github.com/spf13/viper"
 )
 
 //go:embed fetch_test_properties.json
@@ -50,7 +50,7 @@ func TestFetch(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			viper.Set(UrlKey, tt.url)
+			config.Default.URL = tt.url
 			lastEtag = tt.etag
 
 			got, err := Fetch()

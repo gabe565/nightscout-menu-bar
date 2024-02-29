@@ -6,43 +6,38 @@ import (
 	"fyne.io/systray"
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
 	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
+	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/local_file"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray/items"
 	"github.com/skratchdot/open-golang/open"
-	flag "github.com/spf13/pflag"
-	"github.com/spf13/viper"
 )
-
-const TitleKey = "title"
-
-func init() {
-	flag.String(TitleKey, "Nightscout", "Title and hover text")
-	if err := viper.BindPFlag(TitleKey, flag.Lookup(TitleKey)); err != nil {
-		panic(err)
-	}
-}
 
 func Run() {
 	systray.Run(onReady, onExit)
 }
 
+func init() {
+	config.AddReloader(func() {
+		reloadConfig <- struct{}{}
+	})
+}
+
 var (
 	Update       = make(chan *nightscout.Properties)
-	ReloadConfig = make(chan struct{})
+	reloadConfig = make(chan struct{})
 	Error        = make(chan error, 1)
 )
 
 func onReady() {
 	systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
-	title := viper.GetString(TitleKey)
-	systray.SetTitle(title)
-	systray.SetTooltip(title)
+	systray.SetTitle(config.Default.Title)
+	systray.SetTooltip(config.Default.Title)
 
 	lastReadingItem := items.NewLastReading()
 	errorItem := items.NewError()
 	systray.AddSeparator()
-	openNightscoutItem := items.NewOpenNightscout(title)
+	openNightscoutItem := items.NewOpenNightscout(config.Default.Title)
 	historyItem, historyVals := items.NewHistory()
 	systray.AddSeparator()
 	prefs := items.NewPreferences()
@@ -79,7 +74,7 @@ func onReady() {
 					Error <- err
 				}
 			}()
-		case <-ReloadConfig:
+		case <-reloadConfig:
 			prefs.Url.UpdateTitle()
 			prefs.Token.UpdateTitle()
 			prefs.Units.UpdateTitle()

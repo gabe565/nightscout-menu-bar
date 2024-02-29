@@ -4,10 +4,9 @@ import (
 	"errors"
 
 	"fyne.io/systray"
-	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
+	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/ui"
 	"github.com/ncruces/zenity"
-	"github.com/spf13/viper"
 )
 
 func NewUrl(parent *systray.MenuItem) Url {
@@ -22,8 +21,8 @@ type Url struct {
 
 func (n Url) GetTitle() string {
 	title := "Nightscout URL"
-	if url := viper.GetString(nightscout.UrlKey); url != "" {
-		title += ": " + url
+	if config.Default.URL != "" {
+		title += ": " + config.Default.URL
 	}
 	return title
 }
@@ -41,8 +40,8 @@ func (n Url) Prompt() error {
 		return err
 	}
 
-	viper.Set("url", url)
-	if err := viper.WriteConfig(); err != nil {
+	config.Default.URL = url
+	if err := config.Write(); err != nil {
 		return err
 	}
 	return nil

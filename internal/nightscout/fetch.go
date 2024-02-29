@@ -11,26 +11,8 @@ import (
 	"path"
 	"time"
 
-	flag "github.com/spf13/pflag"
-	"github.com/spf13/viper"
+	"github.com/gabe565/nightscout-menu-bar/internal/config"
 )
-
-const (
-	UrlKey   = "url"
-	TokenKey = "token"
-)
-
-func init() {
-	flag.StringP(UrlKey, "u", "", "Nightscout base URL")
-	if err := viper.BindPFlag(UrlKey, flag.Lookup(UrlKey)); err != nil {
-		panic(err)
-	}
-
-	flag.StringP(TokenKey, "t", "", "Nightscout token")
-	if err := viper.BindPFlag(TokenKey, flag.Lookup(TokenKey)); err != nil {
-		panic(err)
-	}
-}
 
 var lastEtag string
 
@@ -97,7 +79,7 @@ func Fetch() (*Properties, error) {
 }
 
 func BuildUrl() (*url.URL, error) {
-	conf := viper.GetString(UrlKey)
+	conf := config.Default.URL
 	if conf == "" {
 		return nil, errors.New("please configure your Nightscout URL")
 	}
@@ -134,7 +116,7 @@ func UpdateUrl() error {
 	newUrl.Path = path.Join(newUrl.Path, "api", "v2", "properties", "bgnow,buckets,delta,direction")
 	u = newUrl
 
-	token = viper.GetString(TokenKey)
+	token = config.Default.Token
 	tokenChecksum = fmt.Sprintf("%x", sha1.Sum([]byte(token)))
 
 	return nil
