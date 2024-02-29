@@ -4,10 +4,9 @@ import (
 	"errors"
 
 	"fyne.io/systray"
-	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
+	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/ui"
 	"github.com/ncruces/zenity"
-	"github.com/spf13/viper"
 )
 
 func NewToken(parent *systray.MenuItem) Token {
@@ -22,8 +21,8 @@ type Token struct {
 
 func (n Token) GetTitle() string {
 	title := "API Token"
-	if url := viper.GetString(nightscout.TokenKey); url != "" {
-		title += ": " + url
+	if config.Default.Token != "" {
+		title += ": " + config.Default.Token
 	}
 	return title
 }
@@ -33,7 +32,7 @@ func (n Token) UpdateTitle() {
 }
 
 func (n Token) Prompt() error {
-	url, err := ui.PromptToken()
+	token, err := ui.PromptToken()
 	if err != nil {
 		if errors.Is(err, zenity.ErrCanceled) {
 			return nil
@@ -41,8 +40,8 @@ func (n Token) Prompt() error {
 		return err
 	}
 
-	viper.Set(nightscout.TokenKey, url)
-	if err := viper.WriteConfig(); err != nil {
+	config.Default.Token = token
+	if err := config.Write(); err != nil {
 		return err
 	}
 	return nil

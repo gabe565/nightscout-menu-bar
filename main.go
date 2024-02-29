@@ -14,7 +14,12 @@ import (
 )
 
 func main() {
-	if err := config.InitViper(); err != nil {
+	if err := config.Load(); err != nil {
+		go func() {
+			tray.Error <- err
+		}()
+	}
+	if err := config.Watch(); err != nil {
 		go func() {
 			tray.Error <- err
 		}()

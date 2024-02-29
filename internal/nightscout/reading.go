@@ -6,36 +6,14 @@ import (
 	"math"
 	"strconv"
 
+	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
-	"github.com/spf13/viper"
-)
-
-const (
-	DoubleUpKey      = "arrows.double-up"
-	SingleUpKey      = "arrows.single-up"
-	FortyFiveUpKey   = "arrows.forty-five-up"
-	FlatKey          = "arrows.flat"
-	FortyFiveDownKey = "arrows.forty-five-down"
-	SingleDownKey    = "arrows.single-down"
-	DoubleDownKey    = "arrows.double-down"
-	UnknownKey       = "arrows.unknown"
 )
 
 const (
 	LowReading  = 39
 	HighReading = 401
 )
-
-func init() {
-	viper.SetDefault(DoubleUpKey, "⇈")
-	viper.SetDefault(SingleUpKey, "↑")
-	viper.SetDefault(FortyFiveUpKey, "↗")
-	viper.SetDefault(FlatKey, "→")
-	viper.SetDefault(FortyFiveDownKey, "↘")
-	viper.SetDefault(SingleDownKey, "↓")
-	viper.SetDefault(DoubleDownKey, "⇊")
-	viper.SetDefault(UnknownKey, "-")
-}
 
 type Reading struct {
 	Mean      int   `json:"mean"`
@@ -54,21 +32,21 @@ func (r *Reading) Arrow() string {
 	}
 	switch direction {
 	case "DoubleUp", "TripleUp":
-		direction = viper.GetString(DoubleUpKey)
+		direction = config.Default.Arrows.DoubleUp
 	case "SingleUp":
-		direction = viper.GetString(SingleUpKey)
+		direction = config.Default.Arrows.SingleUp
 	case "FortyFiveUp":
-		direction = viper.GetString(FortyFiveUpKey)
+		direction = config.Default.Arrows.FortyFiveUp
 	case "Flat":
-		direction = viper.GetString(FlatKey)
+		direction = config.Default.Arrows.Flat
 	case "FortyFiveDown":
-		direction = viper.GetString(FortyFiveDownKey)
+		direction = config.Default.Arrows.FortyFiveDown
 	case "SingleDown":
-		direction = viper.GetString(SingleDownKey)
+		direction = config.Default.Arrows.SingleDown
 	case "DoubleDown", "TripleDown":
-		direction = viper.GetString(DoubleDownKey)
+		direction = config.Default.Arrows.DoubleDown
 	default:
-		direction = viper.GetString(UnknownKey)
+		direction = config.Default.Arrows.Unknown
 	}
 	return direction
 }
@@ -106,7 +84,7 @@ func (r *Reading) DisplayBg() string {
 		return "HIGH"
 	}
 
-	if u := viper.GetString(UnitsKey); u == UnitsMmol {
+	if config.Default.Units == config.UnitsMmol {
 		mmol := util.ToMmol(r.Last)
 		mmol = math.Round(mmol*10) / 10
 		return strconv.FormatFloat(mmol, 'f', 1, 64)

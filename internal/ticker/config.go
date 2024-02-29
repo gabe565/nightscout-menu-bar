@@ -1,11 +1,15 @@
 package ticker
 
 import (
+	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
-	"github.com/spf13/viper"
 )
 
-func ReloadConfig() {
+func init() {
+	config.AddReloader(reloadConfig)
+}
+
+func reloadConfig() {
 	if renderTimer != nil {
 		renderTimer.Reset(0)
 	}
@@ -13,6 +17,6 @@ func ReloadConfig() {
 	Fetch()
 
 	if fetchTimer != nil {
-		fetchTimer.Reset(viper.GetDuration(IntervalKey))
+		fetchTimer.Reset(config.Default.Interval.Duration)
 	}
 }

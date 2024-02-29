@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spf13/viper"
+	"github.com/gabe565/nightscout-menu-bar/internal/config"
 )
 
 func TestReading_Arrow(t *testing.T) {
@@ -97,7 +97,7 @@ func TestReading_String(t *testing.T) {
 
 func TestReading_DisplayBg(t *testing.T) {
 	defer func() {
-		viper.Set(UnitsKey, UnitsMgdl)
+		config.Default.Units = config.UnitsMgdl
 	}()
 
 	type fields struct {
@@ -118,17 +118,17 @@ func TestReading_DisplayBg(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		{"95", args{UnitsMgdl}, fields{Last: 95}, "95"},
-		{"LOW", args{UnitsMgdl}, fields{Last: 39}, "LOW"},
-		{"HIGH", args{UnitsMgdl}, fields{Last: 401}, "HIGH"},
-		{"mmol", args{UnitsMmol}, fields{Last: 100}, "5.6"},
+		{"95", args{config.UnitsMgdl}, fields{Last: 95}, "95"},
+		{"LOW", args{config.UnitsMgdl}, fields{Last: 39}, "LOW"},
+		{"HIGH", args{config.UnitsMgdl}, fields{Last: 401}, "HIGH"},
+		{"mmol", args{config.UnitsMmol}, fields{Last: 100}, "5.6"},
 	}
 	for _, tt := range tests {
 		switch tt.args.units {
-		case UnitsMgdl:
-			viper.Set(UnitsKey, UnitsMgdl)
-		case UnitsMmol:
-			viper.Set(UnitsKey, UnitsMmol)
+		case config.UnitsMgdl:
+			config.Default.Units = config.UnitsMgdl
+		case config.UnitsMmol:
+			config.Default.Units = config.UnitsMmol
 		}
 		t.Run(tt.name, func(t *testing.T) {
 			r := &Reading{
