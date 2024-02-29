@@ -2,7 +2,7 @@ package local_file
 
 import (
 	"errors"
-	"log"
+	"log/slog"
 	"os"
 	"strconv"
 	"strings"
@@ -36,7 +36,7 @@ func ReloadConfig() {
 	}
 	if newPath != path {
 		if err := Cleanup(); err != nil {
-			log.Println(err)
+			slog.Error("Failed to cleanup local file", "error", err.Error())
 		}
 	}
 	path = newPath

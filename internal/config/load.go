@@ -5,6 +5,7 @@ package config
 import (
 	"bytes"
 	"errors"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"time"
@@ -14,7 +15,6 @@ import (
 	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
 	"github.com/pelletier/go-toml/v2"
-	log "github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
 )
 
@@ -68,7 +68,7 @@ func Load() error {
 		return err
 	}
 
-	log.WithField("file", cfgFile).Info("Loaded config")
+	slog.Info("Loaded config", "file", cfgFile)
 	return err
 }
 
@@ -101,13 +101,13 @@ func Write() error {
 
 	if !bytes.Equal(cfgContents, newCfg) {
 		if cfgNotExists {
-			log.WithField("file", cfgFile).Info("Creating config")
+			slog.Info("Creating config", "file", cfgFile)
 
 			if err := os.MkdirAll(filepath.Dir(cfgFile), 0o777); err != nil {
 				return err
 			}
 		} else {
-			log.WithField("file", cfgFile).Info("Updating config")
+			slog.Info("Updating config", "file", cfgFile)
 		}
 
 		if err := os.WriteFile(cfgFile, newCfg, 0o666); err != nil {
@@ -119,11 +119,11 @@ func Write() error {
 }
 
 func Watch() error {
-	log.WithField("file", cfgFile).Info("Watching config")
+	slog.Info("Watching config", "file", cfgFile)
 	f := file.Provider(cfgFile)
 	return f.Watch(func(event interface{}, err error) {
 		if err != nil {
-			log.WithError(err).Error("Config watcher failed")
+			slog.Error("Config watcher failed", "error", err.Error())
 			time.Sleep(time.Second)
 			defer func() {
 				_ = Watch()
@@ -131,7 +131,7 @@ func Watch() error {
 		}
 
 		if err := Load(); err != nil {
-			log.WithError(err).Error("Failed to load config")
+			slog.Error("Failed to load config", "error", err.Error())
 		}
 		for _, reloader := range reloaders {
 			reloader()
