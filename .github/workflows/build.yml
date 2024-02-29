@@ -82,7 +82,8 @@ jobs:
           go-version-file: go.mod
           cache: true
       - name: Build
-        run: go build -ldflags='-w -s -H=windowsgui' -trimpath -o dist/nightscout-menu-bar-amd64.exe
+        shell: bash
+        run: ./hack/build-windows.sh
       - name: Compress
         run: tar -cvf nightscout-menu-bar.tar -C dist .
       - name: Upload Artifact
