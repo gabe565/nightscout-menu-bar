@@ -1,7 +1,7 @@
 package tray
 
 import (
-	"log"
+	"log/slog"
 
 	"fyne.io/systray"
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
@@ -121,8 +121,8 @@ func onReady() {
 }
 
 func onExit() {
-	log.Println("exiting")
+	slog.Info("Exiting")
 	if err := local_file.Cleanup(); err != nil {
-		log.Println(err)
+		slog.Error("Failed to cleanup local file", "error", err.Error())
 	}
 }

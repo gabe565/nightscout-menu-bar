@@ -2,7 +2,7 @@ package ticker
 
 import (
 	"errors"
-	"log"
+	"log/slog"
 	"time"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
@@ -32,7 +32,7 @@ func Fetch() {
 		RenderCh <- properties
 		if config.Default.LocalFile.Enabled {
 			if err := local_file.Write(properties); err != nil {
-				log.Println(err)
+				slog.Error("Failed to write local file", "error", err.Error())
 			}
 		}
 	}
