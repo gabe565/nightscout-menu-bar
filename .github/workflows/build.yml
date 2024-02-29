@@ -82,7 +82,7 @@ jobs:
           go-version-file: go.mod
           cache: true
       - name: Build
-        run: go build -ldflags='-w -s' -trimpath -o dist/nightscout-menu-bar-amd64.exe
+        run: go build -ldflags='-w -s -H=windowsgui' -trimpath -o dist/nightscout-menu-bar-amd64.exe
       - name: Compress
         run: tar -cvf nightscout-menu-bar.tar -C dist .
       - name: Upload Artifact
