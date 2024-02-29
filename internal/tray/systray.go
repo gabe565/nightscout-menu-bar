@@ -35,8 +35,9 @@ var (
 
 func onReady() {
 	systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
-	systray.SetTitle(viper.GetString(TitleKey))
-	systray.SetTooltip(viper.GetString(TitleKey))
+	title := viper.GetString(TitleKey)
+	systray.SetTitle(title)
+	systray.SetTooltip(title)
 
 	lastReadingItem := items.NewLastReading()
 	errorItem := items.NewError()
@@ -105,6 +106,7 @@ func onReady() {
 
 			value := properties.String()
 			systray.SetTitle(value)
+			systray.SetTooltip(value)
 			lastReadingItem.SetTitle(value)
 
 			for i, reading := range properties.Buckets {
