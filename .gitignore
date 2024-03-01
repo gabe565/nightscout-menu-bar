@@ -1,3 +1,4 @@
+*.syso
 .DS_Store
 .idea/
 /dist/
