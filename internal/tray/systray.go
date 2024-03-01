@@ -7,6 +7,7 @@ import (
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
 	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"github.com/gabe565/nightscout-menu-bar/internal/dynamic_icon"
 	"github.com/gabe565/nightscout-menu-bar/internal/local_file"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray/items"
@@ -111,6 +112,14 @@ func onReady() {
 					entry := historyItem.AddSubMenuItem(reading.String(), "")
 					entry.Disable()
 					historyVals = append(historyVals, entry)
+				}
+			}
+
+			if config.Default.DynamicIcon.Enabled {
+				if icon, err := dynamic_icon.Generate(properties); err == nil {
+					systray.SetTemplateIcon(icon, icon)
+				} else {
+					slog.Error("Failed to generate icon", "error", err.Error())
 				}
 			}
 		case err := <-Error:
