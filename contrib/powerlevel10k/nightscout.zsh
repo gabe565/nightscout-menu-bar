@@ -3,6 +3,7 @@
 typeset -g NIGHTSCOUT_STATE_FILE="$TMPDIR/nightscout.csv"
 
 # Nightscout styling will be chosen if the reading is below a given value.
+typeset -g NIGHTSCOUT_THRESHOLD_OLD_MINS=5
 typeset -g NIGHTSCOUT_THRESHOLD_URGENT_LOW=55
 typeset -g NIGHTSCOUT_THRESHOLD_LOW=80
 typeset -g NIGHTSCOUT_THRESHOLD_IN_RANGE=160
@@ -31,6 +32,9 @@ typeset -g POWERLEVEL9K_NIGHTSCOUT_HIGH_FOREGROUND=0
 # Urgent high styling.
 typeset -g POWERLEVEL9K_NIGHTSCOUT_URGENT_HIGH_BACKGROUND=1
 typeset -g POWERLEVEL9K_NIGHTSCOUT_URGENT_HIGH_FOREGROUND=7
+# Old reading styling.
+typeset -g POWERLEVEL9K_NIGHTSCOUT_OLD_BACKGROUND=243
+typeset -g POWERLEVEL9K_NIGHTSCOUT_OLD_FOREGROUND=0
 # Custom icon.
 # typeset -g POWERLEVEL9K_NIGHTSCOUT_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
@@ -51,8 +55,12 @@ function prompt_nightscout() {
       return
     fi
 
+    typeset relative="$(( (EPOCHSECONDS - timestamp + 30) / 60 ))"
+
     # Choose current state for styling.
-    if (( bgnow <= NIGHTSCOUT_THRESHOLD_URGENT_LOW )); then
+    if (( relative > NIGHTSCOUT_THRESHOLD_OLD_MINS )); then
+      typeset state=OLD
+    elif (( bgnow <= NIGHTSCOUT_THRESHOLD_URGENT_LOW )); then
       typeset state=URGENT_LOW
     elif (( bgnow < NIGHTSCOUT_THRESHOLD_LOW )); then
       typeset state=LOW
@@ -68,7 +76,7 @@ function prompt_nightscout() {
     typeset text="$bgnow"
     [[ "$NIGHTSCOUT_SHOW_ARROW" == true ]] && text+=" $arrow"
     [[ "$NIGHTSCOUT_SHOW_DELTA" == true ]] && text+=" $delta"
-    [[ "$NIGHTSCOUT_SHOW_TIMESTAMP" == true ]] && text+=" [$(( (EPOCHSECONDS - timestamp + 30) / 60 ))m]"
+    [[ "$NIGHTSCOUT_SHOW_TIMESTAMP" == true ]] && text+=" [${relative}m]"
 
     # Write segment.
     p10k segment -s "$state" -i $'\UF058C' -t "$text"
