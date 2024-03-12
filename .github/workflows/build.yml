@@ -85,12 +85,14 @@ jobs:
         shell: bash
         run: ./hack/build-windows.sh
       - name: Compress
-        run: tar -cvf nightscout-menu-bar_windows_amd64.tar -C dist .
+        working-directory: dist
+        shell: powershell
+        run: Compress-Archive -Path * -Destination ../nightscout-menu-bar_windows_amd64.zip
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: nightscout-menu-bar_windows_amd64
-          path: nightscout-menu-bar_windows_amd64.tar
+          path: nightscout-menu-bar_windows_amd64.zip
 
   build-darwin:
     name: Build (darwin)
