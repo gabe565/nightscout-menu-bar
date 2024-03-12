@@ -114,3 +114,28 @@ jobs:
         with:
           name: nightscout-menu-bar_darwin
           path: nightscout-menu-bar_darwin.tar
+
+  release:
+    name: Release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [lint, test, build-windows, build-darwin, build-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: nightscout-menu-bar_*
+          path: dist
+          merge-multiple: true
+      - name: Generate Changelog
+        id: changelog
+        uses: gabe565/changelog-generator@v0
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{ steps.changelog.outputs.changelog }}
+          files: |
+            dist/nightscout-menu-bar_*
