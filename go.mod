@@ -9,7 +9,7 @@ require (
 	github.com/knadh/koanf/providers/file v0.1.0
 	github.com/knadh/koanf/providers/rawbytes v0.1.0
 	github.com/knadh/koanf/providers/structs v0.1.0
-	github.com/knadh/koanf/v2 v2.1.0
+	github.com/knadh/koanf/v2 v2.1.1
 	github.com/ncruces/zenity v0.10.12
 	github.com/pelletier/go-toml/v2 v2.2.0
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
