@@ -20,15 +20,13 @@ brew install gabe565/tap/nightscout-menu-bar --no-quarantine
 
 ### Binary
 
-Eventually, binaries will be attached to releases.
-For now, binaries can be downloaded from CI build artifacts.
-1. Go to [the build action](https://github.com/gabe565/nightscout-menu-bar/actions/workflows/build.yml?query=branch%3Amain+is%3Asuccess).
-2. Click the latest build job.
-3. Scroll down to "Artifacts".
-4. Download the artifact for your operating system/architecture.
-5. A zip file will be downloaded containing Nightscout Menu Bar!
+Automated builds are uploaded during the release process. See the [latest release](https://github.com/gabe565/nightscout-menu-bar/releases/latest) for download links.
 
-### Build
+## Contrib
+
+Integrations with external tools are available in the [contrib](contrib) directory.
+
+## Development
 
 The systray menu is provided by
 [fyne.io/systray](https://github.com/fyne-io/systray). See
@@ -39,7 +37,3 @@ for required dependencies.
 
 To generate a Mac app, run [hack/build-darwin.sh](hack/build-darwin.sh).
 An app will be created in the `dist` directory.
-
-## Contrib
-
-Integrations with external tools are available in the [contrib](contrib) directory.
