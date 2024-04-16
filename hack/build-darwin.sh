@@ -2,6 +2,7 @@
 
 BINARY_NAME='nightscout-menu-bar'
 APP_NAME='Nightscout Menu Bar'
+VERSION="${VERSION:-latest}"
 ICONSET=darwin/Nightscout.iconset
 ICNS=darwin/Nightscout.icns
 
@@ -39,4 +40,9 @@ mkdir "$APP_CONTENTS/Resources"
 cp "assets/$ICNS" "$APP_CONTENTS/Resources"
 mkdir "$APP_CONTENTS/MacOS"
 mv "dist/$BINARY_NAME" "$APP_CONTENTS/MacOS"
+
+echo Compress "$APP_NAME.app"
+tar_name="dist/nightscout-menu-bar_darwin.tar.gz"
+tar -czvf "$tar_name" -C dist "$APP_NAME.app"
+go run ./assets/darwin/cask --path="$tar_name" --version="$VERSION" > dist/nightscout-menu-bar.rb
 echo ...done
