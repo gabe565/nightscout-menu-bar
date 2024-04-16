@@ -12,6 +12,12 @@ Works on Windows, MacOS, and Linux.
 
 ## Install
 
+### Brew (macOS)
+
+```shell
+brew install gabe565/tap/nightscout-menu-bar --no-quarantine
+```
+
 ### Binary
 
 Eventually, binaries will be attached to releases.
