@@ -63,12 +63,12 @@ jobs:
       - name: Build
         run: go build -ldflags='-w -s' -trimpath -o dist/nightscout-menu-bar-amd64
       - name: Compress
-        run: tar -cvf nightscout-menu-bar_linux_amd64.tar -C dist .
+        run: tar -czvf nightscout-menu-bar_linux_amd64.tar.gz -C dist .
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: nightscout-menu-bar_linux_amd64
-          path: nightscout-menu-bar_linux_amd64.tar
+          path: nightscout-menu-bar_linux_amd64.tar.gz
 
   build-windows:
     name: Build (windows)
@@ -108,12 +108,12 @@ jobs:
       - name: Build
         run: ./hack/build-darwin.sh
       - name: Compress
-        run: tar -cvf nightscout-menu-bar_darwin.tar -C dist .
+        run: tar -czvf nightscout-menu-bar_darwin.tar.gz -C dist .
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: nightscout-menu-bar_darwin
-          path: nightscout-menu-bar_darwin.tar
+          path: nightscout-menu-bar_darwin.tar.gz
 
   release:
     name: Release
