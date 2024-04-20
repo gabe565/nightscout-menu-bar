@@ -7,7 +7,6 @@ cask "nightscout-menu-bar" do
   version "{{ trimPrefix "v" .Version }}"
   {{- end }}
 
-
   url "https://github.com/gabe565/nightscout-menu-bar/releases/download/{{ .Version }}/nightscout-menu-bar_darwin.tar.gz"
   sha256 "{{ .SHA256 }}"
 
