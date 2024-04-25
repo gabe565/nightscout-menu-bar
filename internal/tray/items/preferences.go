@@ -22,6 +22,7 @@ func NewPreferences() Preferences {
 		autostartEnabled,
 	)
 
+	dynamicIcon := preferences.NewDynamicIcon(item)
 	localFile := preferences.NewLocalFile(item)
 
 	return Preferences{
@@ -30,6 +31,7 @@ func NewPreferences() Preferences {
 		Token:        token,
 		Units:        units,
 		StartOnLogin: startOnLogin,
+		DynamicIcon:  dynamicIcon,
 		LocalFile:    localFile,
 	}
 }
@@ -40,5 +42,6 @@ type Preferences struct {
 	Token        preferences.Token
 	Units        preferences.Units
 	StartOnLogin *systray.MenuItem
+	DynamicIcon  preferences.DynamicIcon
 	LocalFile    preferences.LocalFile
 }

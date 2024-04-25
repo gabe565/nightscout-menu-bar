@@ -32,7 +32,9 @@ var (
 
 func onReady() {
 	systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
-	systray.SetTitle(config.Default.Title)
+	if !config.Default.DynamicIcon.Enabled {
+		systray.SetTitle(config.Default.Title)
+	}
 	systray.SetTooltip(config.Default.Title)
 
 	lastReadingItem := items.NewLastReading()
@@ -95,13 +97,21 @@ func onReady() {
 			if err := prefs.LocalFile.Toggle(); err != nil {
 				Error <- err
 			}
+		case <-prefs.DynamicIcon.ClickedCh:
+			if err := prefs.DynamicIcon.Toggle(); err != nil {
+				Error <- err
+			}
 		case <-quitItem.ClickedCh:
 			systray.Quit()
 		case properties := <-Update:
 			errorItem.Hide()
 
 			value := properties.String()
-			systray.SetTitle(value)
+			if !config.Default.HideTitle {
+				systray.SetTitle(value)
+			} else {
+				systray.SetTitle("")
+			}
 			systray.SetTooltip(value)
 			lastReadingItem.SetTitle(value)
 
@@ -116,6 +126,7 @@ func onReady() {
 			}
 
 			if config.Default.DynamicIcon.Enabled {
+				systray.SetTitle("")
 				if icon, err := dynamic_icon.Generate(properties); err == nil {
 					systray.SetTemplateIcon(icon, icon)
 				} else {

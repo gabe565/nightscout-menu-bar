@@ -11,6 +11,7 @@ type Config struct {
 	URL         string      `toml:"url" comment:"Nightscout URL. (required)"`
 	Token       string      `toml:"token" comment:"Nightscout token. Using an access token is recommended instead of the API secret."`
 	Units       string      `toml:"units" comment:"Blood sugar unit. (one of: mg/dL, mmol/L)"`
+	HideTitle   bool        `toml:"hide_title" comment:"Hides the title, resulting in a smaller icon on macOS."`
 	DynamicIcon DynamicIcon `toml:"dynamic_icon" comment:"Makes the tray icon show the current blood sugar reading."`
 	Interval    Duration    `toml:"interval" comment:"Update interval."`
 	Arrows      Arrows      `toml:"arrows" comment:"Customize the arrows."`
@@ -21,7 +22,7 @@ type DynamicIcon struct {
 	Enabled   bool     `toml:"enabled"`
 	FontColor HexColor `toml:"font_color" comment:"Hex code used to render text."`
 	FontFile  string   `toml:"font_file" comment:"If left blank, an embedded font will be used."`
-	FontSize  float64  `toml:"font_size" comment:"Font size in points."`
+	FontSize  float64  `toml:"font_size" comment:"Large font size in points."`
 }
 
 type Arrows struct {

@@ -18,8 +18,8 @@ import (
 )
 
 var (
-	//go:embed Roboto-Bold.ttf
-	embeddedFont []byte
+	//go:embed Inconsolata_Condensed-Black.ttf
+	robotoBold []byte
 
 	mu     sync.Mutex
 	face   font.Face
@@ -48,7 +48,7 @@ func Generate(p *nightscout.Properties) ([]byte, error) {
 	if face == nil {
 		var b []byte
 		if config.Default.DynamicIcon.FontFile == "" {
-			b = embeddedFont
+			b = robotoBold
 		} else {
 			var err error
 			if b, err = os.ReadFile(config.Default.DynamicIcon.FontFile); err != nil {
@@ -68,19 +68,20 @@ func Generate(p *nightscout.Properties) ([]byte, error) {
 		img = image.NewRGBA(image.Rectangle{Max: image.Point{X: width, Y: height}})
 
 		m := face.Metrics()
+		src := image.NewUniform(config.Default.DynamicIcon.FontColor.RGBA())
 		drawer = &font.Drawer{
 			Dst:  img,
-			Src:  image.NewUniform(config.Default.DynamicIcon.FontColor.RGBA()),
+			Src:  src,
 			Face: face,
-			Dot:  fixed.Point26_6{Y: fixed.I(height) - m.Ascent/2},
+			Dot:  fixed.Point26_6{Y: fixed.I(height) - m.Height/2 + m.Descent},
 		}
 	} else {
 		draw.Draw(img, img.Bounds(), image.Transparent, image.Point{}, draw.Src)
 	}
 
-	text := p.Bgnow.DisplayBg()
-	drawer.Dot.X = (fixed.I(width) - drawer.MeasureString(text)) / 2
-	drawer.DrawString(text)
+	bgnow := p.Bgnow.DisplayBg()
+	drawer.Dot.X = (fixed.I(width) - drawer.MeasureString(bgnow)) / 2
+	drawer.DrawString(bgnow)
 
 	var buf bytes.Buffer
 	if err := encode(&buf, img); err != nil {
