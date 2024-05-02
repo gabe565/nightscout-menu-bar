@@ -6,7 +6,7 @@ import (
 )
 
 func NewQuit() *systray.MenuItem {
-	item := systray.AddMenuItem("Quit Nightscout Systray", "")
+	item := systray.AddMenuItem("Quit", "")
 	item.SetTemplateIcon(assets.Quit, assets.Quit)
 	return item
 }
