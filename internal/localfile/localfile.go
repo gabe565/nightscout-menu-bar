@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log/slog"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -31,7 +32,8 @@ func ReloadConfig() {
 	if config.Default.LocalFile.Enabled {
 		newPath = config.Default.LocalFile.Path
 		if strings.HasPrefix(newPath, "$TMPDIR") {
-			newPath = strings.Replace(newPath, "$TMPDIR"+string(os.PathSeparator), os.TempDir(), 1)
+			newPath = strings.TrimPrefix(newPath, "$TMPDIR")
+			newPath = filepath.Join(os.TempDir(), newPath)
 		}
 	}
 	if newPath != path {
