@@ -2,6 +2,7 @@ package nightscout
 
 import (
 	"crypto/sha1"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -116,7 +117,8 @@ func UpdateUrl() error {
 	u = newUrl
 
 	if token := config.Default.Token; token != "" {
-		tokenChecksum = fmt.Sprintf("%x", sha1.Sum([]byte(token)))
+		rawChecksum := sha1.Sum([]byte(token))
+		tokenChecksum = hex.EncodeToString(rawChecksum[:])
 	} else {
 		tokenChecksum = ""
 	}
