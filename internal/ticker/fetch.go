@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/local_file"
+	"github.com/gabe565/nightscout-menu-bar/internal/localfile"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 )
@@ -31,7 +31,7 @@ func Fetch() {
 	if properties != nil {
 		RenderCh <- properties
 		if config.Default.LocalFile.Enabled {
-			if err := local_file.Write(properties); err != nil {
+			if err := localfile.Write(properties); err != nil {
 				slog.Error("Failed to write local file", "error", err.Error())
 			}
 		}

@@ -8,7 +8,7 @@ import (
 
 	"fyne.io/systray"
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/local_file"
+	"github.com/gabe565/nightscout-menu-bar/internal/localfile"
 	"github.com/gabe565/nightscout-menu-bar/internal/ticker"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 )
@@ -25,7 +25,7 @@ func main() {
 		}()
 	}
 
-	local_file.ReloadConfig()
+	localfile.ReloadConfig()
 
 	ticker.BeginRender()
 	ticker.BeginFetch()
