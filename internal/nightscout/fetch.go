@@ -27,7 +27,6 @@ var client = &http.Client{
 
 var (
 	u             *url.URL
-	token         string
 	tokenChecksum string
 )
 
@@ -98,9 +97,9 @@ func BuildUrlWithToken() (*url.URL, error) {
 		return u, err
 	}
 
-	if token != "" {
+	if token := config.Default.Token; token != "" {
 		query := u.Query()
-		query.Set("token", token)
+		query.Set("token", config.Default.Token)
 		u.RawQuery = query.Encode()
 	}
 
@@ -116,8 +115,9 @@ func UpdateUrl() error {
 	newUrl.Path = path.Join(newUrl.Path, "api", "v2", "properties", "bgnow,buckets,delta,direction")
 	u = newUrl
 
-	token = config.Default.Token
-	tokenChecksum = fmt.Sprintf("%x", sha1.Sum([]byte(token)))
+	if token := config.Default.Token; token != "" {
+		tokenChecksum = fmt.Sprintf("%x", sha1.Sum([]byte(token)))
+	}
 
 	return nil
 }
