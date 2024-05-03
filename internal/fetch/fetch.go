@@ -30,20 +30,20 @@ func NewFetch(conf *config.Config) *Fetch {
 
 type Fetch struct {
 	config        *config.Config
-	url           *url.URL
+	url           string
 	tokenChecksum string
 	etag          string
 }
 
 func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
-	if f.url == nil {
+	if f.url == "" {
 		if err := f.UpdateURL(); err != nil {
 			return nil, err
 		}
 	}
 
 	// Fetch JSON
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, f.url.String(), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, f.url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (f *Fetch) UpdateURL() error {
 	}
 
 	u.Path = path.Join(u.Path, "api", "v2", "properties", "bgnow,buckets,delta,direction")
-	f.url = u
+	f.url = u.String()
 
 	if token := f.config.Token; token != "" {
 		rawChecksum := sha1.Sum([]byte(token))
@@ -102,7 +102,7 @@ func (f *Fetch) UpdateURL() error {
 }
 
 func (f *Fetch) Reset() {
-	f.url = nil
+	f.url = ""
 	f.tokenChecksum = ""
 	f.etag = ""
 }

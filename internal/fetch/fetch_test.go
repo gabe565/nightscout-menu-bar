@@ -5,7 +5,6 @@ import (
 	_ "embed"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"testing"
 	"time"
 
@@ -42,7 +41,7 @@ func TestFetch_Do(t *testing.T) {
 
 	type fields struct {
 		config        *config.Config
-		url           *url.URL
+		url           string
 		tokenChecksum string
 		etag          string
 	}
