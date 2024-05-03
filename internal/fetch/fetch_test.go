@@ -1,6 +1,7 @@
 package fetch
 
 import (
+	"context"
 	_ "embed"
 	"net/http"
 	"net/http/httptest"
@@ -40,34 +41,62 @@ func TestFetch_Do(t *testing.T) {
 
 	type fields struct {
 		config        *config.Config
-		client        *http.Client
 		url           *url.URL
 		tokenChecksum string
 		etag          string
 	}
+	type args struct {
+		ctx context.Context
+	}
 	tests := []struct {
 		name     string
 		fields   fields
+		args     args
 		want     *nightscout.Properties
 		wantEtag string
 		wantErr  require.ErrorAssertionFunc
 	}{
-		{"no url", fields{config: &config.Config{}}, nil, "", require.Error},
-		{"success", fields{config: &config.Config{URL: server.URL}}, properties, propertiesEtag, require.NoError},
-		{"same etag", fields{config: &config.Config{URL: server.URL}, etag: propertiesEtag}, nil, propertiesEtag, require.Error},
-		{"different etag", fields{config: &config.Config{URL: server.URL}, etag: differentEtag}, properties, propertiesEtag, require.NoError},
+		{
+			"no url",
+			fields{config: &config.Config{}},
+			args{context.Background()},
+			nil,
+			"",
+			require.Error,
+		},
+		{
+			"success",
+			fields{config: &config.Config{URL: server.URL}},
+			args{context.Background()},
+			properties,
+			propertiesEtag,
+			require.NoError,
+		},
+		{
+			"same etag",
+			fields{config: &config.Config{URL: server.URL}, etag: propertiesEtag},
+			args{context.Background()},
+			nil,
+			propertiesEtag,
+			require.Error,
+		},
+		{
+			"different etag",
+			fields{config: &config.Config{URL: server.URL}, etag: differentEtag},
+			args{context.Background()},
+			properties,
+			propertiesEtag,
+			require.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			f := NewFetch(tt.fields.config)
-			if tt.fields.client != nil {
-				f.client = tt.fields.client
-			}
 			f.url = tt.fields.url
 			f.tokenChecksum = tt.fields.tokenChecksum
 			f.etag = tt.fields.etag
 
-			got, err := f.Do()
+			got, err := f.Do(tt.args.ctx)
 			tt.wantErr(t, err)
 			assert.Equal(t, tt.want, got)
 			assert.Equal(t, tt.wantEtag, f.etag)

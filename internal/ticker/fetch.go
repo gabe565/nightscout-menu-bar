@@ -1,6 +1,7 @@
 package ticker
 
 import (
+	"context"
 	"errors"
 	"log/slog"
 	"time"
@@ -27,7 +28,10 @@ func (t *Ticker) beginFetch(render chan<- *nightscout.Properties) {
 }
 
 func (t *Ticker) Fetch(render chan<- *nightscout.Properties) {
-	properties, err := t.fetch.Do()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	properties, err := t.fetch.Do(ctx)
 	if err != nil && !errors.Is(err, fetch.ErrNotModified) {
 		t.bus <- err
 		return

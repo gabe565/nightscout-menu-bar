@@ -1,6 +1,7 @@
 package fetch
 
 import (
+	"context"
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
@@ -10,7 +11,6 @@ import (
 	"net/http"
 	"net/url"
 	"path"
-	"time"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
@@ -24,21 +24,17 @@ var (
 func NewFetch(conf *config.Config) *Fetch {
 	return &Fetch{
 		config: conf,
-		client: &http.Client{
-			Timeout: time.Minute,
-		},
 	}
 }
 
 type Fetch struct {
 	config        *config.Config
-	client        *http.Client
 	url           *url.URL
 	tokenChecksum string
 	etag          string
 }
 
-func (f *Fetch) Do() (*nightscout.Properties, error) {
+func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 	if f.url == nil {
 		if err := f.UpdateUrl(); err != nil {
 			return nil, err
@@ -46,7 +42,7 @@ func (f *Fetch) Do() (*nightscout.Properties, error) {
 	}
 
 	// Fetch JSON
-	req, err := http.NewRequest("GET", f.url.String(), nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", f.url.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +54,7 @@ func (f *Fetch) Do() (*nightscout.Properties, error) {
 		req.Header.Set("Api-Secret", f.tokenChecksum)
 	}
 
-	resp, err := f.client.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
