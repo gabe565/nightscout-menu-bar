@@ -2,7 +2,6 @@ package nightscout
 
 import (
 	"encoding/json"
-	"fmt"
 	"math"
 	"strconv"
 
@@ -52,12 +51,9 @@ func (r *Reading) Arrow(conf config.Arrows) string {
 }
 
 func (r *Reading) String(units string, arrows config.Arrows) string {
-	return fmt.Sprintf(
-		"%s %s [%s]",
-		r.DisplayBg(units),
-		r.Arrow(arrows),
-		util.MinAgo(r.Mills.Time),
-	)
+	return r.DisplayBg(units) +
+		" " + r.Arrow(arrows) +
+		" [" + util.MinAgo(r.Mills.Time) + "]"
 }
 
 func (r *Reading) UnmarshalJSON(bytes []byte) error {
