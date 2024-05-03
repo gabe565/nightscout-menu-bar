@@ -13,7 +13,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-          cache: true
+          cache: false
       - name: Install systray dependencies
         run: |
           sudo apt-get update
@@ -22,8 +22,6 @@ jobs:
         uses: golangci/golangci-lint-action@v5
         with:
           args: --timeout=5m
-          skip-build-cache: true
-          skip-pkg-cache: true
 
   test:
     name: Test
@@ -35,7 +33,6 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-          cache: true
       - name: Install systray dependencies
         run: |
           sudo apt-get update
@@ -55,7 +52,6 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-          cache: true
       - name: Install systray dependencies
         run: |
           sudo apt-get update
@@ -80,7 +76,6 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-          cache: true
       - name: Build
         shell: bash
         run: ./hack/build-windows.sh
@@ -104,7 +99,6 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-          cache: true
       - name: Build
         env:
           VERSION: ${{ github.ref_name }}
