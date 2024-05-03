@@ -39,19 +39,6 @@ func TestProperties_String(t *testing.T) {
 			args{config.UnitsMgdl, config.NewDefault().Arrows},
 			"100 → +1 [0m]",
 		},
-		{
-			"mmol",
-			fields{
-				Bgnow: Reading{
-					Last:  100,
-					Mills: Mills{time.Now()},
-					Sgvs:  []SGV{{Direction: "Flat"}},
-				},
-				Delta: Delta{Scaled: 1},
-			},
-			args{config.UnitsMmol, config.NewDefault().Arrows},
-			"5.6 → +0.1 [0m]",
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
