@@ -4,6 +4,7 @@ package config
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"log/slog"
 	"os"
@@ -18,33 +19,31 @@ import (
 	flag "github.com/spf13/pflag"
 )
 
-var cfgFile string
-
-func init() {
-	flag.StringVarP(&cfgFile, "config", "c", "", "Config file")
+func (conf *Config) RegisterFlags(fs *flag.FlagSet) {
+	fs.StringVarP(&conf.File, "config", "c", "", "Config file")
 }
 
-func Load() error {
+func (conf *Config) Load() error {
 	flag.Parse()
 	k := koanf.New(".")
 
-	// Load default config
-	if err := k.Load(structs.Provider(Default, "toml"), nil); err != nil {
+	// Load conf config
+	if err := k.Load(structs.Provider(conf, "toml"), nil); err != nil {
 		return err
 	}
 
 	// Find config file
-	if cfgFile == "" {
+	if conf.File == "" {
 		cfgDir, err := GetDir()
 		if err != nil {
 			return err
 		}
 
-		cfgFile = filepath.Join(cfgDir, "config.toml")
+		conf.File = filepath.Join(cfgDir, "config.toml")
 	}
 
 	// Load config file if exists
-	cfgContents, err := os.ReadFile(cfgFile)
+	cfgContents, err := os.ReadFile(conf.File)
 	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		return err
 	}
@@ -55,32 +54,32 @@ func Load() error {
 		return err
 	}
 
-	if err := k.UnmarshalWithConf("", &Default, koanf.UnmarshalConf{Tag: "toml"}); err != nil {
+	if err := k.UnmarshalWithConf("", &conf, koanf.UnmarshalConf{Tag: "toml"}); err != nil {
 		return err
 	}
 
-	if err := Write(); err != nil {
+	if err := conf.Write(); err != nil {
 		return err
 	}
 
-	slog.Info("Loaded config", "file", cfgFile)
-	return err
+	slog.Info("Loaded config", "file", conf.File)
+	return nil
 }
 
-func Write() error {
+func (conf *Config) Write() error {
 	// Find config file
-	if cfgFile == "" {
+	if conf.File == "" {
 		cfgDir, err := GetDir()
 		if err != nil {
 			return err
 		}
 
-		cfgFile = filepath.Join(cfgDir, "config.toml")
+		conf.File = filepath.Join(cfgDir, "config.toml")
 	}
 
 	var cfgNotExists bool
 	// Load config file if exists
-	cfgContents, err := os.ReadFile(cfgFile)
+	cfgContents, err := os.ReadFile(conf.File)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
 			cfgNotExists = true
@@ -89,47 +88,56 @@ func Write() error {
 		}
 	}
 
-	newCfg, err := toml.Marshal(Default)
+	newCfg, err := toml.Marshal(conf)
 	if err != nil {
 		return err
 	}
 
 	if !bytes.Equal(cfgContents, newCfg) {
 		if cfgNotExists {
-			slog.Info("Creating config", "file", cfgFile)
+			slog.Info("Creating config", "file", conf.File)
 
-			if err := os.MkdirAll(filepath.Dir(cfgFile), 0o777); err != nil {
+			if err := os.MkdirAll(filepath.Dir(conf.File), 0o777); err != nil {
 				return err
 			}
 		} else {
-			slog.Info("Updating config", "file", cfgFile)
+			slog.Info("Updating config", "file", conf.File)
 		}
 
-		if err := os.WriteFile(cfgFile, newCfg, 0o666); err != nil {
+		if err := os.WriteFile(conf.File, newCfg, 0o666); err != nil {
 			return err
 		}
 	}
 
-	return err
+	return nil
 }
 
-func Watch() error {
-	slog.Info("Watching config", "file", cfgFile)
-	f := file.Provider(cfgFile)
-	return f.Watch(func(event interface{}, err error) {
+func (conf *Config) Watch(ctx context.Context) error {
+	slog.Info("Watching config", "file", conf.File)
+	f := file.Provider(conf.File)
+	return f.Watch(func(event any, err error) {
 		if err != nil {
 			slog.Error("Config watcher failed", "error", err.Error())
+			if ctx.Err() != nil {
+				conf.callbacks = nil
+				return
+			}
 			time.Sleep(time.Second)
 			defer func() {
-				_ = Watch()
+				_ = conf.Watch(ctx)
 			}()
 		}
 
-		if err := Load(); err != nil {
+		if err := conf.Load(); err != nil {
 			slog.Error("Failed to load config", "error", err.Error())
 		}
-		for _, reloader := range reloaders {
-			reloader()
+
+		for _, fn := range conf.callbacks {
+			fn()
 		}
 	})
+}
+
+func (conf *Config) AddCallback(fn func()) {
+	conf.callbacks = append(conf.callbacks, fn)
 }

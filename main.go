@@ -6,35 +6,14 @@ import (
 	"os/signal"
 	"syscall"
 
-	"fyne.io/systray"
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/localfile"
-	"github.com/gabe565/nightscout-menu-bar/internal/ticker"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 )
 
 func main() {
-	if err := config.Load(); err != nil {
-		go func() {
-			tray.Error <- err
-		}()
-	}
-	if err := config.Watch(); err != nil {
-		go func() {
-			tray.Error <- err
-		}()
-	}
-
-	localfile.ReloadConfig()
-
-	ticker.BeginRender()
-	ticker.BeginFetch()
+	t := tray.New()
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
 	defer cancel()
-	go func() {
-		<-ctx.Done()
-		systray.Quit()
-	}()
-	tray.Run()
+
+	t.Run(ctx)
 }

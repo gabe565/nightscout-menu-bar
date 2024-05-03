@@ -4,16 +4,17 @@ import (
 	"fyne.io/systray"
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
 	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
+	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray/items/preferences"
 )
 
-func NewPreferences() Preferences {
+func NewPreferences(conf *config.Config) Preferences {
 	item := systray.AddMenuItem("Preferences", "")
 	item.SetTemplateIcon(assets.Gear, assets.Gear)
 
-	url := preferences.NewUrl(item)
-	token := preferences.NewToken(item)
-	units := preferences.NewUnits(item)
+	url := preferences.NewUrl(conf, item)
+	token := preferences.NewToken(conf, item)
+	units := preferences.NewUnits(conf, item)
 
 	autostartEnabled, _ := autostart.IsEnabled()
 	startOnLogin := item.AddSubMenuItemCheckbox(
@@ -22,7 +23,7 @@ func NewPreferences() Preferences {
 		autostartEnabled,
 	)
 
-	localFile := preferences.NewLocalFile(item)
+	localFile := preferences.NewLocalFile(conf, item)
 
 	return Preferences{
 		Item:         item,

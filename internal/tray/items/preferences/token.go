@@ -9,20 +9,21 @@ import (
 	"github.com/ncruces/zenity"
 )
 
-func NewToken(parent *systray.MenuItem) Token {
-	var token Token
+func NewToken(config *config.Config, parent *systray.MenuItem) Token {
+	token := Token{config: config}
 	token.MenuItem = parent.AddSubMenuItem(token.GetTitle(), "")
 	return token
 }
 
 type Token struct {
+	config *config.Config
 	*systray.MenuItem
 }
 
 func (n Token) GetTitle() string {
 	title := "API Token"
-	if config.Default.Token != "" {
-		title += ": " + config.Default.Token
+	if n.config.Token != "" {
+		title += ": " + n.config.Token
 	}
 	return title
 }
@@ -32,7 +33,7 @@ func (n Token) UpdateTitle() {
 }
 
 func (n Token) Prompt() error {
-	token, err := ui.PromptToken()
+	token, err := ui.PromptToken(n.config.Token)
 	if err != nil {
 		if errors.Is(err, zenity.ErrCanceled) {
 			return nil
@@ -40,8 +41,8 @@ func (n Token) Prompt() error {
 		return err
 	}
 
-	config.Default.Token = token
-	if err := config.Write(); err != nil {
+	n.config.Token = token
+	if err := n.config.Write(); err != nil {
 		return err
 	}
 	return nil

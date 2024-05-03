@@ -11,6 +11,8 @@ import (
 )
 
 func TestReading_Arrow(t *testing.T) {
+	defaultArrows := config.NewDefault().Arrows
+
 	type fields struct {
 		Mean      int
 		Last      int
@@ -20,21 +22,25 @@ func TestReading_Arrow(t *testing.T) {
 		ToMills   Mills
 		Sgvs      []SGV
 	}
+	type args struct {
+		arrows config.Arrows
+	}
 	tests := []struct {
 		name   string
 		fields fields
+		args   args
 		want   string
 	}{
-		{"TripleUp", fields{Sgvs: []SGV{{Direction: "TripleUp"}}}, "⇈"},
-		{"DoubleUp", fields{Sgvs: []SGV{{Direction: "DoubleUp"}}}, "⇈"},
-		{"SingleUp", fields{Sgvs: []SGV{{Direction: "SingleUp"}}}, "↑"},
-		{"FortyFiveUp", fields{Sgvs: []SGV{{Direction: "FortyFiveUp"}}}, "↗"},
-		{"Flat", fields{Sgvs: []SGV{{Direction: "Flat"}}}, "→"},
-		{"FortyFiveDown", fields{Sgvs: []SGV{{Direction: "FortyFiveDown"}}}, "↘"},
-		{"SingleDown", fields{Sgvs: []SGV{{Direction: "SingleDown"}}}, "↓"},
-		{"DoubleDown", fields{Sgvs: []SGV{{Direction: "DoubleDown"}}}, "⇊"},
-		{"TripleDown", fields{Sgvs: []SGV{{Direction: "TripleDown"}}}, "⇊"},
-		{"unknown", fields{}, "-"},
+		{"TripleUp", fields{Sgvs: []SGV{{Direction: "TripleUp"}}}, args{defaultArrows}, "⇈"},
+		{"DoubleUp", fields{Sgvs: []SGV{{Direction: "DoubleUp"}}}, args{defaultArrows}, "⇈"},
+		{"SingleUp", fields{Sgvs: []SGV{{Direction: "SingleUp"}}}, args{defaultArrows}, "↑"},
+		{"FortyFiveUp", fields{Sgvs: []SGV{{Direction: "FortyFiveUp"}}}, args{defaultArrows}, "↗"},
+		{"Flat", fields{Sgvs: []SGV{{Direction: "Flat"}}}, args{defaultArrows}, "→"},
+		{"FortyFiveDown", fields{Sgvs: []SGV{{Direction: "FortyFiveDown"}}}, args{defaultArrows}, "↘"},
+		{"SingleDown", fields{Sgvs: []SGV{{Direction: "SingleDown"}}}, args{defaultArrows}, "↓"},
+		{"DoubleDown", fields{Sgvs: []SGV{{Direction: "DoubleDown"}}}, args{defaultArrows}, "⇊"},
+		{"TripleDown", fields{Sgvs: []SGV{{Direction: "TripleDown"}}}, args{defaultArrows}, "⇊"},
+		{"unknown", fields{}, args{defaultArrows}, "-"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -47,7 +53,7 @@ func TestReading_Arrow(t *testing.T) {
 				ToMills:   tt.fields.ToMills,
 				Sgvs:      tt.fields.Sgvs,
 			}
-			assert.Equal(t, tt.want, r.Arrow())
+			assert.Equal(t, tt.want, r.Arrow(tt.args.arrows))
 		})
 	}
 }
@@ -62,9 +68,14 @@ func TestReading_String(t *testing.T) {
 		ToMills   Mills
 		Sgvs      []SGV
 	}
+	type args struct {
+		units  string
+		arrows config.Arrows
+	}
 	tests := []struct {
 		name   string
 		fields fields
+		args   args
 		want   string
 	}{
 		{
@@ -74,6 +85,7 @@ func TestReading_String(t *testing.T) {
 				Mills: Mills{time.Now()},
 				Sgvs:  []SGV{{Direction: "Flat"}},
 			},
+			args{config.UnitsMgdl, config.NewDefault().Arrows},
 			"100 → [0m]",
 		},
 	}
@@ -88,16 +100,12 @@ func TestReading_String(t *testing.T) {
 				ToMills:   tt.fields.ToMills,
 				Sgvs:      tt.fields.Sgvs,
 			}
-			assert.Equal(t, tt.want, r.String())
+			assert.Equal(t, tt.want, r.String(tt.args.units, tt.args.arrows))
 		})
 	}
 }
 
 func TestReading_DisplayBg(t *testing.T) {
-	defer func() {
-		config.Default.Units = config.UnitsMgdl
-	}()
-
 	type fields struct {
 		Mean      int
 		Last      int
@@ -122,12 +130,6 @@ func TestReading_DisplayBg(t *testing.T) {
 		{"mmol", args{config.UnitsMmol}, fields{Last: 100}, "5.6"},
 	}
 	for _, tt := range tests {
-		switch tt.args.units {
-		case config.UnitsMgdl:
-			config.Default.Units = config.UnitsMgdl
-		case config.UnitsMmol:
-			config.Default.Units = config.UnitsMmol
-		}
 		t.Run(tt.name, func(t *testing.T) {
 			r := &Reading{
 				Mean:      tt.fields.Mean,
@@ -138,7 +140,7 @@ func TestReading_DisplayBg(t *testing.T) {
 				ToMills:   tt.fields.ToMills,
 				Sgvs:      tt.fields.Sgvs,
 			}
-			assert.Equal(t, tt.want, r.DisplayBg())
+			assert.Equal(t, tt.want, r.DisplayBg(tt.args.units))
 		})
 	}
 }

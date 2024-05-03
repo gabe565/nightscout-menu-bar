@@ -4,30 +4,30 @@ import (
 	"time"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
-	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 )
 
-var (
-	renderTimer = time.NewTimer(5 * time.Minute)
-	RenderCh    = make(chan *nightscout.Properties)
-)
-
-func BeginRender() {
+func (t *Ticker) beginRender() chan<- *nightscout.Properties {
+	renderCh := make(chan *nightscout.Properties)
 	go func() {
+		defer close(renderCh)
+		t.renderTicker = time.NewTicker(5 * time.Minute)
 		var properties *nightscout.Properties
 		for {
 			select {
-			case p := <-RenderCh:
+			case <-t.ctx.Done():
+				return
+			case p := <-renderCh:
 				properties = p
-			case <-renderTimer.C:
+			case <-t.renderTicker.C:
 			}
 			if properties != nil {
-				tray.Update <- properties
-				renderTimer.Reset(util.GetNextMinChange(properties.Bgnow.Mills.Time))
+				t.bus <- properties
+				t.renderTicker.Reset(util.GetNextMinChange(properties.Bgnow.Mills.Time))
 			} else {
-				renderTimer.Reset(5 * time.Minute)
+				t.renderTicker.Reset(5 * time.Minute)
 			}
 		}
 	}()
+	return renderCh
 }

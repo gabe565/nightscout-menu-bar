@@ -25,37 +25,37 @@ type Reading struct {
 	Sgvs      []SGV `json:"sgvs"`
 }
 
-func (r *Reading) Arrow() string {
+func (r *Reading) Arrow(conf config.Arrows) string {
 	var direction string
 	if len(r.Sgvs) > 0 {
 		direction = r.Sgvs[0].Direction
 	}
 	switch direction {
 	case "DoubleUp", "TripleUp":
-		direction = config.Default.Arrows.DoubleUp
+		direction = conf.DoubleUp
 	case "SingleUp":
-		direction = config.Default.Arrows.SingleUp
+		direction = conf.SingleUp
 	case "FortyFiveUp":
-		direction = config.Default.Arrows.FortyFiveUp
+		direction = conf.FortyFiveUp
 	case "Flat":
-		direction = config.Default.Arrows.Flat
+		direction = conf.Flat
 	case "FortyFiveDown":
-		direction = config.Default.Arrows.FortyFiveDown
+		direction = conf.FortyFiveDown
 	case "SingleDown":
-		direction = config.Default.Arrows.SingleDown
+		direction = conf.SingleDown
 	case "DoubleDown", "TripleDown":
-		direction = config.Default.Arrows.DoubleDown
+		direction = conf.DoubleDown
 	default:
-		direction = config.Default.Arrows.Unknown
+		direction = conf.Unknown
 	}
 	return direction
 }
 
-func (r *Reading) String() string {
+func (r *Reading) String(units string, arrows config.Arrows) string {
 	return fmt.Sprintf(
 		"%s %s [%s]",
-		r.DisplayBg(),
-		r.Arrow(),
+		r.DisplayBg(units),
+		r.Arrow(arrows),
 		util.MinAgo(r.Mills.Time),
 	)
 }
@@ -76,7 +76,7 @@ func (r *Reading) UnmarshalJSON(bytes []byte) error {
 	return nil
 }
 
-func (r *Reading) DisplayBg() string {
+func (r *Reading) DisplayBg(units string) string {
 	switch r.Last {
 	case LowReading:
 		return "LOW"
@@ -84,7 +84,7 @@ func (r *Reading) DisplayBg() string {
 		return "HIGH"
 	}
 
-	if config.Default.Units == config.UnitsMmol {
+	if units == config.UnitsMmol {
 		mmol := util.ToMmol(r.Last)
 		mmol = math.Round(mmol*10) / 10
 		return strconv.FormatFloat(mmol, 'f', 1, 64)

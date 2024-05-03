@@ -7,6 +7,9 @@ import (
 )
 
 type Config struct {
+	File      string   `toml:"-"`
+	callbacks []func() `toml:"-"`
+
 	Title     string    `toml:"title" comment:"Tray title."`
 	URL       string    `toml:"url" comment:"Nightscout URL. (required)"`
 	Token     string    `toml:"token" comment:"Nightscout token. Using an access token is recommended instead of the API secret."`
@@ -31,10 +34,9 @@ type LocalFile struct {
 	Enabled bool   `toml:"enabled"`
 	Format  string `toml:"format" comment:"Local file format. (one of: csv)"`
 	Path    string `toml:"path" comment:"Local file path. $TMPDIR will be replaced with the current temp directory."`
-	Cleanup bool   `toml:"cleanup" comment:"If enabled, the local file will be cleaned up when Nightscout Menu Bar is closed."`
 }
 
-var configDir = "nightscout-menu-bar"
+const configDir = "nightscout-menu-bar"
 
 func GetDir() (string, error) {
 	switch runtime.GOOS {

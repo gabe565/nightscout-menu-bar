@@ -5,33 +5,39 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/localfile"
+	"github.com/gabe565/nightscout-menu-bar/internal/fetch"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
-	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 )
 
-var fetchTimer = time.NewTimer(0)
-
-func BeginFetch() {
+func (t *Ticker) beginFetch(render chan<- *nightscout.Properties) {
 	go func() {
-		for range fetchTimer.C {
-			Fetch()
-			fetchTimer.Reset(config.Default.Interval.Duration)
+		t.Fetch(render)
+		t.fetchTicker = time.NewTicker(t.config.Interval.Duration)
+
+		for {
+			select {
+			case <-t.ctx.Done():
+				return
+			case <-t.fetchTicker.C:
+				t.Fetch(render)
+				t.fetchTicker.Reset(t.config.Interval.Duration)
+			}
 		}
 	}()
 }
 
-func Fetch() {
-	properties, err := nightscout.Fetch()
-	if err != nil && !errors.Is(err, nightscout.ErrNotModified) {
-		tray.Error <- err
+func (t *Ticker) Fetch(render chan<- *nightscout.Properties) {
+	properties, err := t.fetch.Do()
+	if err != nil && !errors.Is(err, fetch.ErrNotModified) {
+		t.bus <- err
 		return
 	}
 	if properties != nil {
-		RenderCh <- properties
-		if config.Default.LocalFile.Enabled {
-			if err := localfile.Write(properties); err != nil {
+		if render != nil {
+			render <- properties
+		}
+		if t.config.LocalFile.Enabled {
+			if err := t.localFile.Write(properties); err != nil {
 				slog.Error("Failed to write local file", "error", err.Error())
 			}
 		}

@@ -5,12 +5,10 @@ import (
 	"time"
 )
 
-var Default = NewDefault()
-
 const LocalFileFormatCsv = "csv"
 
-func NewDefault() Config {
-	return Config{
+func NewDefault() *Config {
+	return &Config{
 		Title:    "Nightscout",
 		Units:    UnitsMgdl,
 		Interval: Duration{30 * time.Second},
@@ -25,9 +23,8 @@ func NewDefault() Config {
 			Unknown:       "-",
 		},
 		LocalFile: LocalFile{
-			Format:  LocalFileFormatCsv,
-			Path:    filepath.Join("$TMPDIR", "nightscout.csv"),
-			Cleanup: true,
+			Format: LocalFileFormatCsv,
+			Path:   filepath.Join("$TMPDIR", "nightscout.csv"),
 		},
 	}
 }

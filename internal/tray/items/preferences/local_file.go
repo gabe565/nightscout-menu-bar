@@ -5,17 +5,18 @@ import (
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 )
 
-func NewLocalFile(parent *systray.MenuItem) LocalFile {
-	var item LocalFile
+func NewLocalFile(conf *config.Config, parent *systray.MenuItem) LocalFile {
+	item := LocalFile{config: conf}
 	item.MenuItem = parent.AddSubMenuItemCheckbox(
 		"Write to local file",
 		"",
-		config.Default.LocalFile.Enabled,
+		conf.LocalFile.Enabled,
 	)
 	return item
 }
 
 type LocalFile struct {
+	config *config.Config
 	*systray.MenuItem
 }
 
@@ -26,8 +27,8 @@ func (l LocalFile) Toggle() error {
 		l.Check()
 	}
 
-	config.Default.LocalFile.Enabled = l.Checked()
-	if err := config.Write(); err != nil {
+	l.config.LocalFile.Enabled = l.Checked()
+	if err := l.config.Write(); err != nil {
 		return err
 	}
 	return nil

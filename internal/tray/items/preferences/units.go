@@ -9,18 +9,19 @@ import (
 	"github.com/ncruces/zenity"
 )
 
-func NewUnits(parent *systray.MenuItem) Units {
-	var item Units
+func NewUnits(config *config.Config, parent *systray.MenuItem) Units {
+	item := Units{config: config}
 	item.MenuItem = parent.AddSubMenuItem(item.GetTitle(), "")
 	return item
 }
 
 type Units struct {
+	config *config.Config
 	*systray.MenuItem
 }
 
 func (n Units) GetTitle() string {
-	return "Units: " + config.Default.Units
+	return "Units: " + n.config.Units
 }
 
 func (n Units) UpdateTitle() {
@@ -28,7 +29,7 @@ func (n Units) UpdateTitle() {
 }
 
 func (n Units) Prompt() error {
-	unit, err := ui.PromptUnits()
+	unit, err := ui.PromptUnits(n.config.Units)
 	if err != nil {
 		if errors.Is(err, zenity.ErrCanceled) {
 			return nil
@@ -36,8 +37,8 @@ func (n Units) Prompt() error {
 		return err
 	}
 
-	config.Default.Units = unit
-	if err := config.Write(); err != nil {
+	n.config.Units = unit
+	if err := n.config.Write(); err != nil {
 		return err
 	}
 	return nil

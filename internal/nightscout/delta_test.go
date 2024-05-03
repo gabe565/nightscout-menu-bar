@@ -8,10 +8,6 @@ import (
 )
 
 func TestDelta_Display(t *testing.T) {
-	defer func() {
-		config.Default.Units = config.UnitsMgdl
-	}()
-
 	type fields struct {
 		Absolute     int
 		DisplayVal   string
@@ -47,12 +43,6 @@ func TestDelta_Display(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			switch tt.args.units {
-			case config.UnitsMgdl:
-				config.Default.Units = config.UnitsMgdl
-			case config.UnitsMmol:
-				config.Default.Units = config.UnitsMmol
-			}
 			d := Delta{
 				Absolute:     tt.fields.Absolute,
 				DisplayVal:   tt.fields.DisplayVal,
@@ -64,7 +54,7 @@ func TestDelta_Display(t *testing.T) {
 				Scaled:       tt.fields.Scaled,
 				Times:        tt.fields.Times,
 			}
-			assert.Equal(t, tt.want, d.Display())
+			assert.Equal(t, tt.want, d.Display(tt.args.units))
 		})
 	}
 }
