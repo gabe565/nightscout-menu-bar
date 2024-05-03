@@ -12,7 +12,7 @@ func NewPreferences(conf *config.Config) Preferences {
 	item := systray.AddMenuItem("Preferences", "")
 	item.SetTemplateIcon(assets.Gear, assets.Gear)
 
-	url := preferences.NewUrl(conf, item)
+	url := preferences.NewURL(conf, item)
 	token := preferences.NewToken(conf, item)
 	units := preferences.NewUnits(conf, item)
 
@@ -27,7 +27,7 @@ func NewPreferences(conf *config.Config) Preferences {
 
 	return Preferences{
 		Item:         item,
-		Url:          url,
+		URL:          url,
 		Token:        token,
 		Units:        units,
 		StartOnLogin: startOnLogin,
@@ -37,7 +37,7 @@ func NewPreferences(conf *config.Config) Preferences {
 
 type Preferences struct {
 	Item         *systray.MenuItem
-	Url          preferences.Url
+	URL          preferences.URL
 	Token        preferences.Token
 	Units        preferences.Units
 	StartOnLogin *systray.MenuItem

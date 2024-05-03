@@ -9,18 +9,18 @@ import (
 	"github.com/ncruces/zenity"
 )
 
-func NewUrl(conf *config.Config, parent *systray.MenuItem) Url {
-	item := Url{config: conf}
+func NewURL(conf *config.Config, parent *systray.MenuItem) URL {
+	item := URL{config: conf}
 	item.MenuItem = parent.AddSubMenuItem(item.GetTitle(), "")
 	return item
 }
 
-type Url struct {
+type URL struct {
 	config *config.Config
 	*systray.MenuItem
 }
 
-func (n Url) GetTitle() string {
+func (n URL) GetTitle() string {
 	title := "Nightscout URL"
 	if n.config.URL != "" {
 		title += ": " + n.config.URL
@@ -28,11 +28,11 @@ func (n Url) GetTitle() string {
 	return title
 }
 
-func (n Url) UpdateTitle() {
+func (n URL) UpdateTitle() {
 	n.SetTitle(n.GetTitle())
 }
 
-func (n Url) Prompt() error {
+func (n URL) Prompt() error {
 	url, err := ui.PromptURL(n.config.URL)
 	if err != nil {
 		if errors.Is(err, zenity.ErrCanceled) {

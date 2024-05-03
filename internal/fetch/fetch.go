@@ -17,8 +17,9 @@ import (
 )
 
 var (
-	ErrHttp        = errors.New("unexpected HTTP error")
+	ErrHTTP        = errors.New("unexpected HTTP error")
 	ErrNotModified = errors.New("not modified")
+	ErrNoURL       = errors.New("please configure your Nightscout URL")
 )
 
 func NewFetch(conf *config.Config) *Fetch {
@@ -36,7 +37,7 @@ type Fetch struct {
 
 func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 	if f.url == nil {
-		if err := f.UpdateUrl(); err != nil {
+		if err := f.UpdateURL(); err != nil {
 			return nil, err
 		}
 	}
@@ -77,12 +78,12 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 		return &properties, nil
 	default:
 		f.etag = ""
-		return nil, fmt.Errorf("%w: %d", ErrHttp, resp.StatusCode)
+		return nil, fmt.Errorf("%w: %d", ErrHTTP, resp.StatusCode)
 	}
 }
 
-func (f *Fetch) UpdateUrl() error {
-	u, err := BuildUrl(f.config)
+func (f *Fetch) UpdateURL() error {
+	u, err := BuildURL(f.config)
 	if err != nil {
 		return err
 	}
@@ -106,16 +107,16 @@ func (f *Fetch) Reset() {
 	f.etag = ""
 }
 
-func BuildUrl(conf *config.Config) (*url.URL, error) {
+func BuildURL(conf *config.Config) (*url.URL, error) {
 	if conf.URL == "" {
-		return nil, errors.New("please configure your Nightscout URL")
+		return nil, ErrNoURL
 	}
 
 	return url.Parse(conf.URL)
 }
 
-func BuildUrlWithToken(conf *config.Config) (*url.URL, error) {
-	u, err := BuildUrl(conf)
+func BuildURLWithToken(conf *config.Config) (*url.URL, error) {
+	u, err := BuildURL(conf)
 	if err != nil {
 		return u, err
 	}

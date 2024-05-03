@@ -11,6 +11,7 @@ import (
 )
 
 func TestReading_Arrow(t *testing.T) {
+	t.Parallel()
 	defaultArrows := config.NewDefault().Arrows
 
 	type fields struct {
@@ -44,6 +45,7 @@ func TestReading_Arrow(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			r := Reading{
 				Mean:      tt.fields.Mean,
 				Last:      tt.fields.Last,
@@ -59,6 +61,7 @@ func TestReading_Arrow(t *testing.T) {
 }
 
 func TestReading_String(t *testing.T) {
+	t.Parallel()
 	type fields struct {
 		Mean      int
 		Last      int
@@ -91,6 +94,7 @@ func TestReading_String(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			r := Reading{
 				Mean:      tt.fields.Mean,
 				Last:      tt.fields.Last,
@@ -106,6 +110,7 @@ func TestReading_String(t *testing.T) {
 }
 
 func TestReading_DisplayBg(t *testing.T) {
+	t.Parallel()
 	type fields struct {
 		Mean      int
 		Last      int
@@ -131,6 +136,7 @@ func TestReading_DisplayBg(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			r := &Reading{
 				Mean:      tt.fields.Mean,
 				Last:      tt.fields.Last,
@@ -185,6 +191,7 @@ var lowReading = `{
 }`
 
 func TestReading_UnmarshalJSON(t *testing.T) {
+	t.Parallel()
 	now := time.Now()
 
 	type fields struct {
@@ -226,6 +233,7 @@ func TestReading_UnmarshalJSON(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			r := &Reading{
 				Mean:      tt.fields.Mean,
 				Last:      tt.fields.Last,

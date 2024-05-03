@@ -22,7 +22,7 @@ func GetNextMinChange(t time.Time) time.Duration {
 	// Time since last update
 	duration := time.Since(t)
 	// Only keep seconds
-	duration = duration % time.Minute
+	duration %= time.Minute
 	// Time until rounded output changes
 	duration = time.Minute - duration
 	return duration

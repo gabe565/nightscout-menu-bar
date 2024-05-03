@@ -72,7 +72,7 @@ func (t *Tray) onReady() {
 	for {
 		select {
 		case <-openNightscoutItem.ClickedCh:
-			u, err := fetch.BuildUrlWithToken(t.config)
+			u, err := fetch.BuildURLWithToken(t.config)
 			if err != nil {
 				t.onError(err)
 				return
@@ -80,9 +80,9 @@ func (t *Tray) onReady() {
 			if err := open.Run(u.String()); err != nil {
 				t.onError(err)
 			}
-		case <-prefs.Url.ClickedCh:
+		case <-prefs.URL.ClickedCh:
 			go func() {
-				if err := prefs.Url.Prompt(); err != nil {
+				if err := prefs.URL.Prompt(); err != nil {
 					t.onError(err)
 				}
 			}()
@@ -141,7 +141,7 @@ func (t *Tray) onReady() {
 				errorItem.SetTitle(msg.Error())
 				errorItem.Show()
 			case ReloadConfigMsg:
-				prefs.Url.UpdateTitle()
+				prefs.URL.UpdateTitle()
 				prefs.Token.UpdateTitle()
 				prefs.Units.UpdateTitle()
 			}

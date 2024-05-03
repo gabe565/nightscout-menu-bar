@@ -8,6 +8,7 @@ import (
 )
 
 func TestMinAgo(t *testing.T) {
+	t.Parallel()
 	type args struct {
 		date time.Time
 	}
@@ -27,12 +28,14 @@ func TestMinAgo(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			assert.Equal(t, tt.want, MinAgo(tt.args.date))
 		})
 	}
 }
 
 func TestGetNextMinChange(t *testing.T) {
+	t.Parallel()
 	type args struct {
 		t time.Time
 	}
@@ -54,6 +57,7 @@ func TestGetNextMinChange(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			tt.want = tt.want.Round(time.Second)
 			got := GetNextMinChange(tt.args.t).Round(time.Second)
 			assert.Equal(t, tt.want, got)

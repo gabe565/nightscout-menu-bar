@@ -7,6 +7,7 @@ import (
 )
 
 func TestToMmol(t *testing.T) {
+	t.Parallel()
 	type args struct {
 		mgdl int
 	}
@@ -21,7 +22,8 @@ func TestToMmol(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.want, ToMmol(tt.args.mgdl))
+			t.Parallel()
+			assert.InDelta(t, tt.want, ToMmol(tt.args.mgdl), 0.001)
 		})
 	}
 }

@@ -9,6 +9,7 @@ import (
 )
 
 func TestProperties_String(t *testing.T) {
+	t.Parallel()
 	type fields struct {
 		Bgnow     Reading
 		Buckets   []Reading
@@ -41,6 +42,7 @@ func TestProperties_String(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			p := Properties{
 				Bgnow:     tt.fields.Bgnow,
 				Buckets:   tt.fields.Buckets,

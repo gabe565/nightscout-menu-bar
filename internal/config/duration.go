@@ -8,7 +8,7 @@ type Duration struct {
 	time.Duration
 }
 
-func (d Duration) MarshalText() (text []byte, err error) {
+func (d Duration) MarshalText() ([]byte, error) {
 	s := d.String()
 	return []byte(s), nil
 }

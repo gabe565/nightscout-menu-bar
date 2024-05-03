@@ -115,7 +115,7 @@ func (conf *Config) Write() error {
 func (conf *Config) Watch(ctx context.Context) error {
 	slog.Info("Watching config", "file", conf.File)
 	f := file.Provider(conf.File)
-	return f.Watch(func(event any, err error) {
+	return f.Watch(func(_ any, err error) {
 		if err != nil {
 			slog.Error("Config watcher failed", "error", err.Error())
 			if ctx.Err() != nil {

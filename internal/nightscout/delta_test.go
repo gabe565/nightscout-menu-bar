@@ -8,6 +8,7 @@ import (
 )
 
 func TestDelta_Display(t *testing.T) {
+	t.Parallel()
 	type fields struct {
 		Absolute     int
 		DisplayVal   string
@@ -43,6 +44,7 @@ func TestDelta_Display(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			d := Delta{
 				Absolute:     tt.fields.Absolute,
 				DisplayVal:   tt.fields.DisplayVal,
