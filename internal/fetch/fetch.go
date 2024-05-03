@@ -42,7 +42,7 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 	}
 
 	// Fetch JSON
-	req, err := http.NewRequestWithContext(ctx, "GET", f.url.String(), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, f.url.String(), nil)
 	if err != nil {
 		return nil, err
 	}
