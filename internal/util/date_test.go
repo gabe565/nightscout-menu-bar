@@ -3,6 +3,8 @@ package util
 import (
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMinAgo(t *testing.T) {
@@ -25,9 +27,7 @@ func TestMinAgo(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MinAgo(tt.args.date); got != tt.want {
-				t.Errorf("MinAgo() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, MinAgo(tt.args.date))
 		})
 	}
 }
@@ -56,9 +56,7 @@ func TestGetNextMinChange(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.want = tt.want.Round(time.Second)
 			got := GetNextMinChange(tt.args.t).Round(time.Second)
-			if got != tt.want {
-				t.Errorf("GetNextMinChange() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }

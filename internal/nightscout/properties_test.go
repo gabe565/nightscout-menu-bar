@@ -3,6 +3,8 @@ package nightscout
 import (
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestProperties_String(t *testing.T) {
@@ -38,9 +40,7 @@ func TestProperties_String(t *testing.T) {
 				Delta:     tt.fields.Delta,
 				Direction: tt.fields.Direction,
 			}
-			if got := p.String(); got != tt.want {
-				t.Errorf("String() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, p.String())
 		})
 	}
 }

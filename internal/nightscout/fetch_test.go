@@ -4,12 +4,13 @@ import (
 	_ "embed"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"testing"
 	"time"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/hhsnopek/etag"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 //go:embed fetch_test_properties.json
@@ -41,12 +42,12 @@ func TestFetch(t *testing.T) {
 		etag     string
 		want     *Properties
 		wantEtag string
-		wantErr  bool
+		wantErr  require.ErrorAssertionFunc
 	}{
-		{"no url", "", "", nil, "", true},
-		{"success", server.URL, "", properties, propertiesEtag, false},
-		{"same etag", server.URL, propertiesEtag, nil, propertiesEtag, true},
-		{"different etag", server.URL, differentEtag, properties, propertiesEtag, false},
+		{"no url", "", "", nil, "", require.Error},
+		{"success", server.URL, "", properties, propertiesEtag, require.NoError},
+		{"same etag", server.URL, propertiesEtag, nil, propertiesEtag, require.Error},
+		{"different etag", server.URL, differentEtag, properties, propertiesEtag, require.NoError},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -54,16 +55,9 @@ func TestFetch(t *testing.T) {
 			lastEtag = tt.etag
 
 			got, err := Fetch()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Fetch() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Fetch() got = %v, want %v", got, tt.want)
-			}
-			if !reflect.DeepEqual(lastEtag, tt.wantEtag) {
-				t.Errorf("Fetch() got etag = %v, want etag %v", lastEtag, tt.wantEtag)
-			}
+			tt.wantErr(t, err)
+			assert.Equal(t, tt.want, got)
+			assert.Equal(t, tt.wantEtag, lastEtag)
 		})
 	}
 }

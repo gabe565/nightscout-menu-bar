@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestReading_Arrow(t *testing.T) {
@@ -45,9 +47,7 @@ func TestReading_Arrow(t *testing.T) {
 				ToMills:   tt.fields.ToMills,
 				Sgvs:      tt.fields.Sgvs,
 			}
-			if got := r.Arrow(); got != tt.want {
-				t.Errorf("Arrow() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, r.Arrow())
 		})
 	}
 }
@@ -88,9 +88,7 @@ func TestReading_String(t *testing.T) {
 				ToMills:   tt.fields.ToMills,
 				Sgvs:      tt.fields.Sgvs,
 			}
-			if got := r.String(); got != tt.want {
-				t.Errorf("String() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, r.String())
 		})
 	}
 }
@@ -140,9 +138,7 @@ func TestReading_DisplayBg(t *testing.T) {
 				ToMills:   tt.fields.ToMills,
 				Sgvs:      tt.fields.Sgvs,
 			}
-			if got := r.DisplayBg(); got != tt.want {
-				t.Errorf("DisplayBg() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, r.DisplayBg())
 		})
 	}
 }
@@ -205,25 +201,25 @@ func TestReading_UnmarshalJSON(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		wantErr bool
+		wantErr require.ErrorAssertionFunc
 	}{
 		{
 			"simple",
 			fields{},
 			args{[]byte(fmt.Sprintf(normalReading, now.UnixMilli(), now.UnixMilli()))},
-			false,
+			require.NoError,
 		},
 		{
 			"low",
 			fields{},
 			args{[]byte(fmt.Sprintf(lowReading, now.UnixMilli()))},
-			false,
+			require.NoError,
 		},
 		{
 			"error",
 			fields{},
 			args{[]byte("{")},
-			true,
+			require.Error,
 		},
 	}
 	for _, tt := range tests {
@@ -237,9 +233,7 @@ func TestReading_UnmarshalJSON(t *testing.T) {
 				ToMills:   tt.fields.ToMills,
 				Sgvs:      tt.fields.Sgvs,
 			}
-			if err := r.UnmarshalJSON(tt.args.bytes); (err != nil) != tt.wantErr {
-				t.Errorf("UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
-			}
+			tt.wantErr(t, r.UnmarshalJSON(tt.args.bytes))
 		})
 	}
 }

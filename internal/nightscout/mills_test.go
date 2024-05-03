@@ -1,10 +1,12 @@
 package nightscout
 
 import (
-	"reflect"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestMills_MarshalJSON(t *testing.T) {
@@ -20,10 +22,10 @@ func TestMills_MarshalJSON(t *testing.T) {
 		name    string
 		fields  fields
 		want    []byte
-		wantErr bool
+		wantErr require.ErrorAssertionFunc
 	}{
-		{"0", fields{unix0}, []byte("0"), false},
-		{"now", fields{now}, []byte(nowStr), false},
+		{"0", fields{unix0}, []byte("0"), require.NoError},
+		{"now", fields{now}, []byte(nowStr), require.NoError},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -31,13 +33,8 @@ func TestMills_MarshalJSON(t *testing.T) {
 				Time: tt.fields.Time,
 			}
 			got, err := m.MarshalJSON()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("MarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("MarshalJSON() got = %v, want %v", got, tt.want)
-			}
+			tt.wantErr(t, err)
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }
@@ -52,21 +49,16 @@ func TestMills_UnmarshalJSON(t *testing.T) {
 		name    string
 		args    args
 		want    Mills
-		wantErr bool
+		wantErr require.ErrorAssertionFunc
 	}{
-		{"now", args{[]byte(strconv.Itoa(int(now.UnixMilli())))}, Mills{now}, false},
-		{"error", args{[]byte("a")}, Mills{time.Time{}}, true},
+		{"now", args{[]byte(strconv.Itoa(int(now.UnixMilli())))}, Mills{now}, require.NoError},
+		{"error", args{[]byte("a")}, Mills{time.Time{}}, require.Error},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var m Mills
-			if err := m.UnmarshalJSON(tt.args.bytes); (err != nil) != tt.wantErr {
-				t.Errorf("UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(m, tt.want) {
-				t.Errorf("UnmarshalJSON() got = %v, want %v", m, tt.want)
-			}
+			tt.wantErr(t, m.UnmarshalJSON(tt.args.bytes))
+			assert.Equal(t, tt.want, m)
 		})
 	}
 }

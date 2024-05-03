@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDelta_Display(t *testing.T) {
@@ -63,9 +64,7 @@ func TestDelta_Display(t *testing.T) {
 				Scaled:       tt.fields.Scaled,
 				Times:        tt.fields.Times,
 			}
-			if got := d.Display(); got != tt.want {
-				t.Errorf("Display() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, d.Display())
 		})
 	}
 }
