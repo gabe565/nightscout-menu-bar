@@ -41,6 +41,18 @@ func TestDelta_Display(t *testing.T) {
 			fields{Scaled: 9},
 			"+0.5",
 		},
+		{
+			"mmol no decimal",
+			args{config.UnitsMmol},
+			fields{Scaled: 0},
+			"+0",
+		},
+		{
+			"mmol negative",
+			args{config.UnitsMmol},
+			fields{Scaled: -9},
+			"-0.5",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
