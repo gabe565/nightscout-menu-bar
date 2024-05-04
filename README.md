@@ -22,6 +22,22 @@ brew install gabe565/tap/nightscout-menu-bar --no-quarantine
 
 Automated builds are uploaded during the release process. See the [latest release](https://github.com/gabe565/nightscout-menu-bar/releases/latest) for download links.
 
+## Usage
+
+After launching Nightscout Menu Bar, you will need to open its tray menu, then hover over "Preferences" to configure the integration.
+
+The preferences menu contains the following options:
+- Nightscout URL (required)
+- API Token
+- Units: mg/dL or mmol/L
+- Start on login
+- Write to a local file (see [`contrib/powerlevel10k`](contrib/powerlevel10k))
+
+Additional configuration is available in a configuration file, which can be found in the following locations:
+- **Windows:** `%AppData%\nightscout-menu-bar\config.toml`
+- **macOS:** `~/Library/Application Support/nightscout-menu-bar/config.toml`
+- **Linux:** `~/.config/nightscout-menu-bar/config.toml`
+
 ## Contrib
 
 Integrations with external tools are available in the [contrib](contrib) directory.
