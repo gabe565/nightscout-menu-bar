@@ -37,6 +37,7 @@ type Tray struct {
 	config *config.Config
 	ticker *ticker.Ticker
 	bus    chan any
+	items  items.Items
 }
 
 func (t *Tray) Run(ctx context.Context) {
@@ -60,18 +61,11 @@ func (t *Tray) onReady() {
 	systray.SetTitle(t.config.Title)
 	systray.SetTooltip(t.config.Title)
 
-	lastReadingItem := items.NewLastReading()
-	errorItem := items.NewError()
-	systray.AddSeparator()
-	openNightscoutItem := items.NewOpenNightscout(t.config.Title)
-	historyItem, historyVals := items.NewHistory()
-	systray.AddSeparator()
-	prefs := items.NewPreferences(t.config)
-	quitItem := items.NewQuit()
+	t.items = items.New(t.config)
 
 	for {
 		select {
-		case <-openNightscoutItem.ClickedCh:
+		case <-t.items.OpenNightscout.ClickedCh:
 			u, err := fetch.BuildURLWithToken(t.config)
 			if err != nil {
 				t.onError(err)
@@ -80,70 +74,70 @@ func (t *Tray) onReady() {
 			if err := open.Run(u.String()); err != nil {
 				t.onError(err)
 			}
-		case <-prefs.URL.ClickedCh:
+		case <-t.items.Preferences.URL.ClickedCh:
 			go func() {
-				if err := prefs.URL.Prompt(); err != nil {
+				if err := t.items.Preferences.URL.Prompt(); err != nil {
 					t.onError(err)
 				}
 			}()
-		case <-prefs.Token.ClickedCh:
+		case <-t.items.Preferences.Token.ClickedCh:
 			go func() {
-				if err := prefs.Token.Prompt(); err != nil {
+				if err := t.items.Preferences.Token.Prompt(); err != nil {
 					t.onError(err)
 				}
 			}()
-		case <-prefs.Units.ClickedCh:
+		case <-t.items.Preferences.Units.ClickedCh:
 			go func() {
-				if err := prefs.Units.Prompt(); err != nil {
+				if err := t.items.Preferences.Units.Prompt(); err != nil {
 					t.onError(err)
 				}
 			}()
-		case <-prefs.StartOnLogin.ClickedCh:
-			if prefs.StartOnLogin.Checked() {
+		case <-t.items.Preferences.StartOnLogin.ClickedCh:
+			if t.items.Preferences.StartOnLogin.Checked() {
 				if err := autostart.Disable(); err != nil {
 					t.onError(err)
 					continue
 				}
-				prefs.StartOnLogin.Uncheck()
+				t.items.Preferences.StartOnLogin.Uncheck()
 			} else {
 				if err := autostart.Enable(); err != nil {
 					t.onError(err)
 					continue
 				}
-				prefs.StartOnLogin.Check()
+				t.items.Preferences.StartOnLogin.Check()
 			}
-		case <-prefs.LocalFile.ClickedCh:
-			if err := prefs.LocalFile.Toggle(); err != nil {
+		case <-t.items.Preferences.LocalFile.ClickedCh:
+			if err := t.items.Preferences.LocalFile.Toggle(); err != nil {
 				t.onError(err)
 			}
-		case <-quitItem.ClickedCh:
+		case <-t.items.Quit.ClickedCh:
 			t.Quit()
 		case msg := <-t.bus:
 			switch msg := msg.(type) {
 			case *nightscout.Properties:
-				errorItem.Hide()
+				t.items.Error.Hide()
 
 				value := msg.String(t.config.Units, t.config.Arrows)
 				systray.SetTitle(value)
 				systray.SetTooltip(value)
-				lastReadingItem.SetTitle(value)
+				t.items.LastReading.SetTitle(value)
 
 				for i, reading := range msg.Buckets {
-					if i < len(historyVals) {
-						historyVals[i].SetTitle(reading.String(t.config.Units, t.config.Arrows))
+					if i < len(t.items.History.Subitems) {
+						t.items.History.Subitems[i].SetTitle(reading.String(t.config.Units, t.config.Arrows))
 					} else {
-						entry := historyItem.AddSubMenuItem(reading.String(t.config.Units, t.config.Arrows), "")
+						entry := t.items.History.AddSubMenuItem(reading.String(t.config.Units, t.config.Arrows), "")
 						entry.Disable()
-						historyVals = append(historyVals, entry)
+						t.items.History.Subitems = append(t.items.History.Subitems, entry)
 					}
 				}
 			case error:
-				errorItem.SetTitle(msg.Error())
-				errorItem.Show()
+				t.items.Error.SetTitle(msg.Error())
+				t.items.Error.Show()
 			case ReloadConfigMsg:
-				prefs.URL.UpdateTitle()
-				prefs.Token.UpdateTitle()
-				prefs.Units.UpdateTitle()
+				t.items.Preferences.URL.UpdateTitle()
+				t.items.Preferences.Token.UpdateTitle()
+				t.items.Preferences.Units.UpdateTitle()
 			}
 		}
 	}
