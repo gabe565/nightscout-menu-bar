@@ -132,6 +132,7 @@ func (t *Tray) onReady() {
 					}
 				}
 			case error:
+				slog.Error("Displaying error", "error", msg.Error())
 				t.items.Error.SetTitle(msg.Error())
 				t.items.Error.Show()
 			case ReloadConfigMsg:
@@ -147,6 +148,7 @@ func (t *Tray) onError(err error) {
 	select {
 	case t.bus <- err:
 	default:
+		slog.Error("Unable to display error due to full bus", "error", err.Error())
 	}
 }
 
