@@ -28,6 +28,7 @@ func NewDefault() *Config {
 		},
 		Advanced: Advanced{
 			FetchDelay: Duration{30 * time.Second},
+			RoundAge:   true,
 		},
 	}
 }

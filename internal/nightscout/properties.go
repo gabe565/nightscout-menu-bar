@@ -12,9 +12,9 @@ type Properties struct {
 	Direction Direction `json:"direction"`
 }
 
-func (p Properties) String(units string, arrows config.Arrows) string {
-	return p.Bgnow.DisplayBg(units) +
-		" " + p.Bgnow.Arrow(arrows) +
-		" " + p.Delta.Display(units) +
-		" [" + util.MinAgo(p.Bgnow.Mills.Time) + "]"
+func (p Properties) String(conf *config.Config) string {
+	return p.Bgnow.DisplayBg(conf.Units) +
+		" " + p.Bgnow.Arrow(conf.Arrows) +
+		" " + p.Delta.Display(conf.Units) +
+		" [" + util.MinAgo(p.Bgnow.Mills.Time, conf.Advanced.RoundAge) + "]"
 }

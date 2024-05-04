@@ -50,10 +50,10 @@ func (r *Reading) Arrow(conf config.Arrows) string {
 	return direction
 }
 
-func (r *Reading) String(units string, arrows config.Arrows) string {
-	return r.DisplayBg(units) +
-		" " + r.Arrow(arrows) +
-		" [" + util.MinAgo(r.Mills.Time) + "]"
+func (r *Reading) String(conf *config.Config) string {
+	return r.DisplayBg(conf.Units) +
+		" " + r.Arrow(conf.Arrows) +
+		" [" + util.MinAgo(r.Mills.Time, conf.Advanced.RoundAge) + "]"
 }
 
 func (r *Reading) UnmarshalJSON(bytes []byte) error {

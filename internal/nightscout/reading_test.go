@@ -72,8 +72,7 @@ func TestReading_String(t *testing.T) {
 		Sgvs      []SGV
 	}
 	type args struct {
-		units  string
-		arrows config.Arrows
+		conf *config.Config
 	}
 	tests := []struct {
 		name   string
@@ -88,7 +87,7 @@ func TestReading_String(t *testing.T) {
 				Mills: Mills{time.Now()},
 				Sgvs:  []SGV{{Direction: "Flat"}},
 			},
-			args{config.UnitsMgdl, config.NewDefault().Arrows},
+			args{config.NewDefault()},
 			"100 → [0m]",
 		},
 	}
@@ -104,7 +103,7 @@ func TestReading_String(t *testing.T) {
 				ToMills:   tt.fields.ToMills,
 				Sgvs:      tt.fields.Sgvs,
 			}
-			assert.Equal(t, tt.want, r.String(tt.args.units, tt.args.arrows))
+			assert.Equal(t, tt.want, r.String(tt.args.conf))
 		})
 	}
 }

@@ -39,6 +39,7 @@ type LocalFile struct {
 
 type Advanced struct {
 	FetchDelay Duration `toml:"fetch-delay" comment:"Time to wait before the next reading should be ready.\nIn testing, this seems to be about 20s behind, so the default is 30s to be safe.\nYour results may vary."`
+	RoundAge   bool     `toml:"round-age" comment:"If enabled, the reading's age will be rounded up to the nearest minute.\nNightscout rounds the age, so enable this if you want the values to match."`
 }
 
 const configDir = "nightscout-menu-bar"

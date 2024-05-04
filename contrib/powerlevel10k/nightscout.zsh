@@ -55,7 +55,7 @@ function prompt_nightscout() {
       return
     fi
 
-    typeset relative="$(( (EPOCHSECONDS - timestamp + 30) / 60 ))"
+    typeset relative="$(( (EPOCHSECONDS - timestamp) / 60 ))"
 
     # Choose current state for styling.
     if (( relative > NIGHTSCOUT_THRESHOLD_OLD_MINS )); then

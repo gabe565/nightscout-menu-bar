@@ -23,7 +23,7 @@ func (t *Ticker) beginRender() chan<- *nightscout.Properties {
 			}
 			if properties != nil {
 				t.bus <- properties
-				t.renderTicker.Reset(util.GetNextMinChange(properties.Bgnow.Mills.Time))
+				t.renderTicker.Reset(util.GetNextMinChange(properties.Bgnow.Mills.Time, t.config.Advanced.RoundAge))
 			} else {
 				t.renderTicker.Reset(5 * time.Minute)
 			}

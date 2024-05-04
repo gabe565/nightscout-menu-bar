@@ -117,16 +117,16 @@ func (t *Tray) onReady() {
 			case *nightscout.Properties:
 				t.items.Error.Hide()
 
-				value := msg.String(t.config.Units, t.config.Arrows)
+				value := msg.String(t.config)
 				systray.SetTitle(value)
 				systray.SetTooltip(value)
 				t.items.LastReading.SetTitle(value)
 
 				for i, reading := range msg.Buckets {
 					if i < len(t.items.History.Subitems) {
-						t.items.History.Subitems[i].SetTitle(reading.String(t.config.Units, t.config.Arrows))
+						t.items.History.Subitems[i].SetTitle(reading.String(t.config))
 					} else {
-						entry := t.items.History.AddSubMenuItem(reading.String(t.config.Units, t.config.Arrows), "")
+						entry := t.items.History.AddSubMenuItem(reading.String(t.config), "")
 						entry.Disable()
 						t.items.History.Subitems = append(t.items.History.Subitems, entry)
 					}

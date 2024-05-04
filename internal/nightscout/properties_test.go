@@ -17,8 +17,7 @@ func TestProperties_String(t *testing.T) {
 		Direction Direction
 	}
 	type args struct {
-		units  string
-		arrows config.Arrows
+		conf *config.Config
 	}
 	tests := []struct {
 		name   string
@@ -36,7 +35,7 @@ func TestProperties_String(t *testing.T) {
 				},
 				Delta: Delta{DisplayVal: "+1"},
 			},
-			args{config.UnitsMgdl, config.NewDefault().Arrows},
+			args{config.NewDefault()},
 			"100 → +1 [0m]",
 		},
 	}
@@ -49,7 +48,7 @@ func TestProperties_String(t *testing.T) {
 				Delta:     tt.fields.Delta,
 				Direction: tt.fields.Direction,
 			}
-			assert.Equal(t, tt.want, p.String(tt.args.units, tt.args.arrows))
+			assert.Equal(t, tt.want, p.String(tt.args.conf))
 		})
 	}
 }
