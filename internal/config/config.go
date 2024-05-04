@@ -17,6 +17,7 @@ type Config struct {
 	Interval  Duration  `toml:"interval" comment:"Update interval."`
 	Arrows    Arrows    `toml:"arrows" comment:"Customize the arrows."`
 	LocalFile LocalFile `toml:"local-file" comment:"Enables writing the latest blood sugar to a local temporary file."`
+	Advanced  Advanced  `toml:"advanced" comment:"Advanced settings."`
 }
 
 type Arrows struct {
@@ -34,6 +35,10 @@ type LocalFile struct {
 	Enabled bool   `toml:"enabled"`
 	Format  string `toml:"format" comment:"Local file format. (one of: csv)"`
 	Path    string `toml:"path" comment:"Local file path. $TMPDIR will be replaced with the current temp directory."`
+}
+
+type Advanced struct {
+	FetchDelay Duration `toml:"fetch-delay" comment:"Time to wait before the next reading should be ready.\nIn testing, this seems to be about 20s behind, so the default is 30s to be safe.\nYour results may vary."`
 }
 
 const configDir = "nightscout-menu-bar"

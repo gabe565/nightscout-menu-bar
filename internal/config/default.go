@@ -26,5 +26,8 @@ func NewDefault() *Config {
 			Format: LocalFileFormatCsv,
 			Path:   filepath.Join("$TMPDIR", "nightscout.csv"),
 		},
+		Advanced: Advanced{
+			FetchDelay: Duration{30 * time.Second},
+		},
 	}
 }
