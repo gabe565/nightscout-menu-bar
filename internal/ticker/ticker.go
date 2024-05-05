@@ -39,6 +39,7 @@ func (t *Ticker) Start() {
 	t.ctx, t.cancel = context.WithCancel(context.Background())
 	renderCh := t.beginRender()
 	t.beginFetch(renderCh)
+	t.beginSleepNotifier()
 }
 
 func (t *Ticker) reloadConfig() {
