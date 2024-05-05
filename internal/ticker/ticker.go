@@ -43,11 +43,11 @@ func (t *Ticker) Start() {
 
 func (t *Ticker) reloadConfig() {
 	if t.renderTicker != nil {
-		t.renderTicker.Reset(time.Millisecond)
+		t.renderTicker.Reset(time.Second)
 	}
 	t.fetch.Reset()
 	if t.fetchTicker != nil {
-		t.fetchTicker.Reset(time.Millisecond)
+		t.fetchTicker.Reset(time.Second)
 	}
 }
 
