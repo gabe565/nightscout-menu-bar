@@ -134,6 +134,7 @@ func (conf *Config) Watch(ctx context.Context) error {
 			}()
 		}
 
+		log.Trace().Msg("Config watcher triggered")
 		if err := conf.Load(); err != nil {
 			log.Err(err).Msg("Failed to load config")
 		}

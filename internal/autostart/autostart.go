@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/emersion/go-autostart"
+	"github.com/rs/zerolog/log"
 )
 
 func NewApp() (autostart.App, error) {
@@ -24,6 +25,7 @@ func Enable() error {
 	if err != nil {
 		return err
 	}
+	log.Debug().Msg("Enabling autostart")
 	return app.Enable()
 }
 
@@ -32,6 +34,7 @@ func Disable() error {
 	if err != nil {
 		return err
 	}
+	log.Debug().Msg("Disabling autostart")
 	return app.Disable()
 }
 
@@ -40,5 +43,7 @@ func IsEnabled() (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	return app.IsEnabled(), nil
+	v := app.IsEnabled()
+	log.Trace().Bool("value", v).Msg("Detected autostart status")
+	return v, nil
 }

@@ -77,6 +77,7 @@ func (t *Tray) onReady() {
 				t.onError(err)
 				return
 			}
+			log.Debug().Stringer("url", u).Msg("Opening Nightscout")
 			if err := open.Run(u.String()); err != nil {
 				t.onError(err)
 			}
@@ -124,6 +125,7 @@ func (t *Tray) onReady() {
 				t.items.Error.Hide()
 
 				value := msg.String(t.config)
+				log.Debug().Str("value", value).Msg("Updating reading")
 				systray.SetTitle(value)
 				systray.SetTooltip(value)
 				t.items.LastReading.SetTitle(value)

@@ -14,6 +14,7 @@ import (
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
+	"github.com/rs/zerolog/log"
 )
 
 var (
@@ -55,24 +56,37 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 		req.Header.Set("Api-Secret", f.tokenChecksum)
 	}
 
+	log.Debug().
+		Bool("etag", f.etag != "").
+		Bool("secret", f.tokenChecksum != "").
+		Msg("Fetching data")
+
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer func() {
-		_, _ = io.Copy(io.Discard, resp.Body)
 		_ = resp.Body.Close()
 	}()
 
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	log.Trace().RawJSON("data", data).Msg("Response data")
+
 	switch resp.StatusCode {
 	case http.StatusNotModified:
+		log.Trace().Msg("Data was not modified")
 		return nil, ErrNotModified
 	case http.StatusOK:
 		// Decode JSON
 		var properties nightscout.Properties
-		if err := json.NewDecoder(resp.Body).Decode(&properties); err != nil {
+		if err := json.Unmarshal(data, &properties); err != nil {
 			return nil, err
 		}
+
+		log.Trace().Msg("Parsed response")
 
 		f.etag = resp.Header.Get("etag")
 		return &properties, nil
@@ -90,10 +104,12 @@ func (f *Fetch) UpdateURL() error {
 
 	u.Path = path.Join(u.Path, "api", "v2", "properties", "bgnow,buckets,delta,direction")
 	f.url = u.String()
+	log.Debug().Str("value", f.url).Msg("Generated URL")
 
 	if token := f.config.Token; token != "" {
 		rawChecksum := sha1.Sum([]byte(token))
 		f.tokenChecksum = hex.EncodeToString(rawChecksum[:])
+		log.Trace().Str("value", f.tokenChecksum).Msg("Generated token checksum")
 	} else {
 		f.tokenChecksum = ""
 	}
@@ -102,6 +118,7 @@ func (f *Fetch) UpdateURL() error {
 }
 
 func (f *Fetch) Reset() {
+	log.Debug().Msg("Resetting fetch cache")
 	f.url = ""
 	f.tokenChecksum = ""
 	f.etag = ""

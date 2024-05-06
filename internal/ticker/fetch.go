@@ -12,8 +12,7 @@ import (
 
 func (t *Ticker) beginFetch(render chan<- *nightscout.Properties) {
 	go func() {
-		t.fetchTicker = time.NewTicker(t.Fetch(render))
-
+		t.fetchTicker = time.NewTicker(time.Second)
 		for {
 			select {
 			case <-t.ctx.Done():
@@ -21,6 +20,7 @@ func (t *Ticker) beginFetch(render chan<- *nightscout.Properties) {
 			case <-t.fetchTicker.C:
 				next := t.Fetch(render)
 				t.fetchTicker.Reset(next)
+				log.Debug().Stringer("in", next).Msg("Scheduled next fetch")
 			}
 		}
 	}()

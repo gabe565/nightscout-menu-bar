@@ -59,8 +59,9 @@ func (l *LocalFile) reloadConfig() {
 
 func (l *LocalFile) Write(last *nightscout.Properties) error {
 	if l.path != "" {
-		segment := l.Format(last)
-		err := os.WriteFile(l.path, []byte(segment), 0o600)
+		data := l.Format(last)
+		log.Debug().Str("data", data).Msg("Writing local file")
+		err := os.WriteFile(l.path, []byte(data), 0o600)
 		return err
 	}
 	return nil
@@ -68,6 +69,7 @@ func (l *LocalFile) Write(last *nightscout.Properties) error {
 
 func (l *LocalFile) Cleanup() error {
 	if l.path != "" {
+		log.Debug().Str("path", l.path).Msg("Removing local file")
 		if err := os.Remove(l.path); err != nil && !errors.Is(err, os.ErrNotExist) {
 			return err
 		}
