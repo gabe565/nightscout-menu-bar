@@ -9,9 +9,8 @@ const LocalFileFormatCsv = "csv"
 
 func NewDefault() *Config {
 	return &Config{
-		Title:    "Nightscout",
-		Units:    UnitsMgdl,
-		Interval: Duration{30 * time.Second},
+		Title: "Nightscout",
+		Units: UnitsMgdl,
 		Arrows: Arrows{
 			DoubleUp:      "⇈",
 			SingleUp:      "↑",
@@ -27,8 +26,9 @@ func NewDefault() *Config {
 			Path:   filepath.Join("$TMPDIR", "nightscout.csv"),
 		},
 		Advanced: Advanced{
-			FetchDelay: Duration{30 * time.Second},
-			RoundAge:   true,
+			FetchDelay:       Duration{30 * time.Second},
+			FallbackInterval: Duration{30 * time.Second},
+			RoundAge:         true,
 		},
 	}
 }

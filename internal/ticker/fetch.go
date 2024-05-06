@@ -52,5 +52,5 @@ func (t *Ticker) Fetch(render chan<- *nightscout.Properties) time.Duration {
 			}
 		}
 	}
-	return t.config.Interval.Duration
+	return t.config.Advanced.FallbackInterval.Duration
 }

@@ -14,7 +14,6 @@ type Config struct {
 	URL       string    `toml:"url" comment:"Nightscout URL. (required)"`
 	Token     string    `toml:"token" comment:"Nightscout token. Using an access token is recommended instead of the API secret."`
 	Units     string    `toml:"units" comment:"Blood sugar unit. (one of: mg/dL, mmol/L)"`
-	Interval  Duration  `toml:"interval" comment:"Update interval."`
 	Arrows    Arrows    `toml:"arrows" comment:"Customize the arrows."`
 	LocalFile LocalFile `toml:"local-file" comment:"Enables writing the latest blood sugar to a local temporary file."`
 	Advanced  Advanced  `toml:"advanced" comment:"Advanced settings."`
@@ -38,8 +37,9 @@ type LocalFile struct {
 }
 
 type Advanced struct {
-	FetchDelay Duration `toml:"fetch-delay" comment:"Time to wait before the next reading should be ready.\nIn testing, this seems to be about 20s behind, so the default is 30s to be safe.\nYour results may vary."`
-	RoundAge   bool     `toml:"round-age" comment:"If enabled, the reading's age will be rounded up to the nearest minute.\nNightscout rounds the age, so enable this if you want the values to match."`
+	FetchDelay       Duration `toml:"fetch-delay" comment:"Time to wait before the next reading should be ready.\nIn testing, this seems to be about 20s behind, so the default is 30s to be safe.\nYour results may vary."`
+	FallbackInterval Duration `toml:"fallback-interval" comment:"Normally, readings will be fetched when ready (after ~5m).\nThis interval will be used if the next reading time cannot be estimated due to sensor warm-up, missed readings, errors, etc."`
+	RoundAge         bool     `toml:"round-age" comment:"If enabled, the reading's age will be rounded up to the nearest minute.\nNightscout rounds the age, so enable this if you want the values to match."`
 }
 
 const configDir = "nightscout-menu-bar"

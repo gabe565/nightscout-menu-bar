@@ -58,6 +58,10 @@ func (conf *Config) Load() error {
 		return err
 	}
 
+	if err := migrateConfig(k); err != nil {
+		return err
+	}
+
 	if err := k.UnmarshalWithConf("", &conf, koanf.UnmarshalConf{Tag: "toml"}); err != nil {
 		return err
 	}
@@ -154,4 +158,15 @@ func InitLog() {
 		NoColor:    !useColor,
 		TimeFormat: time.DateTime,
 	})
+}
+
+func migrateConfig(k *koanf.Koanf) error {
+	if k.Exists("interval") {
+		log.Info().Msg("Migrating config: interval to advanced.fallback-interval")
+		if err := k.Set("advanced.fallback-interval", k.Get("interval")); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
