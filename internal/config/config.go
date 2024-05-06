@@ -19,6 +19,7 @@ type Config struct {
 	Units     string    `toml:"units" comment:"Blood sugar unit. (one of: mg/dL, mmol/L)"`
 	Arrows    Arrows    `toml:"arrows" comment:"Customize the arrows."`
 	LocalFile LocalFile `toml:"local-file" comment:"Enables writing the latest blood sugar to a local temporary file."`
+	Log       Log       `toml:"log" comment:"Log configuration"`
 	Advanced  Advanced  `toml:"advanced" comment:"Advanced settings."`
 }
 
@@ -37,6 +38,10 @@ type LocalFile struct {
 	Enabled bool   `toml:"enabled"`
 	Format  string `toml:"format" comment:"Local file format. (one of: csv)"`
 	Path    string `toml:"path" comment:"Local file path. $TMPDIR will be replaced with the current temp directory."`
+}
+
+type Log struct {
+	Level string `toml:"level" comment:"Values: trace, debug, info, warn, error, fatal, panic"`
 }
 
 type Advanced struct {
