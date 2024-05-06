@@ -10,10 +10,8 @@ import (
 )
 
 func main() {
-	t := tray.New()
-
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
 	defer cancel()
 
-	t.Run(ctx)
+	tray.New().Run(ctx)
 }
