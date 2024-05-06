@@ -75,7 +75,7 @@ function prompt_nightscout() {
     # Generate text
     typeset text="$bgnow"
     [[ "$NIGHTSCOUT_SHOW_ARROW" == true ]] && text+=" $arrow"
-    [[ "$NIGHTSCOUT_SHOW_DELTA" == true ]] && text+=" $delta"
+    [[ "$NIGHTSCOUT_SHOW_DELTA" == true && -n "$delta" ]] && text+=" $delta"
     [[ "$NIGHTSCOUT_SHOW_TIMESTAMP" == true ]] && text+=" [${relative}m]"
 
     # Write segment.

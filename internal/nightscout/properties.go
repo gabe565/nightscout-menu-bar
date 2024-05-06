@@ -13,8 +13,11 @@ type Properties struct {
 }
 
 func (p Properties) String(conf *config.Config) string {
-	return p.Bgnow.DisplayBg(conf.Units) +
-		" " + p.Bgnow.Arrow(conf.Arrows) +
-		" " + p.Delta.Display(conf.Units) +
-		" [" + util.MinAgo(p.Bgnow.Mills.Time, conf.Advanced.RoundAge) + "]"
+	result := p.Bgnow.DisplayBg(conf.Units) +
+		" " + p.Bgnow.Arrow(conf.Arrows)
+	if delta := p.Delta.Display(conf.Units); delta != "" {
+		result += " " + p.Delta.Display(conf.Units)
+	}
+	result += " [" + util.MinAgo(p.Bgnow.Mills.Time, conf.Advanced.RoundAge) + "]"
+	return result
 }
