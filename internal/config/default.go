@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/rs/zerolog"
 	flag "github.com/spf13/pflag"
 )
 
@@ -26,6 +27,9 @@ func New() *Config {
 		LocalFile: LocalFile{
 			Format: LocalFileFormatCsv,
 			Path:   filepath.Join("$TMPDIR", "nightscout.csv"),
+		},
+		Log: Log{
+			Level: zerolog.InfoLevel.String(),
 		},
 		Advanced: Advanced{
 			FetchDelay:       Duration{30 * time.Second},

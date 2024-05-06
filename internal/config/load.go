@@ -25,8 +25,7 @@ func (conf *Config) RegisterFlags() {
 }
 
 func (conf *Config) Load() error {
-	InitLog()
-
+	initLogFormat()
 	k := koanf.New(".")
 
 	// Load conf config
@@ -68,6 +67,7 @@ func (conf *Config) Load() error {
 		return err
 	}
 
+	initLogLevel(conf)
 	log.Info().Str("file", conf.File).Msg("Loaded config")
 	return nil
 }
@@ -148,8 +148,15 @@ func (conf *Config) AddCallback(fn func()) {
 	conf.callbacks = append(conf.callbacks, fn)
 }
 
-func InitLog() {
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+func initLogLevel(conf *Config) {
+	level, err := zerolog.ParseLevel(conf.Log.Level)
+	if err != nil {
+		log.Warn().Msg("Invalid log level. Defaulting to info.")
+	}
+	zerolog.SetGlobalLevel(level)
+}
+
+func initLogFormat() {
 	useColor := isatty.IsTerminal(os.Stderr.Fd())
 	log.Logger = log.Output(zerolog.ConsoleWriter{
 		Out:        os.Stderr,
