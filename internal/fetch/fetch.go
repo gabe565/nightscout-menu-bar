@@ -75,6 +75,10 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 	}
 	log.Trace().RawJSON("data", data).Msg("Response data")
 
+	if err := resp.Body.Close(); err != nil {
+		return nil, err
+	}
+
 	switch resp.StatusCode {
 	case http.StatusNotModified:
 		log.Trace().Msg("Data was not modified")
