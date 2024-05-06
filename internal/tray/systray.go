@@ -2,7 +2,6 @@ package tray
 
 import (
 	"context"
-	"log/slog"
 
 	"fyne.io/systray"
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
@@ -12,6 +11,7 @@ import (
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/ticker"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray/items"
+	"github.com/rs/zerolog/log"
 	"github.com/skratchdot/open-golang/open"
 )
 
@@ -132,7 +132,7 @@ func (t *Tray) onReady() {
 					}
 				}
 			case error:
-				slog.Error("Displaying error", "error", msg.Error())
+				log.Err(msg).Msg("Displaying error")
 				t.items.Error.SetTitle(msg.Error())
 				t.items.Error.Show()
 			case ReloadConfigMsg:
@@ -148,12 +148,12 @@ func (t *Tray) onError(err error) {
 	select {
 	case t.bus <- err:
 	default:
-		slog.Error("Unable to display error due to full bus", "error", err.Error())
+		log.Err(err).Msg("Unable to display error due to full bus")
 	}
 }
 
 func (t *Tray) onExit() {
-	slog.Info("Exiting")
+	log.Info().Msg("Exiting")
 	t.ticker.Close()
 	close(t.bus)
 }

@@ -2,7 +2,6 @@ package localfile
 
 import (
 	"errors"
-	"log/slog"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -10,6 +9,7 @@ import (
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
+	"github.com/rs/zerolog/log"
 )
 
 func New(conf *config.Config) *LocalFile {
@@ -51,7 +51,7 @@ func (l *LocalFile) reloadConfig() {
 	}
 	if l.path != "" && path != l.path {
 		if err := l.Cleanup(); err != nil {
-			slog.Error("Failed to cleanup local file", "error", err.Error())
+			log.Err(err).Msg("Failed to cleanup local file")
 		}
 	}
 	l.path = path

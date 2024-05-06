@@ -6,7 +6,6 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"log/slog"
 	"os"
 	"path/filepath"
 	"time"
@@ -15,7 +14,10 @@ import (
 	"github.com/knadh/koanf/providers/rawbytes"
 	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
+	"github.com/mattn/go-isatty"
 	"github.com/pelletier/go-toml/v2"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	flag "github.com/spf13/pflag"
 )
 
@@ -24,6 +26,8 @@ func (conf *Config) RegisterFlags(fs *flag.FlagSet) {
 }
 
 func (conf *Config) Load() error {
+	InitLog()
+
 	flag.Parse()
 	k := koanf.New(".")
 
@@ -62,7 +66,7 @@ func (conf *Config) Load() error {
 		return err
 	}
 
-	slog.Info("Loaded config", "file", conf.File)
+	log.Info().Str("file", conf.File).Msg("Loaded config")
 	return nil
 }
 
@@ -95,13 +99,13 @@ func (conf *Config) Write() error {
 
 	if !bytes.Equal(cfgContents, newCfg) {
 		if cfgNotExists {
-			slog.Info("Creating config", "file", conf.File)
+			log.Info().Str("file", conf.File).Msg("Creating config")
 
 			if err := os.MkdirAll(filepath.Dir(conf.File), 0o777); err != nil {
 				return err
 			}
 		} else {
-			slog.Info("Updating config", "file", conf.File)
+			log.Info().Str("file", conf.File).Msg("Updating config")
 		}
 
 		if err := os.WriteFile(conf.File, newCfg, 0o666); err != nil {
@@ -113,11 +117,11 @@ func (conf *Config) Write() error {
 }
 
 func (conf *Config) Watch(ctx context.Context) error {
-	slog.Info("Watching config", "file", conf.File)
+	log.Info().Str("file", conf.File).Msg("Watching config")
 	f := file.Provider(conf.File)
 	return f.Watch(func(_ any, err error) {
 		if err != nil {
-			slog.Error("Config watcher failed", "error", err.Error())
+			log.Err(err).Msg("Config watcher failed")
 			if ctx.Err() != nil {
 				conf.callbacks = nil
 				return
@@ -129,7 +133,7 @@ func (conf *Config) Watch(ctx context.Context) error {
 		}
 
 		if err := conf.Load(); err != nil {
-			slog.Error("Failed to load config", "error", err.Error())
+			log.Err(err).Msg("Failed to load config")
 		}
 
 		for _, fn := range conf.callbacks {
@@ -140,4 +144,14 @@ func (conf *Config) Watch(ctx context.Context) error {
 
 func (conf *Config) AddCallback(fn func()) {
 	conf.callbacks = append(conf.callbacks, fn)
+}
+
+func InitLog() {
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	useColor := isatty.IsTerminal(os.Stderr.Fd())
+	log.Logger = log.Output(zerolog.ConsoleWriter{
+		Out:        os.Stderr,
+		NoColor:    !useColor,
+		TimeFormat: time.DateTime,
+	})
 }

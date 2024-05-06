@@ -2,12 +2,12 @@ package ticker
 
 import (
 	"context"
-	"log/slog"
 	"time"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/fetch"
 	"github.com/gabe565/nightscout-menu-bar/internal/localfile"
+	"github.com/rs/zerolog/log"
 )
 
 func New(conf *config.Config, updateCh chan<- any) *Ticker {
@@ -59,6 +59,6 @@ func (t *Ticker) Close() {
 		t.cancel()
 	}
 	if err := t.localFile.Cleanup(); err != nil {
-		slog.Error("Failed to cleanup local file", "error", err.Error())
+		log.Err(err).Msg("Failed to cleanup local file")
 	}
 }
