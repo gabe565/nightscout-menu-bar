@@ -28,6 +28,10 @@ func (m *Mills) GoString() string {
 }
 
 func (m *Mills) Relative(round bool) string {
+	if m.Unix() == 0 {
+		return ""
+	}
+
 	// Drop resolution to minutes
 	duration := time.Since(m.Time)
 	if round {

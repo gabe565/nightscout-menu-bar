@@ -89,6 +89,7 @@ func TestMills_Relative(t *testing.T) {
 		{"4m15s rounded", fields{time.Now().Add(-4*time.Minute - 15*time.Second)}, args{true}, "4m"},
 		{"5m1s rounded", fields{time.Now().Add(-5*time.Minute - time.Second)}, args{true}, "5m"},
 		{"now rounded", fields{time.Now()}, args{true}, "0m"},
+		{"unix 0 rounded", fields{time.Unix(0, 0)}, args{true}, ""},
 
 		{"0m", fields{time.Now()}, args{false}, "0m"},
 		{"59s", fields{time.Now().Add(-59 * time.Second)}, args{false}, "0m"},
@@ -98,6 +99,7 @@ func TestMills_Relative(t *testing.T) {
 		{"4m15s", fields{time.Now().Add(-4*time.Minute - 15*time.Second)}, args{false}, "4m"},
 		{"5m1s", fields{time.Now().Add(-5*time.Minute - time.Second)}, args{false}, "5m"},
 		{"now", fields{time.Now()}, args{false}, "0m"},
+		{"unix 0", fields{time.Unix(0, 0)}, args{false}, ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

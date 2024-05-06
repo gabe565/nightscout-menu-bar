@@ -17,6 +17,8 @@ func (p Properties) String(conf *config.Config) string {
 	if delta := p.Delta.Display(conf.Units); delta != "" {
 		result += " " + p.Delta.Display(conf.Units)
 	}
-	result += " [" + p.Bgnow.Mills.Relative(conf.Advanced.RoundAge) + "]"
+	if rel := p.Bgnow.Mills.Relative(conf.Advanced.RoundAge); rel != "" {
+		result += " [" + p.Bgnow.Mills.Relative(conf.Advanced.RoundAge) + "]"
+	}
 	return result
 }

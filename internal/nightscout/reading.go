@@ -55,9 +55,12 @@ func (r *Reading) String(conf *config.Config) string {
 		return ""
 	}
 
-	return r.DisplayBg(conf.Units) +
-		" " + r.Arrow(conf.Arrows) +
-		" [" + r.Mills.Relative(conf.Advanced.RoundAge) + "]"
+	result := r.DisplayBg(conf.Units) +
+		" " + r.Arrow(conf.Arrows)
+	if rel := r.Mills.Relative(conf.Advanced.RoundAge); rel != "" {
+		result += " [" + r.Mills.Relative(conf.Advanced.RoundAge) + "]"
+	}
+	return result
 }
 
 func (r *Reading) UnmarshalJSON(bytes []byte) error {
