@@ -51,6 +51,10 @@ func (r *Reading) Arrow(conf config.Arrows) string {
 }
 
 func (r *Reading) String(conf *config.Config) string {
+	if r.Last == 0 {
+		return ""
+	}
+
 	return r.DisplayBg(conf.Units) +
 		" " + r.Arrow(conf.Arrows) +
 		" [" + util.MinAgo(r.Mills.Time, conf.Advanced.RoundAge) + "]"
