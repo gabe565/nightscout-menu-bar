@@ -17,7 +17,7 @@ import (
 
 func TestNewFetch(t *testing.T) {
 	t.Parallel()
-	fetch := NewFetch(config.NewDefault())
+	fetch := NewFetch(config.New())
 	require.NotNil(t, fetch)
 	assert.NotNil(t, fetch.config)
 }

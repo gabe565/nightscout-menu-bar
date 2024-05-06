@@ -12,7 +12,7 @@ import (
 
 func TestReading_Arrow(t *testing.T) {
 	t.Parallel()
-	defaultArrows := config.NewDefault().Arrows
+	defaultArrows := config.New().Arrows
 
 	type fields struct {
 		Mean      int
@@ -87,7 +87,7 @@ func TestReading_String(t *testing.T) {
 				Mills: Mills{time.Now()},
 				Sgvs:  []SGV{{Direction: "Flat"}},
 			},
-			args{config.NewDefault()},
+			args{config.New()},
 			"100 → [0m]",
 		},
 	}

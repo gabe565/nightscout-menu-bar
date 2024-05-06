@@ -13,7 +13,7 @@ import (
 
 func TestNew(t *testing.T) {
 	t.Parallel()
-	localfile := New(config.NewDefault())
+	localfile := New(config.New())
 	require.NotNil(t, localfile)
 	assert.NotNil(t, localfile.config)
 }
@@ -27,7 +27,7 @@ func TestLocalFile(t *testing.T) {
 		_ = os.RemoveAll(temp)
 	})
 
-	conf := config.NewDefault()
+	conf := config.New()
 	conf.LocalFile.Enabled = true
 	conf.LocalFile.Path = filepath.Join(temp, "nightscout.csv")
 

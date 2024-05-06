@@ -3,12 +3,14 @@ package config
 import (
 	"path/filepath"
 	"time"
+
+	flag "github.com/spf13/pflag"
 )
 
 const LocalFileFormatCsv = "csv"
 
-func NewDefault() *Config {
-	return &Config{
+func New() *Config {
+	conf := &Config{
 		Title: "Nightscout",
 		Units: UnitsMgdl,
 		Arrows: Arrows{
@@ -31,4 +33,9 @@ func NewDefault() *Config {
 			RoundAge:         true,
 		},
 	}
+
+	conf.Flags = flag.NewFlagSet("", flag.ContinueOnError)
+	conf.RegisterFlags()
+
+	return conf
 }

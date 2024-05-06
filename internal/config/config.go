@@ -4,11 +4,14 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+
+	"github.com/spf13/pflag"
 )
 
 type Config struct {
-	File      string   `toml:"-"`
-	callbacks []func() `toml:"-"`
+	File      string         `toml:"-"`
+	Flags     *pflag.FlagSet `toml:"-"`
+	callbacks []func()       `toml:"-"`
 
 	Title     string    `toml:"title" comment:"Tray title."`
 	URL       string    `toml:"url" comment:"Nightscout URL. (required)"`

@@ -2,6 +2,8 @@ package tray
 
 import (
 	"context"
+	"io"
+	"os"
 
 	"fyne.io/systray"
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
@@ -17,8 +19,12 @@ import (
 
 func New() *Tray {
 	t := &Tray{
-		config: config.NewDefault(),
+		config: config.New(),
 		bus:    make(chan any, 1),
+	}
+	if err := t.config.Flags.Parse(os.Args[1:]); err != nil {
+		_, _ = io.WriteString(os.Stderr, err.Error()+"\n")
+		os.Exit(2)
 	}
 
 	if err := t.config.Load(); err != nil {

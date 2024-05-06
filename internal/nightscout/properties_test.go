@@ -35,7 +35,7 @@ func TestProperties_String(t *testing.T) {
 				},
 				Delta: Delta{DisplayVal: "+1"},
 			},
-			args{config.NewDefault()},
+			args{config.New()},
 			"100 → +1 [0m]",
 		},
 	}

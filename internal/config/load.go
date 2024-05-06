@@ -18,17 +18,15 @@ import (
 	"github.com/pelletier/go-toml/v2"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	flag "github.com/spf13/pflag"
 )
 
-func (conf *Config) RegisterFlags(fs *flag.FlagSet) {
-	fs.StringVarP(&conf.File, "config", "c", "", "Config file")
+func (conf *Config) RegisterFlags() {
+	conf.Flags.StringVarP(&conf.File, "config", "c", "", "Config file")
 }
 
 func (conf *Config) Load() error {
 	InitLog()
 
-	flag.Parse()
 	k := koanf.New(".")
 
 	// Load conf config
