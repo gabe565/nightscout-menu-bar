@@ -2,7 +2,6 @@ package nightscout
 
 import (
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/util"
 )
 
 type Properties struct {
@@ -18,6 +17,6 @@ func (p Properties) String(conf *config.Config) string {
 	if delta := p.Delta.Display(conf.Units); delta != "" {
 		result += " " + p.Delta.Display(conf.Units)
 	}
-	result += " [" + util.MinAgo(p.Bgnow.Mills.Time, conf.Advanced.RoundAge) + "]"
+	result += " [" + p.Bgnow.Mills.Relative(conf.Advanced.RoundAge) + "]"
 	return result
 }

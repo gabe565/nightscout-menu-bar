@@ -1,25 +1,8 @@
 package util
 
 import (
-	"strings"
 	"time"
 )
-
-func MinAgo(t time.Time, round bool) string {
-	// Drop resolution to minutes
-	duration := time.Since(t)
-	if round {
-		duration = duration.Round(time.Minute)
-	} else {
-		duration = duration.Truncate(time.Minute)
-	}
-	str := duration.String()
-	str = strings.TrimSuffix(str, "0s")
-	if str == "" {
-		str = "0m"
-	}
-	return str
-}
 
 func GetNextMinChange(t time.Time, round bool) time.Duration {
 	if round {

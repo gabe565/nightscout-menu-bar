@@ -7,43 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMinAgo(t *testing.T) {
-	t.Parallel()
-	type args struct {
-		date  time.Time
-		round bool
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
-		{"0m rounded", args{time.Now(), true}, "0m"},
-		{"59s rounded", args{time.Now().Add(-59 * time.Second), true}, "1m"},
-		{"1m rounded", args{time.Now().Add(-time.Minute), true}, "1m"},
-		{"1m30s rounded", args{time.Now().Add(-time.Minute - 30*time.Second), true}, "2m"},
-		{"2m35s rounded", args{time.Now().Add(-2*time.Minute - 35*time.Second), true}, "3m"},
-		{"4m15s rounded", args{time.Now().Add(-4*time.Minute - 15*time.Second), true}, "4m"},
-		{"5m1s rounded", args{time.Now().Add(-5*time.Minute - time.Second), true}, "5m"},
-		{"now rounded", args{time.Now(), true}, "0m"},
-
-		{"0m", args{time.Now(), false}, "0m"},
-		{"59s", args{time.Now().Add(-59 * time.Second), false}, "0m"},
-		{"1m", args{time.Now().Add(-time.Minute), false}, "1m"},
-		{"1m30s", args{time.Now().Add(-time.Minute - 30*time.Second), false}, "1m"},
-		{"2m35s", args{time.Now().Add(-2*time.Minute - 35*time.Second), false}, "2m"},
-		{"4m15s", args{time.Now().Add(-4*time.Minute - 15*time.Second), false}, "4m"},
-		{"5m1s", args{time.Now().Add(-5*time.Minute - time.Second), false}, "5m"},
-		{"now", args{time.Now(), false}, "0m"},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.want, MinAgo(tt.args.date, tt.args.round))
-		})
-	}
-}
-
 func TestGetNextMinChange(t *testing.T) {
 	t.Parallel()
 	type args struct {

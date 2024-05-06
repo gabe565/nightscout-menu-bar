@@ -57,7 +57,7 @@ func (r *Reading) String(conf *config.Config) string {
 
 	return r.DisplayBg(conf.Units) +
 		" " + r.Arrow(conf.Arrows) +
-		" [" + util.MinAgo(r.Mills.Time, conf.Advanced.RoundAge) + "]"
+		" [" + r.Mills.Relative(conf.Advanced.RoundAge) + "]"
 }
 
 func (r *Reading) UnmarshalJSON(bytes []byte) error {

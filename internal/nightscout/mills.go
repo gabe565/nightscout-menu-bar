@@ -2,6 +2,7 @@ package nightscout
 
 import (
 	"encoding/json"
+	"strings"
 	"time"
 )
 
@@ -24,4 +25,21 @@ func (m *Mills) MarshalJSON() ([]byte, error) {
 
 func (m *Mills) GoString() string {
 	return "nightscout.Mills{" + m.Time.GoString() + "}"
+}
+
+func (m *Mills) Relative(round bool) string {
+	// Drop resolution to minutes
+	duration := time.Since(m.Time)
+	if round {
+		duration = duration.Round(time.Minute)
+	} else {
+		duration = duration.Truncate(time.Minute)
+	}
+
+	str := duration.String()
+	str = strings.TrimSuffix(str, "0s")
+	if str == "" {
+		str = "0m"
+	}
+	return str
 }
