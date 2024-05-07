@@ -7,7 +7,7 @@ type SGV struct {
 	Device     string      `json:"device"`
 	Direction  string      `json:"direction"`
 	Filtered   json.Number `json:"filtered"`
-	Mgdl       int         `json:"mgdl"`
+	Mgdl       Mgdl        `json:"mgdl"`
 	Mills      Mills       `json:"mills"`
 	Noise      json.Number `json:"noise"`
 	Rssi       json.Number `json:"rssi"`

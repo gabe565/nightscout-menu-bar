@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/util"
 )
 
 const (
@@ -16,7 +15,7 @@ const (
 
 type Reading struct {
 	Mean      json.Number `json:"mean"`
-	Last      int         `json:"last"`
+	Last      Mgdl        `json:"last"`
 	Mills     Mills       `json:"mills"`
 	Index     json.Number `json:"index,omitempty"`
 	FromMills Mills       `json:"fromMills,omitempty"`
@@ -88,10 +87,10 @@ func (r *Reading) DisplayBg(units string) string {
 	}
 
 	if units == config.UnitsMmol {
-		mmol := util.ToMmol(r.Last)
+		mmol := r.Last.Mmol()
 		mmol = math.Round(mmol*10) / 10
 		return strconv.FormatFloat(mmol, 'f', 1, 64)
 	}
 
-	return strconv.Itoa(r.Last)
+	return strconv.Itoa(r.Last.Mgdl())
 }

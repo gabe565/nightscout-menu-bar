@@ -17,7 +17,7 @@ func TestReading_Arrow(t *testing.T) {
 
 	type fields struct {
 		Mean      json.Number
-		Last      int
+		Last      Mgdl
 		Mills     Mills
 		Index     json.Number
 		FromMills Mills
@@ -65,7 +65,7 @@ func TestReading_String(t *testing.T) {
 	t.Parallel()
 	type fields struct {
 		Mean      json.Number
-		Last      int
+		Last      Mgdl
 		Mills     Mills
 		Index     json.Number
 		FromMills Mills
@@ -113,7 +113,7 @@ func TestReading_DisplayBg(t *testing.T) {
 	t.Parallel()
 	type fields struct {
 		Mean      json.Number
-		Last      int
+		Last      Mgdl
 		Mills     Mills
 		Index     json.Number
 		FromMills Mills
@@ -196,7 +196,7 @@ func TestReading_UnmarshalJSON(t *testing.T) {
 
 	type fields struct {
 		Mean      json.Number
-		Last      int
+		Last      Mgdl
 		Mills     Mills
 		Index     json.Number
 		FromMills Mills

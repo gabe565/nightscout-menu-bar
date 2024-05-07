@@ -18,7 +18,7 @@ func TestDelta_Display(t *testing.T) {
 		Mean5MinsAgo json.Number
 		Mgdl         json.Number
 		Previous     Reading
-		Scaled       int
+		Scaled       Mgdl
 		Times        Times
 	}
 	type args struct {
