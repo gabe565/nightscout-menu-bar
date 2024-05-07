@@ -1,6 +1,7 @@
 package nightscout
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
@@ -10,12 +11,12 @@ import (
 func TestDelta_Display(t *testing.T) {
 	t.Parallel()
 	type fields struct {
-		Absolute     int
+		Absolute     json.Number
 		DisplayVal   string
-		ElapsedMins  float64
+		ElapsedMins  json.Number
 		Interpolated bool
-		Mean5MinsAgo float64
-		Mgdl         int
+		Mean5MinsAgo json.Number
+		Mgdl         json.Number
 		Previous     Reading
 		Scaled       int
 		Times        Times

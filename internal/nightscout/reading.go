@@ -15,13 +15,13 @@ const (
 )
 
 type Reading struct {
-	Mean      int   `json:"mean"`
-	Last      int   `json:"last"`
-	Mills     Mills `json:"mills"`
-	Index     int   `json:"index,omitempty"`
-	FromMills Mills `json:"fromMills,omitempty"`
-	ToMills   Mills `json:"toMills,omitempty"`
-	Sgvs      []SGV `json:"sgvs"`
+	Mean      json.Number `json:"mean"`
+	Last      int         `json:"last"`
+	Mills     Mills       `json:"mills"`
+	Index     json.Number `json:"index,omitempty"`
+	FromMills Mills       `json:"fromMills,omitempty"`
+	ToMills   Mills       `json:"toMills,omitempty"`
+	Sgvs      []SGV       `json:"sgvs"`
 }
 
 func (r *Reading) Arrow(conf config.Arrows) string {

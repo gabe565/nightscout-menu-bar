@@ -23,10 +23,6 @@ func (m *Mills) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m.UnixMilli())
 }
 
-func (m *Mills) GoString() string {
-	return "nightscout.Mills{" + m.Time.GoString() + "}"
-}
-
 func (m *Mills) Relative(round bool) string {
 	if m.Unix() == 0 {
 		return ""

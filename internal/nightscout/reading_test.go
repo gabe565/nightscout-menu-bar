@@ -1,6 +1,7 @@
 package nightscout
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 	"time"
@@ -15,10 +16,10 @@ func TestReading_Arrow(t *testing.T) {
 	defaultArrows := config.New().Arrows
 
 	type fields struct {
-		Mean      int
+		Mean      json.Number
 		Last      int
 		Mills     Mills
-		Index     int
+		Index     json.Number
 		FromMills Mills
 		ToMills   Mills
 		Sgvs      []SGV
@@ -63,10 +64,10 @@ func TestReading_Arrow(t *testing.T) {
 func TestReading_String(t *testing.T) {
 	t.Parallel()
 	type fields struct {
-		Mean      int
+		Mean      json.Number
 		Last      int
 		Mills     Mills
-		Index     int
+		Index     json.Number
 		FromMills Mills
 		ToMills   Mills
 		Sgvs      []SGV
@@ -111,10 +112,10 @@ func TestReading_String(t *testing.T) {
 func TestReading_DisplayBg(t *testing.T) {
 	t.Parallel()
 	type fields struct {
-		Mean      int
+		Mean      json.Number
 		Last      int
 		Mills     Mills
-		Index     int
+		Index     json.Number
 		FromMills Mills
 		ToMills   Mills
 		Sgvs      []SGV
@@ -194,10 +195,10 @@ func TestReading_UnmarshalJSON(t *testing.T) {
 	now := time.Now()
 
 	type fields struct {
-		Mean      int
+		Mean      json.Number
 		Last      int
 		Mills     Mills
-		Index     int
+		Index     json.Number
 		FromMills Mills
 		ToMills   Mills
 		Sgvs      []SGV

@@ -1,6 +1,7 @@
 package nightscout
 
 import (
+	"encoding/json"
 	"math"
 	"strconv"
 
@@ -14,15 +15,15 @@ type Times struct {
 }
 
 type Delta struct {
-	Absolute     int     `json:"absolute"`
-	DisplayVal   string  `json:"display"`
-	ElapsedMins  float64 `json:"elapsedMins"`
-	Interpolated bool    `json:"interpolated"`
-	Mean5MinsAgo float64 `json:"mean5MinsAgo"`
-	Mgdl         int     `json:"mgdl"`
-	Previous     Reading `json:"previous"`
-	Scaled       int     `json:"scaled"`
-	Times        Times   `json:"times"`
+	Absolute     json.Number `json:"absolute"`
+	DisplayVal   string      `json:"display"`
+	ElapsedMins  json.Number `json:"elapsedMins"`
+	Interpolated bool        `json:"interpolated"`
+	Mean5MinsAgo json.Number `json:"mean5MinsAgo"`
+	Mgdl         json.Number `json:"mgdl"`
+	Previous     Reading     `json:"previous"`
+	Scaled       int         `json:"scaled"`
+	Times        Times       `json:"times"`
 }
 
 func (d Delta) Display(units string) string {
