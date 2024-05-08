@@ -8,7 +8,10 @@ A small application that displays live blood sugar data from Nightscout on your 
 
 Works on Windows, MacOS, and Linux.
 
-![macOS Screenshot](assets/macos-screenshot.webp?raw=true)
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="https://github.com/gabe565/nightscout-menu-bar/assets/7717888/2e9e673a-d69f-43b8-9e82-d7168ffa5766">
+  <img width="250" alt="Nightscout Menu Bar Screenshot" src="https://github.com/gabe565/nightscout-menu-bar/assets/7717888/c8c61eca-76ad-4078-ada4-95bad9cb01b9">
+</picture>
 
 ## Install
 
