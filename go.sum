@@ -1,5 +1,5 @@
-fyne.io/systray v1.10.1-0.20240111184411-11c585fff98d h1:NjHwOOuOgGswUOPzDlsEDJOqKdjOjwL8Vi1mj9qx9+o=
-fyne.io/systray v1.10.1-0.20240111184411-11c585fff98d/go.mod h1:RVwqP9nYMo7h5zViCBHri2FgjXF7H2cub7MAq4NSoLs=
+fyne.io/systray v1.10.1-0.20240611130111-26449f257a02 h1:ukSAnDNGKtlve5Cj5cB0qU3UAPIf1tRi5dQ/BOtfAdQ=
+fyne.io/systray v1.10.1-0.20240611130111-26449f257a02/go.mod h1:RVwqP9nYMo7h5zViCBHri2FgjXF7H2cub7MAq4NSoLs=
 github.com/Masterminds/goutils v1.1.1 h1:5nUrii3FMTL5diU80unEVvNevw1nH4+ZV4DSLVJLSYI=
 github.com/Masterminds/goutils v1.1.1/go.mod h1:8cTjp+g8YejhMuvIA5y2vz3BpJxksy863GQaJW2MFNU=
 github.com/Masterminds/semver/v3 v3.2.0 h1:3MEsd0SM6jqZojhjLWWeBY+Kcjy9i6MQAeY7YgDP83g=
