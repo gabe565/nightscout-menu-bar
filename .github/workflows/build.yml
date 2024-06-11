@@ -15,9 +15,9 @@ jobs:
           go-version-file: go.mod
           cache: false
       - name: Install systray dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install gcc libgtk-3-dev libayatana-appindicator3-dev
+        uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: gcc libgtk-3-dev libayatana-appindicator3-dev
       - name: Lint
         uses: golangci/golangci-lint-action@v6
 
@@ -32,9 +32,9 @@ jobs:
         with:
           go-version-file: go.mod
       - name: Install systray dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install gcc libgtk-3-dev libayatana-appindicator3-dev
+        uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: gcc libgtk-3-dev libayatana-appindicator3-dev
       - name: Test
         env:
           TZ: America/Chicago
@@ -51,9 +51,9 @@ jobs:
         with:
           go-version-file: go.mod
       - name: Install systray dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install gcc libgtk-3-dev libayatana-appindicator3-dev
+        uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: gcc libgtk-3-dev libayatana-appindicator3-dev
       - name: Build
         run: go build -ldflags='-w -s' -trimpath -o dist/nightscout-menu-bar-amd64
       - name: Compress
