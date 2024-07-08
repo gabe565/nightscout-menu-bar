@@ -3,7 +3,7 @@ module github.com/gabe565/nightscout-menu-bar
 go 1.22.4
 
 require (
-	fyne.io/systray v1.10.1-0.20240111184411-11c585fff98d
+	fyne.io/systray v1.11.0
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/emersion/go-autostart v0.0.0-20210130080809-00ed301c8e9a
 	github.com/hhsnopek/etag v0.0.0-20171206181245-aea95f647346
