@@ -12,7 +12,7 @@ require (
 	github.com/knadh/koanf/providers/structs v0.1.0
 	github.com/knadh/koanf/v2 v2.1.1
 	github.com/mattn/go-isatty v0.0.20
-	github.com/ncruces/zenity v0.10.12
+	github.com/ncruces/zenity v0.10.13
 	github.com/pelletier/go-toml/v2 v2.2.2
 	github.com/prashantgupta24/mac-sleep-notifier v1.0.1
 	github.com/rs/zerolog v1.33.0
@@ -46,6 +46,6 @@ require (
 	github.com/tj/assert v0.0.3 // indirect
 	golang.org/x/crypto v0.17.0 // indirect
 	golang.org/x/image v0.18.0 // indirect
-	golang.org/x/sys v0.17.0 // indirect
+	golang.org/x/sys v0.22.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
