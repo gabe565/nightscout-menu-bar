@@ -2,6 +2,7 @@ package config
 
 import (
 	"path/filepath"
+	"runtime"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -11,9 +12,25 @@ import (
 const LocalFileFormatCsv = "csv"
 
 func New() *Config {
+	dynamicIconEnabled := true
+	var dynamicIconColor HexColor
+	switch runtime.GOOS {
+	case "darwin":
+		dynamicIconEnabled = false
+	case "windows":
+		dynamicIconColor = Black()
+	default:
+		dynamicIconColor = White()
+	}
+
 	conf := &Config{
 		Title: "Nightscout",
 		Units: UnitsMgdl,
+		DynamicIcon: DynamicIcon{
+			Enabled:   dynamicIconEnabled,
+			FontColor: dynamicIconColor,
+			FontSize:  19,
+		},
 		Arrows: Arrows{
 			DoubleUp:      "⇈",
 			SingleUp:      "↑",

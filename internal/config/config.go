@@ -13,14 +13,22 @@ type Config struct {
 	Flags     *pflag.FlagSet `toml:"-"`
 	callbacks []func()       `toml:"-"`
 
-	Title     string    `toml:"title" comment:"Tray title."`
-	URL       string    `toml:"url" comment:"Nightscout URL. (required)"`
-	Token     string    `toml:"token" comment:"Nightscout token. Using an access token is recommended instead of the API secret."`
-	Units     string    `toml:"units" comment:"Blood sugar unit. (one of: mg/dL, mmol/L)"`
-	Arrows    Arrows    `toml:"arrows" comment:"Customize the arrows."`
-	LocalFile LocalFile `toml:"local-file" comment:"Enables writing the latest blood sugar to a local temporary file."`
-	Log       Log       `toml:"log" comment:"Log configuration"`
-	Advanced  Advanced  `toml:"advanced" comment:"Advanced settings."`
+	Title       string      `toml:"title" comment:"Tray title."`
+	URL         string      `toml:"url" comment:"Nightscout URL. (required)"`
+	Token       string      `toml:"token" comment:"Nightscout token. Using an access token is recommended instead of the API secret."`
+	Units       string      `toml:"units" comment:"Blood sugar unit. (one of: mg/dL, mmol/L)"`
+	DynamicIcon DynamicIcon `toml:"dynamic_icon" comment:"Makes the tray icon show the current blood sugar reading."`
+	Arrows      Arrows      `toml:"arrows" comment:"Customize the arrows."`
+	LocalFile   LocalFile   `toml:"local-file" comment:"Enables writing the latest blood sugar to a local temporary file."`
+	Log         Log         `toml:"log" comment:"Log configuration"`
+	Advanced    Advanced    `toml:"advanced" comment:"Advanced settings."`
+}
+
+type DynamicIcon struct {
+	Enabled   bool     `toml:"enabled"`
+	FontColor HexColor `toml:"font_color" comment:"Hex code used to render text."`
+	FontFile  string   `toml:"font_file" comment:"If left blank, an embedded font will be used."`
+	FontSize  float64  `toml:"font_size" comment:"Large font size in points."`
 }
 
 type Arrows struct {

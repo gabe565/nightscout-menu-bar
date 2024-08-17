@@ -22,6 +22,7 @@ func New(conf *config.Config) Preferences {
 		autostartEnabled,
 	)
 
+	dynamicIcon := NewDynamicIcon(conf, item)
 	localFile := NewLocalFile(conf, item)
 
 	return Preferences{
@@ -30,6 +31,7 @@ func New(conf *config.Config) Preferences {
 		Token:        token,
 		Units:        units,
 		StartOnLogin: startOnLogin,
+		DynamicIcon:  dynamicIcon,
 		LocalFile:    localFile,
 	}
 }
@@ -40,6 +42,7 @@ type Preferences struct {
 	Token        Token
 	Units        Units
 	StartOnLogin *systray.MenuItem
+	DynamicIcon  DynamicIcon
 	LocalFile    LocalFile
 }
 

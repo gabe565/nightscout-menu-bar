@@ -9,6 +9,7 @@ import (
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
 	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"github.com/gabe565/nightscout-menu-bar/internal/dynamicicon"
 	"github.com/gabe565/nightscout-menu-bar/internal/fetch"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/ticker"
@@ -33,6 +34,10 @@ func New() *Tray {
 
 	t.ticker = ticker.New(t.config, t.bus)
 
+	if t.config.DynamicIcon.Enabled {
+		t.dynamicIcon = dynamicicon.New(t.config)
+	}
+
 	t.config.AddCallback(func() {
 		t.bus <- ReloadConfigMsg{}
 	})
@@ -40,10 +45,11 @@ func New() *Tray {
 }
 
 type Tray struct {
-	config *config.Config
-	ticker *ticker.Ticker
-	bus    chan any
-	items  items.Items
+	config      *config.Config
+	ticker      *ticker.Ticker
+	dynamicIcon *dynamicicon.DynamicIcon
+	bus         chan any
+	items       items.Items
 }
 
 func (t *Tray) Run(ctx context.Context) {
@@ -64,7 +70,9 @@ func (t *Tray) Quit() {
 
 func (t *Tray) onReady() {
 	systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
-	systray.SetTitle(t.config.Title)
+	if !t.config.DynamicIcon.Enabled {
+		systray.SetTitle(t.config.Title)
+	}
 	systray.SetTooltip(t.config.Title)
 
 	t.items = items.New(t.config)
@@ -117,6 +125,15 @@ func (t *Tray) onReady() {
 			if err := t.items.Preferences.LocalFile.Toggle(); err != nil {
 				t.onError(err)
 			}
+		case <-t.items.Preferences.DynamicIcon.ClickedCh:
+			if err := t.items.Preferences.DynamicIcon.Toggle(); err != nil {
+				t.onError(err)
+			}
+			if t.config.DynamicIcon.Enabled {
+				t.dynamicIcon = dynamicicon.New(t.config)
+			} else {
+				t.dynamicIcon = nil
+			}
 		case <-t.items.Quit.ClickedCh:
 			t.Quit()
 		case msg := <-t.bus:
@@ -126,7 +143,16 @@ func (t *Tray) onReady() {
 
 				value := msg.String(t.config)
 				log.Debug().Str("value", value).Msg("Updating reading")
-				systray.SetTitle(value)
+				if t.dynamicIcon == nil {
+					systray.SetTitle(value)
+				} else {
+					systray.SetTitle("")
+					if icon, err := t.dynamicIcon.Generate(msg); err == nil {
+						systray.SetTemplateIcon(icon, icon)
+					} else {
+						t.onError(err)
+					}
+				}
 				systray.SetTooltip(value)
 				t.items.LastReading.SetTitle(value)
 
