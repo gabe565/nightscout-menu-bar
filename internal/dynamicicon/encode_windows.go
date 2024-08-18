@@ -45,7 +45,8 @@ func encode(w io.Writer, img image.Image) error {
 	entry := newIcondirentry()
 
 	var buf bytes.Buffer
-	if err := png.Encode(&buf, img); err != nil {
+	encoder := png.Encoder{CompressionLevel: png.BestSpeed}
+	if err := encoder.Encode(&buf, img); err != nil {
 		return err
 	}
 	entry.sizeInBytes = uint32(buf.Len())

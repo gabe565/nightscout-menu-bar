@@ -9,5 +9,6 @@ import (
 )
 
 func encode(w io.Writer, img image.Image) error {
-	return png.Encode(w, img)
+	encoder := png.Encoder{CompressionLevel: png.BestSpeed}
+	return encoder.Encode(w, img)
 }
