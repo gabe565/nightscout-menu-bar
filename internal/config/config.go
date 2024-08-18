@@ -16,7 +16,7 @@ type Config struct {
 	Title       string      `toml:"title" comment:"Tray title."`
 	URL         string      `toml:"url" comment:"Nightscout URL. (required)"`
 	Token       string      `toml:"token" comment:"Nightscout token. Using an access token is recommended instead of the API secret."`
-	Units       string      `toml:"units" comment:"Blood sugar unit. (one of: mg/dL, mmol/L)"`
+	Units       Unit        `toml:"units" comment:"Blood sugar unit. (one of: mg/dL, mmol/L)"`
 	DynamicIcon DynamicIcon `toml:"dynamic_icon" comment:"Makes the tray icon show the current blood sugar reading."`
 	Arrows      Arrows      `toml:"arrows" comment:"Customize the arrows."`
 	LocalFile   LocalFile   `toml:"local-file" comment:"Enables writing the latest blood sugar to a local temporary file."`

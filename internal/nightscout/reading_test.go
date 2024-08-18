@@ -121,7 +121,7 @@ func TestReading_DisplayBg(t *testing.T) {
 		Sgvs      []SGV
 	}
 	type args struct {
-		units string
+		units config.Unit
 	}
 	tests := []struct {
 		name   string
@@ -129,10 +129,10 @@ func TestReading_DisplayBg(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		{"95", args{config.UnitsMgdl}, fields{Last: 95}, "95"},
-		{"LOW", args{config.UnitsMgdl}, fields{Last: 39}, "LOW"},
-		{"HIGH", args{config.UnitsMgdl}, fields{Last: 401}, "HIGH"},
-		{"mmol", args{config.UnitsMmol}, fields{Last: 100}, "5.6"},
+		{"95", args{config.UnitMgdl}, fields{Last: 95}, "95"},
+		{"LOW", args{config.UnitMgdl}, fields{Last: 39}, "LOW"},
+		{"HIGH", args{config.UnitMgdl}, fields{Last: 401}, "HIGH"},
+		{"mmol", args{config.UnitMmol}, fields{Last: 100}, "5.6"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

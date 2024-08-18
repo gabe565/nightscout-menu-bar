@@ -21,7 +21,7 @@ type Units struct {
 }
 
 func (n Units) GetTitle() string {
-	return "Units: " + n.config.Units
+	return "Units: " + n.config.Units.String()
 }
 
 func (n Units) UpdateTitle() {
@@ -37,7 +37,10 @@ func (n Units) Prompt() error {
 		return err
 	}
 
-	n.config.Units = unit
+	if err := n.config.Units.UnmarshalText([]byte(unit)); err != nil {
+		return err
+	}
+
 	if err := n.config.Write(); err != nil {
 		return err
 	}

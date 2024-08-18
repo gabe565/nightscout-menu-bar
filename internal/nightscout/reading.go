@@ -78,7 +78,7 @@ func (r *Reading) UnmarshalJSON(bytes []byte) error {
 	return nil
 }
 
-func (r *Reading) DisplayBg(units string) string {
+func (r *Reading) DisplayBg(units config.Unit) string {
 	switch r.Last {
 	case LowReading:
 		return "LOW"
@@ -86,7 +86,7 @@ func (r *Reading) DisplayBg(units string) string {
 		return "HIGH"
 	}
 
-	if units == config.UnitsMmol {
+	if units == config.UnitMmol {
 		mmol := r.Last.Mmol()
 		mmol = math.Round(mmol*10) / 10
 		return strconv.FormatFloat(mmol, 'f', 1, 64)

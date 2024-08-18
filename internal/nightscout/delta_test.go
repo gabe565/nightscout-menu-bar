@@ -22,7 +22,7 @@ func TestDelta_Display(t *testing.T) {
 		Times        Times
 	}
 	type args struct {
-		units string
+		units config.Unit
 	}
 	tests := []struct {
 		name   string
@@ -32,25 +32,25 @@ func TestDelta_Display(t *testing.T) {
 	}{
 		{
 			"mgdl",
-			args{config.UnitsMgdl},
+			args{config.UnitMgdl},
 			fields{DisplayVal: "+1"},
 			"+1",
 		},
 		{
 			"mmol",
-			args{config.UnitsMmol},
+			args{config.UnitMmol},
 			fields{Scaled: 9},
 			"+0.5",
 		},
 		{
 			"mmol no decimal",
-			args{config.UnitsMmol},
+			args{config.UnitMmol},
 			fields{Scaled: 0},
 			"+0",
 		},
 		{
 			"mmol negative",
-			args{config.UnitsMmol},
+			args{config.UnitMmol},
 			fields{Scaled: -9},
 			"-0.5",
 		},

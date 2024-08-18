@@ -15,7 +15,7 @@ const LocalFileFormatCsv = "csv"
 func New() *Config {
 	conf := &Config{
 		Title: "Nightscout",
-		Units: UnitsMgdl,
+		Units: UnitMgdl,
 		DynamicIcon: DynamicIcon{
 			Enabled:     true,
 			FontColor:   White(),

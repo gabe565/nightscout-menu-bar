@@ -5,12 +5,12 @@ import (
 	"github.com/ncruces/zenity"
 )
 
-func PromptUnits(item string) (string, error) {
+func PromptUnits(item config.Unit) (string, error) {
 	return zenity.List(
 		"Select units:",
-		[]string{config.UnitsMgdl, config.UnitsMmol},
+		config.UnitStrings(),
 		zenity.Title("Nightscout Units"),
 		zenity.DisallowEmpty(),
-		zenity.DefaultItems(item),
+		zenity.DefaultItems(item.String()),
 	)
 }

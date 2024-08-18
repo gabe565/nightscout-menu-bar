@@ -25,8 +25,8 @@ type Delta struct {
 	Times        Times       `json:"times"`
 }
 
-func (d Delta) Display(units string) string {
-	if units == config.UnitsMmol {
+func (d Delta) Display(units config.Unit) string {
+	if units == config.UnitMmol {
 		mmol := d.Scaled.Mmol()
 		mmol = math.Round(mmol*10) / 10
 		f := strconv.FormatFloat(mmol, 'f', -1, 64)
