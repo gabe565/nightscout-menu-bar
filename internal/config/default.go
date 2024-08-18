@@ -3,6 +3,7 @@ package config
 import (
 	"log/slog"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -15,6 +16,11 @@ func New() *Config {
 	conf := &Config{
 		Title: "Nightscout",
 		Units: UnitsMgdl,
+		DynamicIcon: DynamicIcon{
+			Enabled:     true,
+			FontColor:   White(),
+			MaxFontSize: 40,
+		},
 		Arrows: Arrows{
 			DoubleUp:      "⇈",
 			SingleUp:      "↑",
@@ -38,6 +44,13 @@ func New() *Config {
 			FallbackInterval: Duration{30 * time.Second},
 			RoundAge:         true,
 		},
+	}
+
+	switch runtime.GOOS {
+	case "darwin":
+		conf.DynamicIcon.Enabled = false
+	case "windows":
+		conf.DynamicIcon.FontColor = Black()
 	}
 
 	conf.Flags = flag.NewFlagSet("", flag.ContinueOnError)

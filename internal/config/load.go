@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"slices"
 	"time"
 
 	"github.com/knadh/koanf/providers/file"
@@ -145,8 +146,13 @@ func (conf *Config) Watch(ctx context.Context) error {
 	})
 }
 
-func (conf *Config) AddCallback(fn func()) {
+func (conf *Config) AddCallback(fn func()) int {
 	conf.callbacks = append(conf.callbacks, fn)
+	return len(conf.callbacks) - 1
+}
+
+func (conf *Config) RemoveCallback(idx int) {
+	conf.callbacks = slices.Delete(conf.callbacks, idx, idx+1)
 }
 
 func migrateConfig(k *koanf.Koanf) error {
