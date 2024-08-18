@@ -90,7 +90,7 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 			Dst:  d.img,
 			Src:  src,
 			Face: d.face,
-			Dot:  fixed.Point26_6{Y: heightF - m.Height/2 + m.Descent},
+			Dot:  fixed.Point26_6{Y: (heightF + m.Ascent - m.Descent) / 2},
 		}
 	} else {
 		draw.Draw(d.img, d.img.Bounds(), image.Transparent, image.Point{}, draw.Src)
