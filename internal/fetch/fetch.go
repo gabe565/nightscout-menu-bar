@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"time"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
@@ -37,6 +38,8 @@ type Fetch struct {
 }
 
 func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
+	start := time.Now()
+
 	if f.url == "" {
 		if err := f.UpdateURL(); err != nil {
 			return nil, err
@@ -80,7 +83,7 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 
 	switch resp.StatusCode {
 	case http.StatusNotModified:
-		slog.Debug("Data was not modified")
+		slog.Debug("Data was not modified", "took", time.Since(start))
 		return nil, ErrNotModified
 	case http.StatusOK:
 		// Decode JSON
@@ -89,7 +92,7 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 			return nil, err
 		}
 
-		slog.Debug("Parsed response", "data", properties)
+		slog.Debug("Parsed response", "took", time.Since(start), "data", properties)
 
 		f.etag = resp.Header.Get("etag")
 		return &properties, nil

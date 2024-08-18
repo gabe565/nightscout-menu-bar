@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
@@ -66,6 +67,7 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 		d.font = f
 	}
 
+	start := time.Now()
 	bgnow := p.Bgnow.DisplayBg(d.config.Units)
 
 	var face font.Face
@@ -103,11 +105,6 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 	draw.Draw(d.img, d.img.Bounds(), image.Transparent, image.Point{}, draw.Src)
 	drawer.Dot.X = (widthF - drawer.MeasureString(bgnow)) / 2
 	drawer.Dot.Y = (heightF + metrics.Ascent - metrics.Descent) / 2
-	slog.Debug("Generating dynamic icon",
-		"font_size", fontSize,
-		"dot", drawer.Dot,
-		"value", bgnow,
-	)
 	drawer.DrawString(bgnow)
 
 	var buf bytes.Buffer
@@ -115,5 +112,11 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 		return nil, err
 	}
 
+	slog.Debug("Generated dynamic icon",
+		"took", time.Since(start),
+		"font_size", fontSize,
+		"value", bgnow,
+		"size", buf.Len(),
+	)
 	return buf.Bytes(), nil
 }
