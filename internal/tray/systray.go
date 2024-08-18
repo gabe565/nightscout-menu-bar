@@ -67,7 +67,7 @@ func (t *Tray) Quit() {
 func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
 	return func() {
 		systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
-		if !t.config.DynamicIcon.Enabled {
+		if t.dynamicIcon == nil {
 			systray.SetTitle(t.config.Title)
 		}
 		systray.SetTooltip(t.config.Title)
@@ -130,12 +130,9 @@ func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
 				}
 				if t.config.DynamicIcon.Enabled {
 					t.dynamicIcon = dynamicicon.New(t.config)
-				} else {
-					if t.dynamicIcon != nil {
-						t.dynamicIcon = nil
-						systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
-					}
+				} else if t.dynamicIcon != nil {
 					t.dynamicIcon = nil
+					systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
 				}
 			case <-t.items.Quit.ClickedCh:
 				t.Quit()
@@ -149,12 +146,13 @@ func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
 					if t.dynamicIcon == nil {
 						systray.SetTitle(value)
 					} else {
-						systray.SetTitle("")
 						if icon, err := t.dynamicIcon.Generate(msg); err == nil {
+							systray.SetTitle("")
 							systray.SetTemplateIcon(icon, icon)
 						} else {
-							systray.SetTitle(value)
 							t.onError(err)
+							systray.SetTitle(value)
+							systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
 						}
 					}
 					systray.SetTooltip(value)
