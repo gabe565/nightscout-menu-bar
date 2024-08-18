@@ -128,12 +128,6 @@ func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
 				if err := t.items.Preferences.DynamicIcon.Toggle(); err != nil {
 					t.onError(err)
 				}
-				if t.config.DynamicIcon.Enabled {
-					t.dynamicIcon = dynamicicon.New(t.config)
-				} else if t.dynamicIcon != nil {
-					t.dynamicIcon = nil
-					systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
-				}
 			case <-t.items.Quit.ClickedCh:
 				t.Quit()
 			case msg := <-t.bus:
@@ -172,6 +166,12 @@ func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
 					t.items.Error.SetTitle(msg.Error())
 					t.items.Error.Show()
 				case ReloadConfigMsg:
+					if t.config.DynamicIcon.Enabled {
+						t.dynamicIcon = dynamicicon.New(t.config)
+					} else if t.dynamicIcon != nil {
+						t.dynamicIcon = nil
+						systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
+					}
 					t.items.Preferences.URL.UpdateTitle()
 					t.items.Preferences.Token.UpdateTitle()
 					t.items.Preferences.Units.UpdateTitle()
