@@ -18,7 +18,7 @@ func New() *Config {
 		DynamicIcon: DynamicIcon{
 			Enabled:   true,
 			FontColor: White(),
-			FontSize:  19,
+			FontSize:  28,
 		},
 		Arrows: Arrows{
 			DoubleUp:      "⇈",
