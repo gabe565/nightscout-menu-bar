@@ -12,7 +12,7 @@ import (
 
 func (t *Ticker) beginFetch(ctx context.Context, render chan<- *nightscout.Properties) {
 	go func() {
-		t.fetchTicker = time.NewTicker(time.Second)
+		t.fetchTicker = time.NewTicker(time.Millisecond)
 		defer t.fetchTicker.Stop()
 		for {
 			select {
