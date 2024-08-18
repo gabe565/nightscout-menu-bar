@@ -126,7 +126,7 @@ func (conf *Config) Watch(ctx context.Context) error {
 		if err != nil {
 			logger.Error("Config watcher failed", "error", err)
 			if ctx.Err() != nil {
-				conf.callbacks = nil
+				clear(conf.callbacks)
 				return
 			}
 			time.Sleep(time.Second)
