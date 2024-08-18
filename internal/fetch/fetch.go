@@ -8,13 +8,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"path"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
-	"github.com/rs/zerolog/log"
 )
 
 var (
@@ -56,10 +56,10 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 		req.Header.Set("Api-Secret", f.tokenChecksum)
 	}
 
-	log.Debug().
-		Bool("etag", f.etag != "").
-		Bool("secret", f.tokenChecksum != "").
-		Msg("Fetching data")
+	slog.Debug("Fetching data",
+		"etag", f.etag != "",
+		"secret", f.tokenChecksum != "",
+	)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -73,7 +73,6 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Trace().RawJSON("data", data).Msg("Response data")
 
 	if err := resp.Body.Close(); err != nil {
 		return nil, err
@@ -81,7 +80,7 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 
 	switch resp.StatusCode {
 	case http.StatusNotModified:
-		log.Trace().Msg("Data was not modified")
+		slog.Debug("Data was not modified")
 		return nil, ErrNotModified
 	case http.StatusOK:
 		// Decode JSON
@@ -90,7 +89,7 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 			return nil, err
 		}
 
-		log.Trace().Msg("Parsed response")
+		slog.Debug("Parsed response", "data", properties)
 
 		f.etag = resp.Header.Get("etag")
 		return &properties, nil
@@ -108,12 +107,12 @@ func (f *Fetch) UpdateURL() error {
 
 	u.Path = path.Join(u.Path, "api", "v2", "properties", "bgnow,buckets,delta,direction")
 	f.url = u.String()
-	log.Debug().Str("value", f.url).Msg("Generated URL")
+	slog.Debug("Generated URL", "value", f.url)
 
 	if token := f.config.Token; token != "" {
 		rawChecksum := sha1.Sum([]byte(token))
 		f.tokenChecksum = hex.EncodeToString(rawChecksum[:])
-		log.Trace().Str("value", f.tokenChecksum).Msg("Generated token checksum")
+		slog.Debug("Generated token checksum", "value", f.tokenChecksum)
 	} else {
 		f.tokenChecksum = ""
 	}
@@ -122,7 +121,7 @@ func (f *Fetch) UpdateURL() error {
 }
 
 func (f *Fetch) Reset() {
-	log.Debug().Msg("Resetting fetch cache")
+	slog.Debug("Resetting fetch cache")
 	f.url = ""
 	f.tokenChecksum = ""
 	f.etag = ""

@@ -1,10 +1,11 @@
 package config
 
 import (
+	"log/slog"
 	"path/filepath"
+	"strings"
 	"time"
 
-	"github.com/rs/zerolog"
 	flag "github.com/spf13/pflag"
 )
 
@@ -29,7 +30,8 @@ func New() *Config {
 			Path:   filepath.Join("$TMPDIR", "nightscout.csv"),
 		},
 		Log: Log{
-			Level: zerolog.InfoLevel.String(),
+			Level:  strings.ToLower(slog.LevelInfo.String()),
+			Format: FormatAuto.String(),
 		},
 		Advanced: Advanced{
 			FetchDelay:       Duration{30 * time.Second},

@@ -3,6 +3,7 @@ package tray
 import (
 	"context"
 	"io"
+	"log/slog"
 	"os"
 
 	"fyne.io/systray"
@@ -13,7 +14,6 @@ import (
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/ticker"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray/items"
-	"github.com/rs/zerolog/log"
 	"github.com/skratchdot/open-golang/open"
 )
 
@@ -77,7 +77,7 @@ func (t *Tray) onReady() {
 				t.onError(err)
 				return
 			}
-			log.Debug().Stringer("url", u).Msg("Opening Nightscout")
+			slog.Debug("Opening Nightscout", "url", u)
 			if err := open.Run(u.String()); err != nil {
 				t.onError(err)
 			}
@@ -125,7 +125,7 @@ func (t *Tray) onReady() {
 				t.items.Error.Hide()
 
 				value := msg.String(t.config)
-				log.Debug().Str("value", value).Msg("Updating reading")
+				slog.Debug("Updating reading", "value", value)
 				systray.SetTitle(value)
 				systray.SetTooltip(value)
 				t.items.LastReading.SetTitle(value)
@@ -140,7 +140,7 @@ func (t *Tray) onReady() {
 					}
 				}
 			case error:
-				log.Err(msg).Msg("Displaying error")
+				slog.Error("Displaying error", "error", msg)
 				t.items.Error.SetTitle(msg.Error())
 				t.items.Error.Show()
 			case ReloadConfigMsg:
@@ -156,12 +156,12 @@ func (t *Tray) onError(err error) {
 	select {
 	case t.bus <- err:
 	default:
-		log.Err(err).Msg("Unable to display error due to full bus")
+		slog.Error("Unable to display error due to full bus", "error", err)
 	}
 }
 
 func (t *Tray) onExit() {
-	log.Info().Msg("Exiting")
+	slog.Info("Exiting")
 	t.ticker.Close()
 	close(t.bus)
 }
