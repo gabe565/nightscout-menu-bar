@@ -150,6 +150,7 @@ func (t *Tray) onReady() {
 					if icon, err := t.dynamicIcon.Generate(msg); err == nil {
 						systray.SetTemplateIcon(icon, icon)
 					} else {
+						systray.SetTitle(value)
 						t.onError(err)
 					}
 				}
