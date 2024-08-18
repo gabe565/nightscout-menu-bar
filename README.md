@@ -41,6 +41,8 @@ Additional configuration is available in a configuration file, which can be foun
 - **macOS:** `~/Library/Application Support/nightscout-menu-bar/config.toml`
 - **Linux:** `~/.config/nightscout-menu-bar/config.toml`
 
+An example configuration is available at [`config_example.toml`](config_example.toml).
+
 ## Contrib
 
 Integrations with external tools are available in the [contrib](contrib) directory.

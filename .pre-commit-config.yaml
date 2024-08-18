@@ -16,3 +16,12 @@ repos:
       - id: go-mod-tidy-repo
       - id: golangci-lint-mod
         args: [--fix]
+
+  - repo: local
+    hooks:
+      - id: config-example
+        name: config-example
+        entry: go run ./internal/generate/config_example
+        language: system
+        types: [go]
+        pass_filenames: false
