@@ -12,23 +12,12 @@ import (
 const LocalFileFormatCsv = "csv"
 
 func New() *Config {
-	dynamicIconEnabled := true
-	var dynamicIconColor HexColor
-	switch runtime.GOOS {
-	case "darwin":
-		dynamicIconEnabled = false
-	case "windows":
-		dynamicIconColor = Black()
-	default:
-		dynamicIconColor = White()
-	}
-
 	conf := &Config{
 		Title: "Nightscout",
 		Units: UnitsMgdl,
 		DynamicIcon: DynamicIcon{
-			Enabled:   dynamicIconEnabled,
-			FontColor: dynamicIconColor,
+			Enabled:   true,
+			FontColor: White(),
 			FontSize:  19,
 		},
 		Arrows: Arrows{
@@ -53,6 +42,13 @@ func New() *Config {
 			FallbackInterval: Duration{30 * time.Second},
 			RoundAge:         true,
 		},
+	}
+
+	switch runtime.GOOS {
+	case "darwin":
+		conf.DynamicIcon.Enabled = false
+	case "windows":
+		conf.DynamicIcon.FontColor = Black()
 	}
 
 	conf.Flags = flag.NewFlagSet("", flag.ContinueOnError)
