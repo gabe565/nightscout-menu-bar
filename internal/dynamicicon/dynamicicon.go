@@ -6,6 +6,7 @@ import (
 	"errors"
 	"image"
 	"image/draw"
+	"log/slog"
 	"os"
 	"sync"
 
@@ -102,6 +103,11 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 	draw.Draw(d.img, d.img.Bounds(), image.Transparent, image.Point{}, draw.Src)
 	drawer.Dot.X = (widthF - drawer.MeasureString(bgnow)) / 2
 	drawer.Dot.Y = (heightF + metrics.Ascent - metrics.Descent) / 2
+	slog.Debug("Generating dynamic icon",
+		"font_size", fontSize,
+		"dot", drawer.Dot,
+		"value", bgnow,
+	)
 	drawer.DrawString(bgnow)
 
 	var buf bytes.Buffer
