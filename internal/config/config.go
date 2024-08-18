@@ -28,7 +28,7 @@ type DynamicIcon struct {
 	Enabled   bool     `toml:"enabled"`
 	FontColor HexColor `toml:"font_color" comment:"Hex code used to render text."`
 	FontFile  string   `toml:"font_file" comment:"If left blank, an embedded font will be used."`
-	FontSize  float64  `toml:"font_size" comment:"Large font size in points."`
+	FontSize  float64  `toml:"font_size" comment:"Font size in points."`
 }
 
 type Arrows struct {
