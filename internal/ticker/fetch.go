@@ -10,12 +10,13 @@ import (
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 )
 
-func (t *Ticker) beginFetch(render chan<- *nightscout.Properties) {
+func (t *Ticker) beginFetch(ctx context.Context, render chan<- *nightscout.Properties) {
 	go func() {
 		t.fetchTicker = time.NewTicker(time.Second)
+		defer t.fetchTicker.Stop()
 		for {
 			select {
-			case <-t.ctx.Done():
+			case <-ctx.Done():
 				return
 			case <-t.fetchTicker.C:
 				next := t.Fetch(render)

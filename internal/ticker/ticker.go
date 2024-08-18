@@ -23,7 +23,6 @@ func New(conf *config.Config, updateCh chan<- any) *Ticker {
 }
 
 type Ticker struct {
-	ctx    context.Context
 	cancel context.CancelFunc
 
 	config    *config.Config
@@ -35,11 +34,11 @@ type Ticker struct {
 	bus          chan<- any
 }
 
-func (t *Ticker) Start() {
-	t.ctx, t.cancel = context.WithCancel(context.Background())
-	renderCh := t.beginRender()
-	t.beginFetch(renderCh)
-	t.beginSleepNotifier()
+func (t *Ticker) Start(ctx context.Context) {
+	ctx, t.cancel = context.WithCancel(ctx)
+	renderCh := t.beginRender(ctx)
+	t.beginFetch(ctx, renderCh)
+	t.beginSleepNotifier(ctx)
 }
 
 func (t *Ticker) reloadConfig() {
@@ -53,8 +52,6 @@ func (t *Ticker) reloadConfig() {
 }
 
 func (t *Ticker) Close() {
-	t.fetchTicker.Stop()
-	t.renderTicker.Stop()
 	if t.cancel != nil {
 		t.cancel()
 	}

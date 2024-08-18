@@ -1,6 +1,7 @@
 package ticker
 
 import (
+	"context"
 	"log/slog"
 	"time"
 
@@ -8,15 +9,16 @@ import (
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 )
 
-func (t *Ticker) beginRender() chan<- *nightscout.Properties {
+func (t *Ticker) beginRender(ctx context.Context) chan<- *nightscout.Properties {
 	renderCh := make(chan *nightscout.Properties)
 	go func() {
 		defer close(renderCh)
 		t.renderTicker = time.NewTicker(5 * time.Minute)
+		defer t.renderTicker.Stop()
 		var properties *nightscout.Properties
 		for {
 			select {
-			case <-t.ctx.Done():
+			case <-ctx.Done():
 				return
 			case p := <-renderCh:
 				properties = p

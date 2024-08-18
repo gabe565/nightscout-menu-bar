@@ -1,21 +1,23 @@
 package ticker
 
 import (
+	"context"
 	"log/slog"
 	"time"
 
 	"github.com/prashantgupta24/mac-sleep-notifier/notifier"
 )
 
-func (t *Ticker) beginSleepNotifier() {
+func (t *Ticker) beginSleepNotifier(ctx context.Context) {
 	go func() {
 		notify := &notifier.Notifier{}
 		notifyCh := notify.Start()
+		defer close(notifyCh)
 		defer notify.Quit()
 
 		for {
 			select {
-			case <-t.ctx.Done():
+			case <-ctx.Done():
 				return
 			case activity := <-notifyCh:
 				switch activity.Type {
