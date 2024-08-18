@@ -57,7 +57,10 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 
-	const width, height = 32, 32
+	const (
+		width, height   = 32, 32
+		widthF, heightF = fixed.Int26_6(width << 6), fixed.Int26_6(height << 6)
+	)
 
 	if d.face == nil {
 		var b []byte
@@ -87,14 +90,14 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 			Dst:  d.img,
 			Src:  src,
 			Face: d.face,
-			Dot:  fixed.Point26_6{Y: fixed.I(height) - m.Height/2 + m.Descent},
+			Dot:  fixed.Point26_6{Y: heightF - m.Height/2 + m.Descent},
 		}
 	} else {
 		draw.Draw(d.img, d.img.Bounds(), image.Transparent, image.Point{}, draw.Src)
 	}
 
 	bgnow := p.Bgnow.DisplayBg(d.config.Units)
-	d.drawer.Dot.X = (fixed.I(width) - d.drawer.MeasureString(bgnow)) / 2
+	d.drawer.Dot.X = (widthF - d.drawer.MeasureString(bgnow)) / 2
 	d.drawer.DrawString(bgnow)
 
 	var buf bytes.Buffer
