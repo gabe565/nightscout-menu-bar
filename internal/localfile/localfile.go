@@ -2,6 +2,7 @@ package localfile
 
 import (
 	"errors"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -9,7 +10,6 @@ import (
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
-	"github.com/rs/zerolog/log"
 )
 
 func New(conf *config.Config) *LocalFile {
@@ -51,7 +51,7 @@ func (l *LocalFile) reloadConfig() {
 	}
 	if l.path != "" && path != l.path {
 		if err := l.Cleanup(); err != nil {
-			log.Err(err).Msg("Failed to cleanup local file")
+			slog.Error("Failed to cleanup local file", "error", err)
 		}
 	}
 	l.path = path
@@ -60,7 +60,7 @@ func (l *LocalFile) reloadConfig() {
 func (l *LocalFile) Write(last *nightscout.Properties) error {
 	if l.path != "" {
 		data := l.Format(last)
-		log.Debug().Str("data", data).Msg("Writing local file")
+		slog.Debug("Writing local file", "data", data)
 		err := os.WriteFile(l.path, []byte(data), 0o600)
 		return err
 	}
@@ -69,7 +69,7 @@ func (l *LocalFile) Write(last *nightscout.Properties) error {
 
 func (l *LocalFile) Cleanup() error {
 	if l.path != "" {
-		log.Debug().Str("path", l.path).Msg("Removing local file")
+		slog.Debug("Removing local file", "path", l.path)
 		if err := os.Remove(l.path); err != nil && !errors.Is(err, os.ErrNotExist) {
 			return err
 		}

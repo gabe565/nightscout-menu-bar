@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"slices"
@@ -15,10 +16,7 @@ import (
 	"github.com/knadh/koanf/providers/rawbytes"
 	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
-	"github.com/mattn/go-isatty"
 	"github.com/pelletier/go-toml/v2"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 )
 
 func (conf *Config) RegisterFlags() {
@@ -26,7 +24,7 @@ func (conf *Config) RegisterFlags() {
 }
 
 func (conf *Config) Load() error {
-	initLogFormat()
+	InitLog(os.Stderr, slog.LevelInfo, FormatAuto)
 	k := koanf.New(".")
 
 	// Load conf config
@@ -68,8 +66,8 @@ func (conf *Config) Load() error {
 		return err
 	}
 
-	initLogLevel(conf)
-	log.Info().Str("file", conf.File).Msg("Loaded config")
+	conf.InitLog(os.Stderr)
+	slog.Info("Loaded config", "file", conf.File)
 	return nil
 }
 
@@ -101,14 +99,15 @@ func (conf *Config) Write() error {
 	}
 
 	if !bytes.Equal(cfgContents, newCfg) {
+		logger := slog.With("file", conf.File)
 		if cfgNotExists {
-			log.Info().Str("file", conf.File).Msg("Creating config")
+			logger.Info("Creating config")
 
 			if err := os.MkdirAll(filepath.Dir(conf.File), 0o777); err != nil {
 				return err
 			}
 		} else {
-			log.Info().Str("file", conf.File).Msg("Updating config")
+			logger.Info("Updating config")
 		}
 
 		if err := os.WriteFile(conf.File, newCfg, 0o666); err != nil {
@@ -120,11 +119,12 @@ func (conf *Config) Write() error {
 }
 
 func (conf *Config) Watch(ctx context.Context) error {
-	log.Info().Str("file", conf.File).Msg("Watching config")
+	logger := slog.With("file", conf.File)
+	logger.Info("Watching config")
 	f := file.Provider(conf.File)
 	return f.Watch(func(_ any, err error) {
 		if err != nil {
-			log.Err(err).Msg("Config watcher failed")
+			logger.Error("Config watcher failed", "error", err)
 			if ctx.Err() != nil {
 				conf.callbacks = nil
 				return
@@ -135,9 +135,9 @@ func (conf *Config) Watch(ctx context.Context) error {
 			}()
 		}
 
-		log.Trace().Msg("Config watcher triggered")
+		logger.Debug("Config watcher triggered")
 		if err := conf.Load(); err != nil {
-			log.Err(err).Msg("Failed to load config")
+			logger.Error("Failed to load config", "error", err)
 		}
 
 		for _, fn := range conf.callbacks {
@@ -155,26 +155,9 @@ func (conf *Config) RemoveCallback(idx int) {
 	conf.callbacks = slices.Delete(conf.callbacks, idx, idx+1)
 }
 
-func initLogLevel(conf *Config) {
-	level, err := zerolog.ParseLevel(conf.Log.Level)
-	if err != nil {
-		log.Warn().Msg("Invalid log level. Defaulting to info.")
-	}
-	zerolog.SetGlobalLevel(level)
-}
-
-func initLogFormat() {
-	useColor := isatty.IsTerminal(os.Stderr.Fd())
-	log.Logger = log.Output(zerolog.ConsoleWriter{
-		Out:        os.Stderr,
-		NoColor:    !useColor,
-		TimeFormat: time.DateTime,
-	})
-}
-
 func migrateConfig(k *koanf.Koanf) error {
 	if k.Exists("interval") {
-		log.Info().Msg("Migrating config: interval to advanced.fallback-interval")
+		slog.Info("Migrating config: interval to advanced.fallback-interval")
 		if err := k.Set("advanced.fallback-interval", k.Get("interval")); err != nil {
 			return err
 		}

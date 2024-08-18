@@ -1,11 +1,11 @@
 package ticker
 
 import (
+	"log/slog"
 	"time"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
-	"github.com/rs/zerolog/log"
 )
 
 func (t *Ticker) beginRender() chan<- *nightscout.Properties {
@@ -26,7 +26,7 @@ func (t *Ticker) beginRender() chan<- *nightscout.Properties {
 				t.bus <- properties
 				d := util.GetNextMinChange(properties.Bgnow.Mills.Time, t.config.Advanced.RoundAge)
 				t.renderTicker.Reset(d)
-				log.Debug().Stringer("in", d).Msg("Scheduled next render")
+				slog.Debug("Scheduled next render", "in", d)
 			} else {
 				t.renderTicker.Reset(5 * time.Minute)
 			}

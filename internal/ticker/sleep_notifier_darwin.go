@@ -1,10 +1,10 @@
 package ticker
 
 import (
+	"log/slog"
 	"time"
 
 	"github.com/prashantgupta24/mac-sleep-notifier/notifier"
-	"github.com/rs/zerolog/log"
 )
 
 func (t *Ticker) beginSleepNotifier() {
@@ -20,12 +20,12 @@ func (t *Ticker) beginSleepNotifier() {
 			case activity := <-notifyCh:
 				switch activity.Type {
 				case notifier.Awake:
-					log.Info().Msg("Starting timers for awake mode")
+					slog.Info("Starting timers for awake mode")
 					t.fetch.Reset()
 					t.renderTicker.Reset(time.Second)
 					t.fetchTicker.Reset(time.Second)
 				case notifier.Sleep:
-					log.Info().Msg("Stopping timers for sleep mode")
+					slog.Info("Stopping timers for sleep mode")
 					t.fetchTicker.Stop()
 					t.renderTicker.Stop()
 				}

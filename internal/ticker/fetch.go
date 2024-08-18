@@ -3,11 +3,11 @@ package ticker
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"time"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/fetch"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
-	"github.com/rs/zerolog/log"
 )
 
 func (t *Ticker) beginFetch(render chan<- *nightscout.Properties) {
@@ -20,7 +20,7 @@ func (t *Ticker) beginFetch(render chan<- *nightscout.Properties) {
 			case <-t.fetchTicker.C:
 				next := t.Fetch(render)
 				t.fetchTicker.Reset(next)
-				log.Debug().Stringer("in", next).Msg("Scheduled next fetch")
+				slog.Debug("Scheduled next fetch", "in", next)
 			}
 		}
 	}()
@@ -40,7 +40,7 @@ func (t *Ticker) Fetch(render chan<- *nightscout.Properties) time.Duration {
 		}
 		if t.config.LocalFile.Enabled {
 			if err := t.localFile.Write(properties); err != nil {
-				log.Err(err).Msg("Failed to write local file")
+				slog.Error("Failed to write local file", "error", err)
 			}
 		}
 		if len(properties.Buckets) != 0 {

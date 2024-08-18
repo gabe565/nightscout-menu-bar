@@ -12,11 +12,11 @@ require (
 	github.com/knadh/koanf/providers/rawbytes v0.1.0
 	github.com/knadh/koanf/providers/structs v0.1.0
 	github.com/knadh/koanf/v2 v2.1.1
+	github.com/lmittmann/tint v1.0.5
 	github.com/mattn/go-isatty v0.0.20
 	github.com/ncruces/zenity v0.10.13
 	github.com/pelletier/go-toml/v2 v2.2.2
 	github.com/prashantgupta24/mac-sleep-notifier v1.0.1
-	github.com/rs/zerolog v1.33.0
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.9.0
@@ -38,7 +38,6 @@ require (
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/josephspurrier/goversioninfo v1.4.0 // indirect
 	github.com/knadh/koanf/maps v0.1.1 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect

@@ -49,7 +49,8 @@ type LocalFile struct {
 }
 
 type Log struct {
-	Level string `toml:"level" comment:"Values: trace, debug, info, warn, error, fatal, panic"`
+	Level  string `toml:"level" comment:"Values: trace, debug, info, warn, error, fatal, panic"`
+	Format string `toml:"format" comment:"Values: auto, color, plain, json"`
 }
 
 type Advanced struct {

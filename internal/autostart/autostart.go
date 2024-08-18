@@ -1,10 +1,10 @@
 package autostart
 
 import (
+	"log/slog"
 	"os"
 
 	"github.com/emersion/go-autostart"
-	"github.com/rs/zerolog/log"
 )
 
 func NewApp() (autostart.App, error) {
@@ -25,7 +25,7 @@ func Enable() error {
 	if err != nil {
 		return err
 	}
-	log.Debug().Msg("Enabling autostart")
+	slog.Debug("Enabling autostart")
 	return app.Enable()
 }
 
@@ -34,7 +34,7 @@ func Disable() error {
 	if err != nil {
 		return err
 	}
-	log.Debug().Msg("Disabling autostart")
+	slog.Debug("Disabling autostart")
 	return app.Disable()
 }
 
@@ -44,6 +44,6 @@ func IsEnabled() (bool, error) {
 		return false, err
 	}
 	v := app.IsEnabled()
-	log.Trace().Bool("value", v).Msg("Detected autostart status")
+	slog.Debug("Detected autostart status", "value", v)
 	return v, nil
 }
