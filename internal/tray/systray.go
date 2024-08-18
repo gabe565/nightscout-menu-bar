@@ -68,7 +68,7 @@ func (t *Tray) Quit() {
 	systray.Quit()
 }
 
-func (t *Tray) onReady() {
+func (t *Tray) onReady() { //nolint:gocyclo
 	systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
 	if !t.config.DynamicIcon.Enabled {
 		systray.SetTitle(t.config.Title)
@@ -132,6 +132,10 @@ func (t *Tray) onReady() {
 			if t.config.DynamicIcon.Enabled {
 				t.dynamicIcon = dynamicicon.New(t.config)
 			} else {
+				if t.dynamicIcon != nil {
+					_ = t.dynamicIcon.Close()
+					t.dynamicIcon = nil
+				}
 				t.dynamicIcon = nil
 			}
 		case <-t.items.Quit.ClickedCh:

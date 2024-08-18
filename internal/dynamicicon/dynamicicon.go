@@ -21,8 +21,9 @@ import (
 var defaultFont []byte
 
 type DynamicIcon struct {
-	config *config.Config
-	mu     sync.Mutex
+	config         *config.Config
+	mu             sync.Mutex
+	callbackOffset int
 
 	face   font.Face
 	drawer *font.Drawer
@@ -31,18 +32,25 @@ type DynamicIcon struct {
 
 func New(conf *config.Config) *DynamicIcon {
 	d := &DynamicIcon{config: conf}
-	conf.AddCallback(d.reloadConfig)
+	d.callbackOffset = conf.AddCallback(d.reloadConfig)
 	return d
 }
 
-func (d *DynamicIcon) reloadConfig() {
+func (d *DynamicIcon) Close() error {
 	d.mu.Lock()
 	defer d.mu.Unlock()
+	var err error
 	if d.face != nil {
-		_ = d.face.Close()
-		systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
+		err = d.face.Close()
 	}
-	d.face, d.drawer, d.img = nil, nil, nil
+	d.config.RemoveCallback(d.callbackOffset)
+	systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
+	return err
+}
+
+func (d *DynamicIcon) reloadConfig() {
+	_ = d.Close()
+	d.config.AddCallback(d.reloadConfig)
 }
 
 func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
