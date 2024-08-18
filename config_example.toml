@@ -8,14 +8,14 @@ token = ''
 units = 'mg/dL'
 
 # Makes the tray icon show the current blood sugar reading.
-[dynamic_icon]
+[dynamic-icon]
 enabled = false
 # Hex code used to render text.
-font_color = '#fff'
+font-color = '#fff'
 # If left blank, an embedded font will be used.
-font_file = ''
+font-file = ''
 # Maximum font size in points.
-max_font_size = 40.0
+max-font-size = 40.0
 
 # Customize the arrows.
 [arrows]
