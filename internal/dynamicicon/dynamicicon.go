@@ -18,7 +18,7 @@ import (
 )
 
 //go:embed Inconsolata_Condensed-Black.ttf
-var robotoBold []byte
+var defaultFont []byte
 
 type DynamicIcon struct {
 	config *config.Config
@@ -54,7 +54,7 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 	if d.face == nil {
 		var b []byte
 		if d.config.DynamicIcon.FontFile == "" {
-			b = robotoBold
+			b = defaultFont
 		} else {
 			var err error
 			if b, err = os.ReadFile(d.config.DynamicIcon.FontFile); err != nil {
