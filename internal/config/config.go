@@ -25,10 +25,10 @@ type Config struct {
 }
 
 type DynamicIcon struct {
-	Enabled   bool     `toml:"enabled"`
-	FontColor HexColor `toml:"font_color" comment:"Hex code used to render text."`
-	FontFile  string   `toml:"font_file" comment:"If left blank, an embedded font will be used."`
-	FontSize  float64  `toml:"font_size" comment:"Font size in points."`
+	Enabled     bool     `toml:"enabled"`
+	FontColor   HexColor `toml:"font_color" comment:"Hex code used to render text."`
+	FontFile    string   `toml:"font_file" comment:"If left blank, an embedded font will be used."`
+	MaxFontSize float64  `toml:"max_font_size" comment:"Maximum font size in points."`
 }
 
 type Arrows struct {

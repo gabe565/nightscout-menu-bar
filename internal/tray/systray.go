@@ -133,8 +133,8 @@ func (t *Tray) onReady() { //nolint:gocyclo
 				t.dynamicIcon = dynamicicon.New(t.config)
 			} else {
 				if t.dynamicIcon != nil {
-					_ = t.dynamicIcon.Close()
 					t.dynamicIcon = nil
+					systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
 				}
 				t.dynamicIcon = nil
 			}

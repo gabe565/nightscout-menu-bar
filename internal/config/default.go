@@ -16,9 +16,9 @@ func New() *Config {
 		Title: "Nightscout",
 		Units: UnitsMgdl,
 		DynamicIcon: DynamicIcon{
-			Enabled:   true,
-			FontColor: White(),
-			FontSize:  28,
+			Enabled:     true,
+			FontColor:   White(),
+			MaxFontSize: 40,
 		},
 		Arrows: Arrows{
 			DoubleUp:      "⇈",
