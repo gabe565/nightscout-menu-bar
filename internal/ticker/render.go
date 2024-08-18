@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
+	"github.com/gabe565/nightscout-menu-bar/internal/tray/messages"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 )
 
@@ -17,15 +18,21 @@ func (t *Ticker) beginRender(ctx context.Context) chan<- *nightscout.Properties 
 		defer t.renderTicker.Stop()
 		var properties *nightscout.Properties
 		for {
+			var renderType messages.RenderType
 			select {
 			case <-ctx.Done():
 				return
 			case p := <-renderCh:
+				renderType = messages.RenderTypeFetch
 				properties = p
 			case <-t.renderTicker.C:
+				renderType = messages.RenderTypeTimestamp
 			}
 			if properties != nil {
-				t.bus <- properties
+				t.bus <- messages.RenderMessage{
+					Type:       renderType,
+					Properties: properties,
+				}
 				d := util.GetNextMinChange(properties.Bgnow.Mills.Time, t.config.Advanced.RoundAge)
 				t.renderTicker.Reset(d)
 				slog.Debug("Scheduled next render", "in", d)

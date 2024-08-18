@@ -12,9 +12,9 @@ import (
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/dynamicicon"
 	"github.com/gabe565/nightscout-menu-bar/internal/fetch"
-	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/ticker"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray/items"
+	"github.com/gabe565/nightscout-menu-bar/internal/tray/messages"
 	"github.com/skratchdot/open-golang/open"
 )
 
@@ -39,7 +39,7 @@ func New() *Tray {
 	}
 
 	t.config.AddCallback(func() {
-		t.bus <- ReloadConfigMsg{}
+		t.bus <- messages.ReloadConfigMsg{}
 	})
 	return t
 }
@@ -132,15 +132,17 @@ func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
 				t.Quit()
 			case msg := <-t.bus:
 				switch msg := msg.(type) {
-				case *nightscout.Properties:
-					t.items.Error.Hide()
+				case messages.RenderMessage:
+					if msg.Type == messages.RenderTypeFetch {
+						t.items.Error.Hide()
+					}
 
-					value := msg.String(t.config)
+					value := msg.Properties.String(t.config)
 					slog.Debug("Updating reading", "value", value)
 					if t.dynamicIcon == nil {
 						systray.SetTitle(value)
 					} else {
-						if icon, err := t.dynamicIcon.Generate(msg); err == nil {
+						if icon, err := t.dynamicIcon.Generate(msg.Properties); err == nil {
 							systray.SetTitle("")
 							systray.SetTemplateIcon(icon, icon)
 						} else {
@@ -152,7 +154,7 @@ func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
 					systray.SetTooltip(value)
 					t.items.LastReading.SetTitle(value)
 
-					for i, reading := range msg.Buckets {
+					for i, reading := range msg.Properties.Buckets {
 						if i < len(t.items.History.Subitems) {
 							t.items.History.Subitems[i].SetTitle(reading.String(t.config))
 						} else {
@@ -165,7 +167,7 @@ func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
 					slog.Error("Displaying error", "error", msg)
 					t.items.Error.SetTitle(msg.Error())
 					t.items.Error.Show()
-				case ReloadConfigMsg:
+				case messages.ReloadConfigMsg:
 					if t.config.DynamicIcon.Enabled {
 						t.dynamicIcon = dynamicicon.New(t.config)
 					} else if t.dynamicIcon != nil {
