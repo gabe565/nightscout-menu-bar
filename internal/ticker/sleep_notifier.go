@@ -2,4 +2,6 @@
 
 package ticker
 
-func (t *Ticker) beginSleepNotifier() {}
+import "context"
+
+func (t *Ticker) beginSleepNotifier(_ context.Context) {}
