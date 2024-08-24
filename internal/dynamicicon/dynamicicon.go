@@ -25,7 +25,7 @@ const (
 	widthF, heightF = fixed.Int26_6(width << 6), fixed.Int26_6(height << 6)
 )
 
-//go:embed Inconsolata_Condensed-Black.ttf
+//go:embed RobotoCondensed-SemiBold.ttf
 var defaultFont []byte
 
 type DynamicIcon struct {
