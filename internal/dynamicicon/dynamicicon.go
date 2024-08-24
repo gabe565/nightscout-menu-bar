@@ -15,6 +15,7 @@ import (
 	"github.com/flopp/go-findfont"
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
+	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	"github.com/goki/freetype/truetype"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
@@ -55,7 +56,7 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 		if d.config.DynamicIcon.FontFile == "" {
 			b = defaultFont
 		} else {
-			path := d.config.DynamicIcon.FontFile
+			path := util.ResolvePath(d.config.DynamicIcon.FontFile)
 
 			if !filepath.IsAbs(path) {
 				dir, err := config.GetDir()

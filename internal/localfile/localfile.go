@@ -4,12 +4,11 @@ import (
 	"errors"
 	"log/slog"
 	"os"
-	"path/filepath"
 	"strconv"
-	"strings"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
+	"github.com/gabe565/nightscout-menu-bar/internal/util"
 )
 
 func New(conf *config.Config) *LocalFile {
@@ -43,11 +42,7 @@ func (l *LocalFile) Format(last *nightscout.Properties) string {
 func (l *LocalFile) reloadConfig() {
 	var path string
 	if l.config.LocalFile.Enabled {
-		path = l.config.LocalFile.Path
-		if strings.HasPrefix(path, "$TMPDIR") {
-			path = strings.TrimPrefix(path, "$TMPDIR")
-			path = filepath.Join(os.TempDir(), path)
-		}
+		path = util.ResolvePath(l.config.LocalFile.Path)
 	}
 	if l.path != "" && path != l.path {
 		if err := l.Cleanup(); err != nil {
