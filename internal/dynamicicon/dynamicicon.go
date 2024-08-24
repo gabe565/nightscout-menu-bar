@@ -8,6 +8,7 @@ import (
 	"image/draw"
 	"log/slog"
 	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -53,8 +54,19 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 		if d.config.DynamicIcon.FontFile == "" {
 			b = defaultFont
 		} else {
+			path := d.config.DynamicIcon.FontFile
+
+			if !filepath.IsAbs(path) {
+				dir, err := config.GetDir()
+				if err != nil {
+					return nil, err
+				}
+
+				path = filepath.Join(dir, path)
+			}
+
 			var err error
-			if b, err = os.ReadFile(d.config.DynamicIcon.FontFile); err != nil {
+			if b, err = os.ReadFile(path); err != nil {
 				return nil, err
 			}
 		}
