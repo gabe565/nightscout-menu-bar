@@ -113,7 +113,7 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 		})
 		drawer.Face = face
 
-		if textWidth := drawer.MeasureString(bgnow); textWidth <= widthF {
+		if textWidth := drawer.MeasureString(bgnow); textWidth <= widthF+fixed.I(2) {
 			break
 		}
 
