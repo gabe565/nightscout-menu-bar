@@ -27,7 +27,7 @@ type Config struct {
 type DynamicIcon struct {
 	Enabled     bool     `toml:"enabled"`
 	FontColor   HexColor `toml:"font-color" comment:"Hex code used to render text."`
-	FontFile    string   `toml:"font-file" comment:"If left blank, an embedded font will be used."`
+	FontFile    string   `toml:"font-file" comment:"Font path or filename of a system font. If left blank, an embedded font will be used."`
 	MaxFontSize float64  `toml:"max-font-size" comment:"Maximum font size in points."`
 }
 

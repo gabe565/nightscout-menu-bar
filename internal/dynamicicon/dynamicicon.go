@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/flopp/go-findfont"
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/goki/freetype/truetype"
@@ -67,7 +68,18 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 
 			var err error
 			if b, err = os.ReadFile(path); err != nil {
-				return nil, err
+				if !os.IsNotExist(err) {
+					return nil, err
+				}
+
+				path, findErr := findfont.Find(d.config.DynamicIcon.FontFile)
+				if findErr != nil {
+					return nil, errors.Join(err, findErr)
+				}
+
+				if b, err = os.ReadFile(path); err != nil {
+					return nil, err
+				}
 			}
 		}
 

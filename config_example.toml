@@ -12,7 +12,7 @@ units = 'mg/dL'
 enabled = false
 # Hex code used to render text.
 font-color = '#fff'
-# If left blank, an embedded font will be used.
+# Font path or filename of a system font. If left blank, an embedded font will be used.
 font-file = ''
 # Maximum font size in points.
 max-font-size = 40.0
