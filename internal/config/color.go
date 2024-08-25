@@ -38,6 +38,7 @@ func (h *HexColor) UnmarshalText(text []byte) error {
 		return err
 	}
 
+	//nolint:gosec
 	if parsed > 0xFFF {
 		h.R = uint8(parsed >> 16 & 0xFF)
 		h.G = uint8(parsed >> 8 & 0xFF)
