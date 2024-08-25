@@ -24,7 +24,6 @@ func (t *Ticker) beginSleepNotifier(ctx context.Context) {
 				switch activity.Type {
 				case notifier.Awake:
 					logger.Info("Starting timers")
-					t.fetch.Reset()
 					t.renderTicker.Reset(time.Second)
 					t.fetchTicker.Reset(time.Second)
 				case notifier.Sleep:
