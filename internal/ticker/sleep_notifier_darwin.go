@@ -20,14 +20,15 @@ func (t *Ticker) beginSleepNotifier(ctx context.Context) {
 			case <-ctx.Done():
 				return
 			case activity := <-notifyCh:
+				logger := slog.With("reason", activity.Type)
 				switch activity.Type {
 				case notifier.Awake:
-					slog.Info("Starting timers for awake mode")
+					logger.Info("Starting timers")
 					t.fetch.Reset()
 					t.renderTicker.Reset(time.Second)
 					t.fetchTicker.Reset(time.Second)
 				case notifier.Sleep:
-					slog.Info("Stopping timers for sleep mode")
+					logger.Info("Stopping timers")
 					t.fetchTicker.Stop()
 					t.renderTicker.Stop()
 				}
