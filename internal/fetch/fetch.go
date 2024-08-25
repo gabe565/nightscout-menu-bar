@@ -69,17 +69,9 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 		return nil, err
 	}
 	defer func() {
+		_, _ = io.Copy(io.Discard, resp.Body)
 		_ = resp.Body.Close()
 	}()
-
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := resp.Body.Close(); err != nil {
-		return nil, err
-	}
 
 	switch resp.StatusCode {
 	case http.StatusNotModified:
@@ -88,7 +80,7 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 	case http.StatusOK:
 		// Decode JSON
 		var properties nightscout.Properties
-		if err := json.Unmarshal(data, &properties); err != nil {
+		if err := json.NewDecoder(resp.Body).Decode(&properties); err != nil {
 			return nil, err
 		}
 
