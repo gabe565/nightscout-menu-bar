@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	width, height   = 32, 32
+	width, height   = 64, 64
 	widthF, heightF = fixed.Int26_6(width << 6), fixed.Int26_6(height << 6)
 )
 
@@ -107,7 +107,7 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 		Src: image.NewUniform(d.config.DynamicIcon.FontColor.RGBA()),
 	}
 
-	fontSize := d.config.DynamicIcon.MaxFontSize
+	fontSize := d.config.DynamicIcon.MaxFontSize * 2
 	for {
 		face = truetype.NewFace(d.font, &truetype.Options{
 			Size: fontSize,
@@ -122,7 +122,7 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 		if fontSize <= 1 {
 			return nil, ErrFontSize
 		}
-		fontSize -= 0.5
+		fontSize -= 1.0
 	}
 
 	metrics := face.Metrics()

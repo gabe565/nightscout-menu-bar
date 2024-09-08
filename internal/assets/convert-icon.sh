@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-HEIGHT=32
-PAD="${3:-4}"
+HEIGHT=64
+PAD="${3:-8}"
 DENSITY=144
 
 BASEHEIGHT="$(bc <<< "$HEIGHT - $PAD")"
