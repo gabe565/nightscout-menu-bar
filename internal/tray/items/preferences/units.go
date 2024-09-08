@@ -5,7 +5,6 @@ import (
 
 	"fyne.io/systray"
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/ui"
 	"github.com/ncruces/zenity"
 )
 
@@ -29,7 +28,13 @@ func (n Units) UpdateTitle() {
 }
 
 func (n Units) Prompt() error {
-	unit, err := ui.PromptUnits(n.config.Units)
+	unit, err := zenity.List(
+		"Select units:",
+		config.UnitStrings(),
+		zenity.Title("Nightscout Units"),
+		zenity.DisallowEmpty(),
+		zenity.DefaultItems(n.config.Units.String()),
+	)
 	if err != nil {
 		if errors.Is(err, zenity.ErrCanceled) {
 			return nil

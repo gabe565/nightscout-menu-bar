@@ -5,7 +5,6 @@ import (
 
 	"fyne.io/systray"
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/ui"
 	"github.com/ncruces/zenity"
 )
 
@@ -33,7 +32,11 @@ func (n URL) UpdateTitle() {
 }
 
 func (n URL) Prompt() error {
-	url, err := ui.PromptURL(n.config.URL)
+	url, err := zenity.Entry(
+		"Enter new Nightscout URL:",
+		zenity.Title("Nightscout URL"),
+		zenity.EntryText(n.config.URL),
+	)
 	if err != nil {
 		if errors.Is(err, zenity.ErrCanceled) {
 			return nil

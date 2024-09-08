@@ -5,7 +5,6 @@ import (
 
 	"fyne.io/systray"
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/ui"
 	"github.com/ncruces/zenity"
 )
 
@@ -33,7 +32,11 @@ func (n Token) UpdateTitle() {
 }
 
 func (n Token) Prompt() error {
-	token, err := ui.PromptToken(n.config.Token)
+	token, err := zenity.Entry(
+		"Enter new Nightscout API token:",
+		zenity.Title("Token"),
+		zenity.EntryText(n.config.Token),
+	)
 	if err != nil {
 		if errors.Is(err, zenity.ErrCanceled) {
 			return nil
