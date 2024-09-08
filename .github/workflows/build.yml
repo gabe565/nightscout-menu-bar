@@ -76,6 +76,8 @@ jobs:
           go-version-file: go.mod
       - name: Build
         shell: bash
+        env:
+          VERSION: ${{ github.ref_name }}
         run: ./hack/build-windows.sh
       - name: Compress
         working-directory: dist

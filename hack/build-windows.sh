@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
 BINARY_NAME='Nightscout Menu Bar'
+VERSION="${VERSION:-}"
+if [[ -n "$VERSION" ]]; then
+  VERSION="${VERSION#v}"
+  VERSION+='.0'
+fi
 
 set -euo pipefail
 
@@ -18,7 +23,7 @@ cp -a assets/{png/icon_48x48,windows/icon48}.png
 cp -a assets/{png/icon_64x64,windows/icon64}.png
 cp -a assets/{png/icon_128x128,windows/icon128}.png
 cp -a assets/{png/icon_256x256,windows/icon256}.png
-go-winres make --arch=amd64,arm64 --in=assets/windows/winres.json
+go-winres make --arch=amd64,arm64 --in=assets/windows/winres.json --product-version="$VERSION" --file-version="$VERSION"
 
 # Build binary
 export GOOS=windows CGO_ENABLED=1
