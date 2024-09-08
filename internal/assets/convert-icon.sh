@@ -15,7 +15,7 @@ inkscape "$SRC" \
   --export-height="$BASEHEIGHT" \
   --export-type=png \
   --export-filename=- \
-| convert - \
+| magick - \
   -strip \
   -background transparent \
   -gravity center \
