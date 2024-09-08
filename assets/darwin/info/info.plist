@@ -12,17 +12,22 @@
 		<string>MacOS/nightscout-menu-bar</string>
 		<key>CFBundleIdentifier</key>
 		<string>com.gabe565.nightscout-menu-bar</string>
-		<key>CFBundleVersion</key>
-		<string>1.0</string>
 		<key>CFBundleGetInfoString</key>
 		<string>Nightscout Menu Bar by gabe565</string>
+		{{- with .Version }}
+        {{- $version := trimPrefix "v" . }}
+		<key>CFBundleVersion</key>
+		<string>{{ $version }}</string>
 		<key>CFBundleShortVersionString</key>
-		<string>1.0</string>
+		<string>{{ $version }}</string>
+		{{- end }}
 		<key>CFBundleIconFile</key>
 		<string>Nightscout.icns</string>
 		<key>LSUIElement</key>
 		<true/>
 		<key>LSRequiresNativeExecution</key>
 		<true/>
+		<key>NSHumanReadableCopyright</key>
+		<string>© {{ now | date "2006" }} Gabe Cook</string>
 	</dict>
 </plist>

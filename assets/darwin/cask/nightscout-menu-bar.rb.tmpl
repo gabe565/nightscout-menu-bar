@@ -1,10 +1,10 @@
 cask "nightscout-menu-bar" do
   desc "Display live blood sugar data from Nightscout in your system menu bar"
   homepage "https://github.com/gabe565/nightscout-menu-bar"
-  {{- if eq .Version "latest" }}
-  version :latest
-  {{- else }}
+  {{- if .Version }}
   version "{{ trimPrefix "v" .Version }}"
+  {{- else }}
+  version :latest
   {{- end }}
 
   url "https://github.com/gabe565/nightscout-menu-bar/releases/download/{{ .Version }}/nightscout-menu-bar_darwin.tar.gz"
