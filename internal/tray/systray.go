@@ -128,6 +128,10 @@ func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
 				if err := t.items.Preferences.DynamicIcon.Toggle(); err != nil {
 					t.onError(err)
 				}
+			case <-t.items.Preferences.DynamicIconColor.ClickedCh:
+				if err := t.items.Preferences.DynamicIconColor.Choose(); err != nil {
+					t.onError(err)
+				}
 			case <-t.items.Quit.ClickedCh:
 				t.Quit()
 			case msg := <-t.bus:

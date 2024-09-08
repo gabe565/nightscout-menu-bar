@@ -8,7 +8,7 @@ import (
 func NewDynamicIcon(conf *config.Config, parent *systray.MenuItem) DynamicIcon {
 	item := DynamicIcon{config: conf}
 	item.MenuItem = parent.AddSubMenuItemCheckbox(
-		"Render dynamic icon",
+		"Enabled",
 		"",
 		conf.DynamicIcon.Enabled,
 	)

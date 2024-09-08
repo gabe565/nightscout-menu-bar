@@ -22,28 +22,32 @@ func New(conf *config.Config) Preferences {
 		autostartEnabled,
 	)
 
-	dynamicIcon := NewDynamicIcon(conf, item)
+	dynamicIconMenu := item.AddSubMenuItem("Dynamic icon", "")
+	dynamicIcon := NewDynamicIcon(conf, dynamicIconMenu)
+	dynamicIconColor := NewDynamicIconColor(conf, dynamicIconMenu)
 	localFile := NewLocalFile(conf, item)
 
 	return Preferences{
-		MenuItem:     item,
-		URL:          url,
-		Token:        token,
-		Units:        units,
-		StartOnLogin: startOnLogin,
-		DynamicIcon:  dynamicIcon,
-		LocalFile:    localFile,
+		MenuItem:         item,
+		URL:              url,
+		Token:            token,
+		Units:            units,
+		StartOnLogin:     startOnLogin,
+		DynamicIcon:      dynamicIcon,
+		DynamicIconColor: dynamicIconColor,
+		LocalFile:        localFile,
 	}
 }
 
 type Preferences struct {
 	*systray.MenuItem
-	URL          URL
-	Token        Token
-	Units        Units
-	StartOnLogin *systray.MenuItem
-	DynamicIcon  DynamicIcon
-	LocalFile    LocalFile
+	URL              URL
+	Token            Token
+	Units            Units
+	StartOnLogin     *systray.MenuItem
+	DynamicIcon      DynamicIcon
+	DynamicIconColor DynamicIconColor
+	LocalFile        LocalFile
 }
 
 type Item interface {
