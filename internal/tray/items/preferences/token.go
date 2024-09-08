@@ -22,7 +22,7 @@ type Token struct {
 func (n Token) Prompt() error {
 	token, err := zenity.Entry(
 		"Enter new Nightscout API token:",
-		zenity.Title("Token"),
+		zenity.Title("Nightscout API Token"),
 		zenity.EntryText(n.config.Token),
 	)
 	if err != nil {
