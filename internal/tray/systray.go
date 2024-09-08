@@ -179,9 +179,6 @@ func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
 						t.dynamicIcon = nil
 						systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
 					}
-					t.items.Preferences.URL.UpdateTitle()
-					t.items.Preferences.Token.UpdateTitle()
-					t.items.Preferences.Units.UpdateTitle()
 				}
 			}
 		}

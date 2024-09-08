@@ -10,21 +10,13 @@ import (
 
 func NewUnits(config *config.Config, parent *systray.MenuItem) Units {
 	item := Units{config: config}
-	item.MenuItem = parent.AddSubMenuItem(item.GetTitle(), "")
+	item.MenuItem = parent.AddSubMenuItem("Units", "")
 	return item
 }
 
 type Units struct {
 	config *config.Config
 	*systray.MenuItem
-}
-
-func (n Units) GetTitle() string {
-	return "Units: " + n.config.Units.String()
-}
-
-func (n Units) UpdateTitle() {
-	n.SetTitle(n.GetTitle())
 }
 
 func (n Units) Prompt() error {

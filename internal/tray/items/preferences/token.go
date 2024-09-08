@@ -10,25 +10,13 @@ import (
 
 func NewToken(config *config.Config, parent *systray.MenuItem) Token {
 	token := Token{config: config}
-	token.MenuItem = parent.AddSubMenuItem(token.GetTitle(), "")
+	token.MenuItem = parent.AddSubMenuItem("API Token", "")
 	return token
 }
 
 type Token struct {
 	config *config.Config
 	*systray.MenuItem
-}
-
-func (n Token) GetTitle() string {
-	title := "API Token"
-	if n.config.Token != "" {
-		title += ": " + n.config.Token
-	}
-	return title
-}
-
-func (n Token) UpdateTitle() {
-	n.SetTitle(n.GetTitle())
 }
 
 func (n Token) Prompt() error {

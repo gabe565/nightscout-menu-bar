@@ -10,25 +10,13 @@ import (
 
 func NewURL(conf *config.Config, parent *systray.MenuItem) URL {
 	item := URL{config: conf}
-	item.MenuItem = parent.AddSubMenuItem(item.GetTitle(), "")
+	item.MenuItem = parent.AddSubMenuItem("Nightscout URL", "")
 	return item
 }
 
 type URL struct {
 	config *config.Config
 	*systray.MenuItem
-}
-
-func (n URL) GetTitle() string {
-	title := "Nightscout URL"
-	if n.config.URL != "" {
-		title += ": " + n.config.URL
-	}
-	return title
-}
-
-func (n URL) UpdateTitle() {
-	n.SetTitle(n.GetTitle())
 }
 
 func (n URL) Prompt() error {
