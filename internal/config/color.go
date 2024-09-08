@@ -13,7 +13,7 @@ var (
 	ErrInvalidLength = errors.New("hex code should be 4 or 7 characters")
 )
 
-type HexColor color.RGBA
+type HexColor color.NRGBA
 
 func (h HexColor) MarshalText() ([]byte, error) {
 	shorthand := h.R>>4 == h.R&0xF && h.G>>4 == h.G&0xF && h.B>>4 == h.B&0xF

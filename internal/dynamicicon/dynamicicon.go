@@ -34,13 +34,13 @@ type DynamicIcon struct {
 	mu     sync.Mutex
 
 	font *truetype.Font
-	img  *image.RGBA
+	img  *image.NRGBA
 }
 
 func New(conf *config.Config) *DynamicIcon {
 	d := &DynamicIcon{
 		config: conf,
-		img:    image.NewRGBA(image.Rectangle{Max: image.Point{X: width, Y: height}}),
+		img:    image.NewNRGBA(image.Rectangle{Max: image.Point{X: width, Y: height}}),
 	}
 	return d
 }
