@@ -15,13 +15,13 @@ require (
 	github.com/knadh/koanf/v2 v2.1.1
 	github.com/lmittmann/tint v1.0.5
 	github.com/mattn/go-isatty v0.0.20
-	github.com/ncruces/zenity v0.10.13
+	github.com/ncruces/zenity v0.10.14
 	github.com/pelletier/go-toml/v2 v2.2.3
 	github.com/prashantgupta24/mac-sleep-notifier v1.0.1
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.9.0
-	golang.org/x/image v0.19.0
+	golang.org/x/image v0.20.0
 )
 
 require (
@@ -37,7 +37,7 @@ require (
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/huandu/xstrings v1.3.3 // indirect
 	github.com/imdario/mergo v0.3.11 // indirect
-	github.com/josephspurrier/goversioninfo v1.4.0 // indirect
+	github.com/josephspurrier/goversioninfo v1.4.1 // indirect
 	github.com/knadh/koanf/maps v0.1.1 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
@@ -47,6 +47,6 @@ require (
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/tj/assert v0.0.3 // indirect
 	golang.org/x/crypto v0.17.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
+	golang.org/x/sys v0.25.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
