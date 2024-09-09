@@ -30,6 +30,7 @@ func NewFetch(conf *config.Config, version string) *Fetch {
 		config: conf,
 		client: &http.Client{
 			Transport: util.NewUserAgentTransport("nightscout-menu-bar", version),
+			Timeout:   time.Minute,
 		},
 	}
 }

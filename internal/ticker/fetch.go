@@ -28,10 +28,7 @@ func (t *Ticker) beginFetch(ctx context.Context, render chan<- *nightscout.Prope
 }
 
 func (t *Ticker) Fetch(render chan<- *nightscout.Properties) time.Duration {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-
-	properties, err := t.fetch.Do(ctx)
+	properties, err := t.fetch.Do(context.Background())
 	if err != nil && !errors.Is(err, fetch.ErrNotModified) {
 		t.bus <- err
 	}
