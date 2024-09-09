@@ -25,5 +25,5 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
 	defer cancel()
 
-	tray.New().Run(ctx)
+	tray.New(version).Run(ctx)
 }

@@ -10,7 +10,7 @@ import (
 
 func TestNew(t *testing.T) {
 	t.Parallel()
-	tray := New()
+	tray := New("")
 	assert.NotNil(t, tray)
 	assert.NotNil(t, tray.config)
 	assert.NotNil(t, tray.ticker)
@@ -18,7 +18,7 @@ func TestNew(t *testing.T) {
 
 func TestTray_onError(t *testing.T) {
 	t.Parallel()
-	tray := New()
+	tray := New("")
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()

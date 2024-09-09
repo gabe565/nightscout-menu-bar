@@ -17,7 +17,7 @@ import (
 
 func TestNewFetch(t *testing.T) {
 	t.Parallel()
-	fetch := NewFetch(config.New())
+	fetch := NewFetch(config.New(), "")
 	require.NotNil(t, fetch)
 	assert.NotNil(t, fetch.config)
 }
@@ -90,7 +90,7 @@ func TestFetch_Do(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			f := NewFetch(tt.fields.config)
+			f := NewFetch(tt.fields.config, "")
 			f.url = tt.fields.url
 			f.tokenChecksum = tt.fields.tokenChecksum
 			f.etag = tt.fields.etag

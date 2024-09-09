@@ -16,6 +16,7 @@ import (
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
+	"github.com/gabe565/nightscout-menu-bar/internal/util"
 )
 
 var (
@@ -24,14 +25,18 @@ var (
 	ErrNoURL       = errors.New("please configure your Nightscout URL")
 )
 
-func NewFetch(conf *config.Config) *Fetch {
+func NewFetch(conf *config.Config, version string) *Fetch {
 	return &Fetch{
 		config: conf,
+		client: &http.Client{
+			Transport: util.NewUserAgentTransport("nightscout-menu-bar", version),
+		},
 	}
 }
 
 type Fetch struct {
 	config        *config.Config
+	client        *http.Client
 	url           string
 	tokenChecksum string
 	etag          string
@@ -64,7 +69,7 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 		"secret", f.tokenChecksum != "",
 	)
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := f.client.Do(req)
 	if err != nil {
 		return nil, err
 	}

@@ -18,7 +18,7 @@ import (
 	"github.com/skratchdot/open-golang/open"
 )
 
-func New() *Tray {
+func New(version string) *Tray {
 	t := &Tray{
 		config: config.New(),
 		bus:    make(chan any, 1),
@@ -32,7 +32,7 @@ func New() *Tray {
 		t.onError(err)
 	}
 
-	t.ticker = ticker.New(t.config, t.bus)
+	t.ticker = ticker.New(t.config, t.bus, version)
 
 	if t.config.DynamicIcon.Enabled {
 		t.dynamicIcon = dynamicicon.New(t.config)
