@@ -12,6 +12,7 @@ type Items struct {
 	OpenNightscout *systray.MenuItem
 	History        History
 	Preferences    preferences.Preferences
+	About          *systray.MenuItem
 	Quit           *systray.MenuItem
 }
 
@@ -27,6 +28,7 @@ func New(conf *config.Config) Items {
 	systray.AddSeparator()
 
 	items.Preferences = preferences.New(conf)
+	items.About = NewAbout(conf.Version)
 	items.Quit = NewQuit()
 
 	return items

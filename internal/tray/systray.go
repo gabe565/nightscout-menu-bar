@@ -18,9 +18,11 @@ import (
 	"github.com/skratchdot/open-golang/open"
 )
 
+const AboutURL = "https://github.com/gabe565/nightscout-menu-bar"
+
 func New(version string) *Tray {
 	t := &Tray{
-		config: config.New(),
+		config: config.New(config.WithVersion(version)),
 		bus:    make(chan any, 1),
 	}
 	if err := t.config.Flags.Parse(os.Args[1:]); err != nil {
@@ -32,7 +34,7 @@ func New(version string) *Tray {
 		t.onError(err)
 	}
 
-	t.ticker = ticker.New(t.config, t.bus, version)
+	t.ticker = ticker.New(t.config, t.bus)
 
 	if t.config.DynamicIcon.Enabled {
 		t.dynamicIcon = dynamicicon.New(t.config)
@@ -94,6 +96,10 @@ func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
 						t.onError(err)
 					}
 				}()
+			case <-t.items.About.ClickedCh:
+				if err := open.Run(AboutURL); err != nil {
+					t.onError(err)
+				}
 			case <-t.items.Preferences.Token.ClickedCh:
 				go func() {
 					if err := t.items.Preferences.Token.Prompt(); err != nil {

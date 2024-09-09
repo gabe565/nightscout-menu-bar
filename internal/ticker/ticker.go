@@ -10,10 +10,10 @@ import (
 	"github.com/gabe565/nightscout-menu-bar/internal/localfile"
 )
 
-func New(conf *config.Config, updateCh chan<- any, version string) *Ticker {
+func New(conf *config.Config, updateCh chan<- any) *Ticker {
 	t := &Ticker{
 		config:    conf,
-		fetch:     fetch.NewFetch(conf, version),
+		fetch:     fetch.NewFetch(conf),
 		localFile: localfile.New(conf),
 		bus:       updateCh,
 	}

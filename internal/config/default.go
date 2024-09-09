@@ -12,7 +12,7 @@ import (
 
 const LocalFileFormatCsv = "csv"
 
-func New() *Config {
+func New(opts ...Option) *Config {
 	conf := &Config{
 		Title: "Nightscout",
 		Units: UnitMgdl,
@@ -55,6 +55,10 @@ func New() *Config {
 
 	conf.Flags = flag.NewFlagSet("", flag.ContinueOnError)
 	conf.RegisterFlags()
+
+	for _, opt := range opts {
+		opt(conf)
+	}
 
 	return conf
 }

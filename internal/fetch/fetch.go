@@ -25,11 +25,11 @@ var (
 	ErrNoURL       = errors.New("please configure your Nightscout URL")
 )
 
-func NewFetch(conf *config.Config, version string) *Fetch {
+func NewFetch(conf *config.Config) *Fetch {
 	return &Fetch{
 		config: conf,
 		client: &http.Client{
-			Transport: util.NewUserAgentTransport("nightscout-menu-bar", version),
+			Transport: util.NewUserAgentTransport("nightscout-menu-bar", conf.Version),
 			Timeout:   time.Minute,
 		},
 	}

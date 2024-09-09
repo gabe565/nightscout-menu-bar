@@ -11,6 +11,7 @@ import (
 type Config struct {
 	File      string         `toml:"-"`
 	Flags     *pflag.FlagSet `toml:"-"`
+	Version   string         `toml:"-"`
 	callbacks []func()       `toml:"-"`
 
 	Title       string      `toml:"title" comment:"Tray title."`
