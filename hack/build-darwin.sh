@@ -26,7 +26,7 @@ iconutil --convert icns --output "assets/$ICNS" "assets/$ICONSET"
 export GOOS=darwin CGO_ENABLED=1
 for ARCH in amd64 arm64; do
   echo Build "$BINARY_NAME-$ARCH"
-  GOARCH="$ARCH" go build -ldflags='-w -s' -trimpath -o "dist/$BINARY_NAME-$ARCH" .
+  GOARCH="$ARCH" go build -ldflags="-w -s -X main.version=$VERSION" -trimpath -o "dist/$BINARY_NAME-$ARCH" .
 done
 lipo -create -output "dist/$BINARY_NAME" "dist/$BINARY_NAME-amd64" "dist/$BINARY_NAME-arm64"
 rm "dist/$BINARY_NAME-amd64" "dist/$BINARY_NAME-arm64"

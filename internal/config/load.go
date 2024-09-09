@@ -24,7 +24,6 @@ func (conf *Config) RegisterFlags() {
 }
 
 func (conf *Config) Load() error {
-	InitLog(os.Stderr, slog.LevelInfo, FormatAuto)
 	k := koanf.New(".")
 
 	// Load conf config
