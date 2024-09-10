@@ -1,4 +1,4 @@
-package config
+package settings
 
 const MmolConversionFactor = 0.0555
 

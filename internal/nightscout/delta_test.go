@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"github.com/gabe565/nightscout-menu-bar/internal/app/settings"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -22,7 +22,7 @@ func TestDelta_Display(t *testing.T) {
 		Times        Times
 	}
 	type args struct {
-		units config.Unit
+		units settings.Unit
 	}
 	tests := []struct {
 		name   string
@@ -32,25 +32,25 @@ func TestDelta_Display(t *testing.T) {
 	}{
 		{
 			"mgdl",
-			args{config.UnitMgdl},
+			args{settings.UnitMgdl},
 			fields{DisplayVal: "+1"},
 			"+1",
 		},
 		{
 			"mmol",
-			args{config.UnitMmol},
+			args{settings.UnitMmol},
 			fields{Scaled: 9},
 			"+0.5",
 		},
 		{
 			"mmol no decimal",
-			args{config.UnitMmol},
+			args{settings.UnitMmol},
 			fields{Scaled: 0},
 			"+0",
 		},
 		{
 			"mmol negative",
-			args{config.UnitMmol},
+			args{settings.UnitMmol},
 			fields{Scaled: -9},
 			"-0.5",
 		},

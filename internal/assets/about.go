@@ -1,9 +1,16 @@
-//go:build !windows
-
 package assets
 
-import _ "embed"
+import (
+	_ "embed"
 
-//go:generate ./convert-icon.sh src/github-brands-solid.svg dist/github-brands-solid.png
-//go:embed dist/github-brands-solid.png
-var About []byte
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/theme"
+)
+
+var (
+	//go:embed src/github-brands-solid.svg
+	about []byte
+
+	//nolint:gochecknoglobals
+	AboutResource = theme.NewThemedResource(fyne.NewStaticResource("about.svg", about))
+)

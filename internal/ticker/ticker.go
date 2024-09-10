@@ -5,27 +5,26 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"fyne.io/fyne/v2"
 	"github.com/gabe565/nightscout-menu-bar/internal/fetch"
 	"github.com/gabe565/nightscout-menu-bar/internal/localfile"
 )
 
-func New(conf *config.Config, updateCh chan<- any) *Ticker {
+func New(app fyne.App, updateCh chan<- any, version string) *Ticker {
 	t := &Ticker{
-		config:    conf,
-		fetch:     fetch.NewFetch(conf),
-		localFile: localfile.New(conf),
+		app:       app,
+		fetch:     fetch.NewFetch(app, version),
+		localFile: localfile.New(app),
 		bus:       updateCh,
 	}
-
-	conf.AddCallback(t.reloadConfig)
+	app.Preferences().AddChangeListener(t.reloadConfig)
 	return t
 }
 
 type Ticker struct {
 	cancel context.CancelFunc
 
-	config    *config.Config
+	app       fyne.App
 	fetch     *fetch.Fetch
 	localFile *localfile.LocalFile
 

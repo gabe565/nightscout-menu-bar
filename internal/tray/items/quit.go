@@ -1,12 +1,13 @@
 package items
 
 import (
-	"fyne.io/systray"
+	"fyne.io/fyne/v2"
 	"github.com/gabe565/nightscout-menu-bar/internal/assets"
 )
 
-func NewQuit() *systray.MenuItem {
-	item := systray.AddMenuItem("Quit", "")
-	item.SetTemplateIcon(assets.Quit, assets.Quit)
+func NewQuit() *fyne.MenuItem {
+	item := fyne.NewMenuItem("Quit", nil)
+	item.Icon = assets.QuitResource
+	item.IsQuit = true
 	return item
 }

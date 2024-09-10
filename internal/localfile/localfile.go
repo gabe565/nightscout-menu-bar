@@ -6,43 +6,45 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"fyne.io/fyne/v2"
+	"github.com/gabe565/nightscout-menu-bar/internal/app/settings"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 )
 
-func New(conf *config.Config) *LocalFile {
+func New(app fyne.App) *LocalFile {
 	l := &LocalFile{
-		config: conf,
+		app: app,
 	}
 	l.reloadConfig()
-
-	conf.AddCallback(l.reloadConfig)
+	app.Preferences().AddChangeListener(l.reloadConfig)
 	return l
 }
 
 type LocalFile struct {
-	config *config.Config
-	path   string
+	app  fyne.App
+	path string
 }
 
 func (l *LocalFile) Format(last *nightscout.Properties) string {
-	switch l.config.LocalFile.Format {
-	case config.LocalFileFormatCsv:
-		return last.Bgnow.DisplayBg(l.config.Units) + "," +
-			last.Bgnow.Arrow(l.config.Arrows) + "," +
-			last.Delta.Display(l.config.Units) + "," +
-			strconv.Itoa(int(last.Bgnow.Mills.Time.Unix())) +
-			"\n"
-	default:
-		return ""
+	prefs := l.app.Preferences()
+	var units settings.Unit
+	if err := units.UnmarshalText([]byte(prefs.String(settings.UnitsKey))); err != nil {
+		units = settings.UnitMgdl
 	}
+
+	return last.Bgnow.DisplayBg(units) + "," +
+		last.Bgnow.Arrow() + "," +
+		last.Delta.Display(units) + "," +
+		strconv.Itoa(int(last.Bgnow.Mills.Time.Unix())) +
+		"\n"
 }
 
 func (l *LocalFile) reloadConfig() {
 	var path string
-	if l.config.LocalFile.Enabled {
-		path = util.ResolvePath(l.config.LocalFile.Path)
+	prefs := l.app.Preferences()
+	if prefs.Bool(settings.LocalEnabledKey) {
+		path = util.ResolvePath(prefs.String(settings.LocalPathKey))
 	}
 	if l.path != "" && path != l.path {
 		if err := l.Cleanup(); err != nil {

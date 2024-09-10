@@ -5,20 +5,27 @@ import (
 	"testing"
 	"time"
 
+	fyneapp "fyne.io/fyne/v2/app"
+	"github.com/gabe565/nightscout-menu-bar/internal/fyneutil"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNew(t *testing.T) {
 	t.Parallel()
-	tray := New("")
+	app, ok := fyneapp.New().(fyneutil.DesktopApp)
+	require.True(t, ok)
+	tray := New(app, "")
 	assert.NotNil(t, tray)
-	assert.NotNil(t, tray.config)
+	assert.NotNil(t, tray.app)
 	assert.NotNil(t, tray.ticker)
 }
 
 func TestTray_onError(t *testing.T) {
 	t.Parallel()
-	tray := New("")
+	app, ok := fyneapp.New().(fyneutil.DesktopApp)
+	require.True(t, ok)
+	tray := New(app, "")
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()

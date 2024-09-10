@@ -8,12 +8,12 @@ import (
 	"image/draw"
 	"log/slog"
 	"os"
-	"path/filepath"
 	"sync"
 	"time"
 
+	"fyne.io/fyne/v2"
 	"github.com/flopp/go-findfont"
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"github.com/gabe565/nightscout-menu-bar/internal/app/settings"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	"github.com/goki/freetype/truetype"
@@ -30,17 +30,17 @@ const (
 var defaultFont []byte
 
 type DynamicIcon struct {
-	config *config.Config
-	mu     sync.Mutex
+	app fyne.App
+	mu  sync.Mutex
 
 	font *truetype.Font
 	img  *image.NRGBA
 }
 
-func New(conf *config.Config) *DynamicIcon {
+func New(app fyne.App) *DynamicIcon {
 	d := &DynamicIcon{
-		config: conf,
-		img:    image.NewNRGBA(image.Rectangle{Max: image.Point{X: width, Y: height}}),
+		app: app,
+		img: image.NewNRGBA(image.Rectangle{Max: image.Point{X: width, Y: height}}),
 	}
 	return d
 }
@@ -51,21 +51,14 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 
+	prefs := d.app.Preferences()
+
 	if d.font == nil {
 		var b []byte
-		if d.config.DynamicIcon.FontFile == "" {
+		if fontPath := prefs.String(settings.DynamicIconFontPathKey); fontPath == "" {
 			b = defaultFont
 		} else {
-			path := util.ResolvePath(d.config.DynamicIcon.FontFile)
-
-			if !filepath.IsAbs(path) {
-				dir, err := config.GetDir()
-				if err != nil {
-					return nil, err
-				}
-
-				path = filepath.Join(dir, path)
-			}
+			path := util.ResolvePath(fontPath)
 
 			var err error
 			if b, err = os.ReadFile(path); err != nil {
@@ -73,7 +66,7 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 					return nil, err
 				}
 
-				path, findErr := findfont.Find(d.config.DynamicIcon.FontFile)
+				path, findErr := findfont.Find(fontPath)
 				if findErr != nil {
 					return nil, errors.Join(err, findErr)
 				}
@@ -93,7 +86,11 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 	}
 
 	start := time.Now()
-	bgnow := p.Bgnow.DisplayBg(d.config.Units)
+	var units settings.Unit
+	if err := units.UnmarshalText([]byte(prefs.String(settings.UnitsKey))); err != nil {
+		units = settings.UnitMgdl
+	}
+	bgnow := p.Bgnow.DisplayBg(units)
 
 	var face font.Face
 	defer func() {
@@ -102,12 +99,17 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 		}
 	}()
 
-	drawer := &font.Drawer{
-		Dst: d.img,
-		Src: image.NewUniform(d.config.DynamicIcon.FontColor.RGBA()),
+	var color util.HexColor
+	if err := color.UnmarshalText([]byte(prefs.String(settings.DynamicIconFontColorKey))); err != nil {
+		color = util.White()
 	}
 
-	fontSize := d.config.DynamicIcon.MaxFontSize * 2
+	drawer := &font.Drawer{
+		Dst: d.img,
+		Src: image.NewUniform(color),
+	}
+
+	fontSize := 80.0
 	for {
 		face = truetype.NewFace(d.font, &truetype.Options{
 			Size: fontSize,

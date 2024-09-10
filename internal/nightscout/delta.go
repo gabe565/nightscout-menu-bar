@@ -5,7 +5,7 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"github.com/gabe565/nightscout-menu-bar/internal/app/settings"
 )
 
 type Times struct {
@@ -25,8 +25,8 @@ type Delta struct {
 	Times        Times       `json:"times"`
 }
 
-func (d Delta) Display(units config.Unit) string {
-	if units == config.UnitMmol {
+func (d Delta) Display(units settings.Unit) string {
+	if units == settings.UnitMmol {
 		mmol := d.Scaled.Mmol()
 		mmol = math.Round(mmol*10) / 10
 		f := strconv.FormatFloat(mmol, 'f', -1, 64)

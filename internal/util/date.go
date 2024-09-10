@@ -1,14 +1,8 @@
 package util
 
-import (
-	"time"
-)
+import "time"
 
-func GetNextMinChange(t time.Time, round bool) time.Duration {
-	if round {
-		// Offset time by 30s since output is rounded
-		t = t.Add(-30 * time.Second)
-	}
+func GetNextMinChange(t time.Time) time.Duration {
 	// Time since last update
 	duration := time.Since(t)
 	// Only keep seconds

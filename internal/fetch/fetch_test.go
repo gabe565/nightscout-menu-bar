@@ -7,7 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"fyne.io/fyne/v2/app"
+	"github.com/gabe565/nightscout-menu-bar/internal/app/settings"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout/testproperties"
 	"github.com/hhsnopek/etag"
@@ -17,9 +18,9 @@ import (
 
 func TestNewFetch(t *testing.T) {
 	t.Parallel()
-	fetch := NewFetch(config.New())
+	fetch := NewFetch(app.New(), "")
 	require.NotNil(t, fetch)
-	assert.NotNil(t, fetch.config)
+	assert.NotNil(t, fetch.app)
 }
 
 func TestFetch_Do(t *testing.T) {
@@ -38,7 +39,6 @@ func TestFetch_Do(t *testing.T) {
 	t.Cleanup(server.Close)
 
 	type fields struct {
-		config        *config.Config
 		url           string
 		tokenChecksum string
 		etag          string
@@ -56,7 +56,7 @@ func TestFetch_Do(t *testing.T) {
 	}{
 		{
 			"no url",
-			fields{config: &config.Config{}},
+			fields{},
 			args{context.Background()},
 			nil,
 			"",
@@ -64,7 +64,7 @@ func TestFetch_Do(t *testing.T) {
 		},
 		{
 			"success",
-			fields{config: &config.Config{URL: server.URL}},
+			fields{url: server.URL},
 			args{context.Background()},
 			testproperties.Properties,
 			testproperties.Etag,
@@ -72,7 +72,7 @@ func TestFetch_Do(t *testing.T) {
 		},
 		{
 			"same etag",
-			fields{config: &config.Config{URL: server.URL}, etag: testproperties.Etag},
+			fields{url: server.URL, etag: testproperties.Etag},
 			args{context.Background()},
 			nil,
 			testproperties.Etag,
@@ -80,7 +80,7 @@ func TestFetch_Do(t *testing.T) {
 		},
 		{
 			"different etag",
-			fields{config: &config.Config{URL: server.URL}, etag: etag.Generate([]byte("test"), true)},
+			fields{url: server.URL, etag: etag.Generate([]byte("test"), true)},
 			args{context.Background()},
 			testproperties.Properties,
 			testproperties.Etag,
@@ -90,7 +90,9 @@ func TestFetch_Do(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			f := NewFetch(tt.fields.config)
+			app := app.New()
+			app.Preferences().SetString(settings.URLKey, tt.fields.url)
+			f := NewFetch(app, "")
 			f.url = tt.fields.url
 			f.tokenChecksum = tt.fields.tokenChecksum
 			f.etag = tt.fields.etag

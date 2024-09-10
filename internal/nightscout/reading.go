@@ -5,7 +5,8 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"fyne.io/fyne/v2"
+	"github.com/gabe565/nightscout-menu-bar/internal/app/settings"
 )
 
 const (
@@ -23,41 +24,46 @@ type Reading struct {
 	Sgvs      []SGV       `json:"sgvs"`
 }
 
-func (r *Reading) Arrow(conf config.Arrows) string {
+func (r *Reading) Arrow() string {
 	var direction string
 	if len(r.Sgvs) > 0 {
 		direction = r.Sgvs[0].Direction
 	}
 	switch direction {
 	case "DoubleUp", "TripleUp":
-		direction = conf.DoubleUp
+		direction = "⇈"
 	case "SingleUp":
-		direction = conf.SingleUp
+		direction = "↑"
 	case "FortyFiveUp":
-		direction = conf.FortyFiveUp
+		direction = "↗"
 	case "Flat":
-		direction = conf.Flat
+		direction = "→"
 	case "FortyFiveDown":
-		direction = conf.FortyFiveDown
+		direction = "↘"
 	case "SingleDown":
-		direction = conf.SingleDown
+		direction = "↓"
 	case "DoubleDown", "TripleDown":
-		direction = conf.DoubleDown
+		direction = "⇊"
 	default:
-		direction = conf.Unknown
+		direction = "-"
 	}
 	return direction
 }
 
-func (r *Reading) String(conf *config.Config) string {
+func (r *Reading) String(prefs fyne.Preferences) string {
 	if r.Last == 0 {
 		return ""
 	}
 
-	result := r.DisplayBg(conf.Units) +
-		" " + r.Arrow(conf.Arrows)
-	if rel := r.Mills.Relative(conf.Advanced.RoundAge); rel != "" {
-		result += " [" + r.Mills.Relative(conf.Advanced.RoundAge) + "]"
+	var units settings.Unit
+	if err := units.UnmarshalText([]byte(prefs.String(settings.UnitsKey))); err != nil {
+		units = settings.UnitMgdl
+	}
+
+	result := r.DisplayBg(units) +
+		" " + r.Arrow()
+	if rel := r.Mills.Relative(); rel != "" {
+		result += " [" + rel + "]"
 	}
 	return result
 }
@@ -78,7 +84,7 @@ func (r *Reading) UnmarshalJSON(bytes []byte) error {
 	return nil
 }
 
-func (r *Reading) DisplayBg(units config.Unit) string {
+func (r *Reading) DisplayBg(units settings.Unit) string {
 	switch r.Last {
 	case LowReading:
 		return "LOW"
@@ -86,7 +92,7 @@ func (r *Reading) DisplayBg(units config.Unit) string {
 		return "HIGH"
 	}
 
-	if units == config.UnitMmol {
+	if units == settings.UnitMmol {
 		mmol := r.Last.Mmol()
 		mmol = math.Round(mmol*10) / 10
 		return strconv.FormatFloat(mmol, 'f', 1, 64)

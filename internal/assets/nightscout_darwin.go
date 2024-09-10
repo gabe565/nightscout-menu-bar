@@ -1,7 +1,16 @@
 package assets
 
-import _ "embed"
+import (
+	_ "embed"
 
-//go:generate ./convert-icon.sh src/nightscout-transparent.svg dist/nightscout-transparent.png 4
-//go:embed dist/nightscout-transparent.png
-var Nightscout []byte
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/theme"
+)
+
+var (
+	//go:embed src/nightscout-transparent.svg
+	nightscout []byte
+
+	//nolint:gochecknoglobals
+	NightscoutResource = theme.NewThemedResource(fyne.NewStaticResource("nightscout.svg", nightscout))
+)

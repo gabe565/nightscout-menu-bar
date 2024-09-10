@@ -38,6 +38,20 @@ func Disable() error {
 	return app.Disable()
 }
 
+func Set(val bool) error {
+	isEnabled, err := IsEnabled()
+	if err != nil {
+		return err
+	}
+
+	if val && !isEnabled {
+		return Enable()
+	} else if !val && isEnabled {
+		return Disable()
+	}
+	return nil
+}
+
 func IsEnabled() (bool, error) {
 	app, err := NewApp()
 	if err != nil {

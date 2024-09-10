@@ -1,4 +1,4 @@
-package config
+package util
 
 import (
 	"bytes"
@@ -15,12 +15,20 @@ var (
 
 type HexColor color.NRGBA
 
+func (h HexColor) RGBA() (r, g, b, a uint32) { //nolint:nonamedreturns
+	return color.NRGBA(h).RGBA()
+}
+
 func (h HexColor) MarshalText() ([]byte, error) {
+	return []byte(h.String()), nil
+}
+
+func (h HexColor) String() string {
 	shorthand := h.R>>4 == h.R&0xF && h.G>>4 == h.G&0xF && h.B>>4 == h.B&0xF
 	if shorthand {
-		return []byte(fmt.Sprintf("#%x%x%x", h.R&0xF, h.G&0xF, h.B&0xF)), nil
+		return fmt.Sprintf("#%x%x%x", h.R&0xF, h.G&0xF, h.B&0xF)
 	}
-	return []byte(fmt.Sprintf("#%02x%02x%02x", h.R, h.G, h.B)), nil
+	return fmt.Sprintf("#%02x%02x%02x", h.R, h.G, h.B)
 }
 
 func (h *HexColor) UnmarshalText(text []byte) error {
@@ -53,10 +61,6 @@ func (h *HexColor) UnmarshalText(text []byte) error {
 	}
 	h.A = 0xFF
 	return nil
-}
-
-func (h HexColor) RGBA() color.RGBA {
-	return color.RGBA(h)
 }
 
 func White() HexColor {

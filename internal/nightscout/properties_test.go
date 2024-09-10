@@ -4,12 +4,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestProperties_String(t *testing.T) {
 	t.Parallel()
+
+	prefs := app.New().Preferences()
+
 	type fields struct {
 		Bgnow     Reading
 		Buckets   []Reading
@@ -17,7 +21,7 @@ func TestProperties_String(t *testing.T) {
 		Direction Direction
 	}
 	type args struct {
-		conf *config.Config
+		prefs fyne.Preferences
 	}
 	tests := []struct {
 		name   string
@@ -35,7 +39,7 @@ func TestProperties_String(t *testing.T) {
 				},
 				Delta: Delta{DisplayVal: "+1"},
 			},
-			args{config.New()},
+			args{prefs},
 			"100 → +1 [0m]",
 		},
 	}
@@ -48,7 +52,7 @@ func TestProperties_String(t *testing.T) {
 				Delta:     tt.fields.Delta,
 				Direction: tt.fields.Direction,
 			}
-			assert.Equal(t, tt.want, p.String(tt.args.conf))
+			assert.Equal(t, tt.want, p.String(tt.args.prefs))
 		})
 	}
 }

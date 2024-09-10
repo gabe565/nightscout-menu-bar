@@ -1,7 +1,8 @@
 package nightscout
 
 import (
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"fyne.io/fyne/v2"
+	"github.com/gabe565/nightscout-menu-bar/internal/app/settings"
 )
 
 type Properties struct {
@@ -11,14 +12,20 @@ type Properties struct {
 	Direction Direction `json:"direction"`
 }
 
-func (p Properties) String(conf *config.Config) string {
-	result := p.Bgnow.DisplayBg(conf.Units) +
-		" " + p.Bgnow.Arrow(conf.Arrows)
-	if delta := p.Delta.Display(conf.Units); delta != "" {
-		result += " " + p.Delta.Display(conf.Units)
+func (p Properties) String(prefs fyne.Preferences) string {
+	var units settings.Unit
+	if err := units.UnmarshalText([]byte(prefs.String(settings.UnitsKey))); err != nil {
+		units = settings.UnitMgdl
 	}
-	if rel := p.Bgnow.Mills.Relative(conf.Advanced.RoundAge); rel != "" {
-		result += " [" + p.Bgnow.Mills.Relative(conf.Advanced.RoundAge) + "]"
+
+	result := p.Bgnow.DisplayBg(units) +
+		" " + p.Bgnow.Arrow()
+	if delta := p.Delta.Display(units); delta != "" {
+		result += " " + p.Delta.Display(units)
+	}
+
+	if rel := p.Bgnow.Mills.Relative(); rel != "" {
+		result += " [" + rel + "]"
 	}
 	return result
 }

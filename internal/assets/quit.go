@@ -1,9 +1,16 @@
-//go:build !windows
-
 package assets
 
-import _ "embed"
+import (
+	_ "embed"
 
-//go:generate ./convert-icon.sh src/xmark-solid.svg dist/xmark-solid.png
-//go:embed dist/xmark-solid.png
-var Quit []byte
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/theme"
+)
+
+var (
+	//go:embed src/xmark-solid.svg
+	quit []byte
+
+	//nolint:gochecknoglobals
+	QuitResource = theme.NewThemedResource(fyne.NewStaticResource("quit.svg", quit))
+)

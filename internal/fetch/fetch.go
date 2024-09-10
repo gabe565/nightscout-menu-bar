@@ -14,7 +14,8 @@ import (
 	"path"
 	"time"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"fyne.io/fyne/v2"
+	"github.com/gabe565/nightscout-menu-bar/internal/app/settings"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 )
@@ -25,18 +26,18 @@ var (
 	ErrNoURL       = errors.New("please configure your Nightscout URL")
 )
 
-func NewFetch(conf *config.Config) *Fetch {
+func NewFetch(app fyne.App, version string) *Fetch {
 	return &Fetch{
-		config: conf,
+		app: app,
 		client: &http.Client{
-			Transport: util.NewUserAgentTransport("nightscout-menu-bar", conf.Version),
+			Transport: util.NewUserAgentTransport("nightscout-menu-bar", version),
 			Timeout:   time.Minute,
 		},
 	}
 }
 
 type Fetch struct {
-	config        *config.Config
+	app           fyne.App
 	client        *http.Client
 	url           string
 	tokenChecksum string
@@ -101,7 +102,9 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 }
 
 func (f *Fetch) UpdateURL() error {
-	u, err := BuildURL(f.config)
+	prefs := f.app.Preferences()
+
+	u, err := BuildURL(prefs.String(settings.URLKey))
 	if err != nil {
 		return err
 	}
@@ -110,7 +113,7 @@ func (f *Fetch) UpdateURL() error {
 	f.url = u.String()
 	slog.Debug("Generated URL", "value", f.url)
 
-	if token := f.config.Token; token != "" {
+	if token := prefs.String(settings.TokenKey); token != "" {
 		rawChecksum := sha1.Sum([]byte(token))
 		f.tokenChecksum = hex.EncodeToString(rawChecksum[:])
 		slog.Debug("Generated token checksum", "value", f.tokenChecksum)
@@ -128,23 +131,23 @@ func (f *Fetch) Reset() {
 	f.etag = ""
 }
 
-func BuildURL(conf *config.Config) (*url.URL, error) {
-	if conf.URL == "" {
+func BuildURL(u string) (*url.URL, error) {
+	if u == "" {
 		return nil, ErrNoURL
 	}
 
-	return url.Parse(conf.URL)
+	return url.Parse(u)
 }
 
-func BuildURLWithToken(conf *config.Config) (*url.URL, error) {
-	u, err := BuildURL(conf)
+func BuildURLWithToken(prefs fyne.Preferences) (*url.URL, error) {
+	u, err := BuildURL(prefs.String(settings.URLKey))
 	if err != nil {
 		return u, err
 	}
 
-	if token := conf.Token; token != "" {
+	if token := prefs.String(settings.TokenKey); token != "" {
 		query := u.Query()
-		query.Set("token", conf.Token)
+		query.Set("token", token)
 		u.RawQuery = query.Encode()
 	}
 

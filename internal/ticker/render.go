@@ -33,7 +33,8 @@ func (t *Ticker) beginRender(ctx context.Context) chan<- *nightscout.Properties 
 					Type:       renderType,
 					Properties: properties,
 				}
-				d := util.GetNextMinChange(properties.Bgnow.Mills.Time, t.config.Advanced.RoundAge)
+
+				d := util.GetNextMinChange(properties.Bgnow.Mills.Time)
 				t.renderTicker.Reset(d)
 				slog.Debug("Scheduled next render", "in", d)
 			} else {

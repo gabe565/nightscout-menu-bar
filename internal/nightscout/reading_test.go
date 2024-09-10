@@ -6,14 +6,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"github.com/gabe565/nightscout-menu-bar/internal/app/settings"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestReading_Arrow(t *testing.T) {
 	t.Parallel()
-	defaultArrows := config.New().Arrows
 
 	type fields struct {
 		Mean      json.Number
@@ -24,25 +25,21 @@ func TestReading_Arrow(t *testing.T) {
 		ToMills   Mills
 		Sgvs      []SGV
 	}
-	type args struct {
-		arrows config.Arrows
-	}
 	tests := []struct {
 		name   string
 		fields fields
-		args   args
 		want   string
 	}{
-		{"TripleUp", fields{Sgvs: []SGV{{Direction: "TripleUp"}}}, args{defaultArrows}, "⇈"},
-		{"DoubleUp", fields{Sgvs: []SGV{{Direction: "DoubleUp"}}}, args{defaultArrows}, "⇈"},
-		{"SingleUp", fields{Sgvs: []SGV{{Direction: "SingleUp"}}}, args{defaultArrows}, "↑"},
-		{"FortyFiveUp", fields{Sgvs: []SGV{{Direction: "FortyFiveUp"}}}, args{defaultArrows}, "↗"},
-		{"Flat", fields{Sgvs: []SGV{{Direction: "Flat"}}}, args{defaultArrows}, "→"},
-		{"FortyFiveDown", fields{Sgvs: []SGV{{Direction: "FortyFiveDown"}}}, args{defaultArrows}, "↘"},
-		{"SingleDown", fields{Sgvs: []SGV{{Direction: "SingleDown"}}}, args{defaultArrows}, "↓"},
-		{"DoubleDown", fields{Sgvs: []SGV{{Direction: "DoubleDown"}}}, args{defaultArrows}, "⇊"},
-		{"TripleDown", fields{Sgvs: []SGV{{Direction: "TripleDown"}}}, args{defaultArrows}, "⇊"},
-		{"unknown", fields{}, args{defaultArrows}, "-"},
+		{"TripleUp", fields{Sgvs: []SGV{{Direction: "TripleUp"}}}, "⇈"},
+		{"DoubleUp", fields{Sgvs: []SGV{{Direction: "DoubleUp"}}}, "⇈"},
+		{"SingleUp", fields{Sgvs: []SGV{{Direction: "SingleUp"}}}, "↑"},
+		{"FortyFiveUp", fields{Sgvs: []SGV{{Direction: "FortyFiveUp"}}}, "↗"},
+		{"Flat", fields{Sgvs: []SGV{{Direction: "Flat"}}}, "→"},
+		{"FortyFiveDown", fields{Sgvs: []SGV{{Direction: "FortyFiveDown"}}}, "↘"},
+		{"SingleDown", fields{Sgvs: []SGV{{Direction: "SingleDown"}}}, "↓"},
+		{"DoubleDown", fields{Sgvs: []SGV{{Direction: "DoubleDown"}}}, "⇊"},
+		{"TripleDown", fields{Sgvs: []SGV{{Direction: "TripleDown"}}}, "⇊"},
+		{"unknown", fields{}, "-"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -56,13 +53,16 @@ func TestReading_Arrow(t *testing.T) {
 				ToMills:   tt.fields.ToMills,
 				Sgvs:      tt.fields.Sgvs,
 			}
-			assert.Equal(t, tt.want, r.Arrow(tt.args.arrows))
+			assert.Equal(t, tt.want, r.Arrow())
 		})
 	}
 }
 
 func TestReading_String(t *testing.T) {
 	t.Parallel()
+
+	prefs := app.New().Preferences()
+
 	type fields struct {
 		Mean      json.Number
 		Last      Mgdl
@@ -73,7 +73,7 @@ func TestReading_String(t *testing.T) {
 		Sgvs      []SGV
 	}
 	type args struct {
-		conf *config.Config
+		prefs fyne.Preferences
 	}
 	tests := []struct {
 		name   string
@@ -88,7 +88,7 @@ func TestReading_String(t *testing.T) {
 				Mills: Mills{time.Now()},
 				Sgvs:  []SGV{{Direction: "Flat"}},
 			},
-			args{config.New()},
+			args{prefs},
 			"100 → [0m]",
 		},
 	}
@@ -104,7 +104,7 @@ func TestReading_String(t *testing.T) {
 				ToMills:   tt.fields.ToMills,
 				Sgvs:      tt.fields.Sgvs,
 			}
-			assert.Equal(t, tt.want, r.String(tt.args.conf))
+			assert.Equal(t, tt.want, r.String(tt.args.prefs))
 		})
 	}
 }
@@ -121,7 +121,7 @@ func TestReading_DisplayBg(t *testing.T) {
 		Sgvs      []SGV
 	}
 	type args struct {
-		units config.Unit
+		units settings.Unit
 	}
 	tests := []struct {
 		name   string
@@ -129,10 +129,10 @@ func TestReading_DisplayBg(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		{"95", args{config.UnitMgdl}, fields{Last: 95}, "95"},
-		{"LOW", args{config.UnitMgdl}, fields{Last: 39}, "LOW"},
-		{"HIGH", args{config.UnitMgdl}, fields{Last: 401}, "HIGH"},
-		{"mmol", args{config.UnitMmol}, fields{Last: 100}, "5.6"},
+		{"95", args{settings.UnitMgdl}, fields{Last: 95}, "95"},
+		{"LOW", args{settings.UnitMgdl}, fields{Last: 39}, "LOW"},
+		{"HIGH", args{settings.UnitMgdl}, fields{Last: 401}, "HIGH"},
+		{"mmol", args{settings.UnitMmol}, fields{Last: 100}, "5.6"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

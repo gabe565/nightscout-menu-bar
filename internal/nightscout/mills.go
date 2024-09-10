@@ -23,18 +23,13 @@ func (m *Mills) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m.UnixMilli())
 }
 
-func (m *Mills) Relative(round bool) string {
+func (m *Mills) Relative() string {
 	if m.Unix() == 0 {
 		return ""
 	}
 
 	// Drop resolution to minutes
-	duration := time.Since(m.Time)
-	if round {
-		duration = duration.Round(time.Minute)
-	} else {
-		duration = duration.Truncate(time.Minute)
-	}
+	duration := time.Since(m.Time).Truncate(time.Minute)
 
 	str := duration.String()
 	str = strings.TrimSuffix(str, "0s")

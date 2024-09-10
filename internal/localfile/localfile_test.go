@@ -5,7 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"fyne.io/fyne/v2/app"
+	"github.com/gabe565/nightscout-menu-bar/internal/app/settings"
 	"github.com/gabe565/nightscout-menu-bar/internal/nightscout/testproperties"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -13,9 +14,9 @@ import (
 
 func TestNew(t *testing.T) {
 	t.Parallel()
-	localfile := New(config.New())
+	localfile := New(app.New())
 	require.NotNil(t, localfile)
-	assert.NotNil(t, localfile.config)
+	assert.NotNil(t, localfile.app)
 }
 
 func TestLocalFile(t *testing.T) {
@@ -27,21 +28,21 @@ func TestLocalFile(t *testing.T) {
 		_ = os.RemoveAll(temp)
 	})
 
-	conf := config.New()
-	conf.LocalFile.Enabled = true
-	conf.LocalFile.Path = filepath.Join(temp, "nightscout.csv")
+	app := app.New()
+	app.Preferences().SetBool(settings.LocalEnabledKey, true)
+	app.Preferences().SetString(settings.LocalPathKey, filepath.Join(temp, "nightscout.csv"))
 
-	localfile := New(conf)
+	localfile := New(app)
 	require.NotNil(t, localfile)
-	require.Equal(t, conf.LocalFile.Path, localfile.path)
+	require.Equal(t, app.Preferences().String(settings.LocalPathKey), localfile.path)
 
 	require.NoError(t, localfile.Write(testproperties.Properties))
 
-	contents, err := os.ReadFile(conf.LocalFile.Path)
+	contents, err := os.ReadFile(app.Preferences().String(settings.LocalPathKey))
 	require.NoError(t, err)
 
 	assert.Equal(t, "123,→,+1,1664764258\n", string(contents))
 
 	require.NoError(t, localfile.Cleanup())
-	assert.NoFileExists(t, conf.LocalFile.Path)
+	assert.NoFileExists(t, app.Preferences().String(settings.LocalPathKey))
 }
