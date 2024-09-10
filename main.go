@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"github.com/gabe565/nightscout-menu-bar/internal/pprof"
 	"github.com/gabe565/nightscout-menu-bar/internal/tray"
 	"github.com/gabe565/nightscout-menu-bar/internal/util"
 )
@@ -21,6 +22,8 @@ func main() {
 		version = "beta"
 	}
 	slog.Info("Nightscout Menu Bar", "version", version, "commit", util.GetCommit())
+
+	pprof.ListenAndServe()
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
 	defer cancel()
