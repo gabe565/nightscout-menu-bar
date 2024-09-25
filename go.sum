@@ -109,6 +109,8 @@ github.com/fyne-io/glfw-js v0.0.0-20240101223322-6e1efdc71b7a h1:ybgRdYvAHTn93HW
 github.com/fyne-io/glfw-js v0.0.0-20240101223322-6e1efdc71b7a/go.mod h1:gsGA2dotD4v0SR6PmPCYvS9JuOeMwAtmfvDE7mbYXMY=
 github.com/fyne-io/image v0.0.0-20240417123036-dc0ee9e7c964 h1:0pTELtjlVAVGSazfwRNcqTVzqmkWb1GsNozCmmZfdZA=
 github.com/fyne-io/image v0.0.0-20240417123036-dc0ee9e7c964/go.mod h1:J9Uunu842kOcTjzQj4Eq8XIDmF55szvT1PTS1cUb1UE=
+github.com/fynelabs/selfupdate v0.2.0 h1:IDqwgV7BYj4lCcoD8hHvIapVGmS5ifWrc0sQTWh1eFw=
+github.com/fynelabs/selfupdate v0.2.0/go.mod h1:rCdliRnLw+koUanA+lrqub9wWlNc2wPDTsyRC6A+vfc=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6/go.mod h1:9YTyiznxEY1fVinfM7RvRcjRHbw2xLBJ3AAGIT0I4Nw=
 github.com/go-gl/gl v0.0.0-20231021071112-07e5d0ea2e71 h1:5BVwOaUSBTlVZowGO6VZGw2H/zl9nrd3eCZfYV+NfQA=

@@ -1,6 +1,7 @@
 package settings
 
 import (
+	"log/slog"
 	"runtime"
 	"time"
 
@@ -156,6 +157,9 @@ func loadSettings(app fyne.App) fyne.Window { //nolint:ireturn
 			prefs.SetString(FetchDelayKey, fetchDelay.Text)
 			prefs.SetString(FallbackIntervalKey, fallbackInterval.Text)
 			window.Close()
+			if err := restart(); err != nil {
+				slog.Error("Failed to restart", "error", err)
+			}
 		},
 	}
 	form.SubmitText = "Save"
