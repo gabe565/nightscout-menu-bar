@@ -2,7 +2,7 @@ package config
 
 const MmolConversionFactor = 0.0555
 
-//go:generate enumer -type Unit -linecomment -text
+//go:generate go run github.com/dmarkham/enumer -type Unit -linecomment -text
 
 type Unit uint8
 
