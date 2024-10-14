@@ -2,7 +2,7 @@ package preferences
 
 import (
 	"fyne.io/systray"
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"gabe565.com/nightscout-menu-bar/internal/config"
 )
 
 func NewLocalFile(conf *config.Config, parent *systray.MenuItem) LocalFile {

@@ -7,14 +7,14 @@ import (
 	"os"
 
 	"fyne.io/systray"
-	"github.com/gabe565/nightscout-menu-bar/internal/assets"
-	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/dynamicicon"
-	"github.com/gabe565/nightscout-menu-bar/internal/fetch"
-	"github.com/gabe565/nightscout-menu-bar/internal/ticker"
-	"github.com/gabe565/nightscout-menu-bar/internal/tray/items"
-	"github.com/gabe565/nightscout-menu-bar/internal/tray/messages"
+	"gabe565.com/nightscout-menu-bar/internal/assets"
+	"gabe565.com/nightscout-menu-bar/internal/autostart"
+	"gabe565.com/nightscout-menu-bar/internal/config"
+	"gabe565.com/nightscout-menu-bar/internal/dynamicicon"
+	"gabe565.com/nightscout-menu-bar/internal/fetch"
+	"gabe565.com/nightscout-menu-bar/internal/ticker"
+	"gabe565.com/nightscout-menu-bar/internal/tray/items"
+	"gabe565.com/nightscout-menu-bar/internal/tray/messages"
 	"github.com/skratchdot/open-golang/open"
 )
 

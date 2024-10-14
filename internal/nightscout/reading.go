@@ -5,7 +5,7 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"gabe565.com/nightscout-menu-bar/internal/config"
 )
 
 const (

@@ -1,6 +1,6 @@
 package nightscout
 
-import "github.com/gabe565/nightscout-menu-bar/internal/config"
+import "gabe565.com/nightscout-menu-bar/internal/config"
 
 type Mgdl int
 

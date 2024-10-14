@@ -7,10 +7,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/pprof"
-	"github.com/gabe565/nightscout-menu-bar/internal/tray"
-	"github.com/gabe565/nightscout-menu-bar/internal/util"
+	"gabe565.com/nightscout-menu-bar/internal/config"
+	"gabe565.com/nightscout-menu-bar/internal/pprof"
+	"gabe565.com/nightscout-menu-bar/internal/tray"
+	"gabe565.com/nightscout-menu-bar/internal/util"
 )
 
 var version string

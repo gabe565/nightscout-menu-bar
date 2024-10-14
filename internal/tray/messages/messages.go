@@ -1,6 +1,6 @@
 package messages
 
-import "github.com/gabe565/nightscout-menu-bar/internal/nightscout"
+import "gabe565.com/nightscout-menu-bar/internal/nightscout"
 
 type ReloadConfigMsg struct{}
 

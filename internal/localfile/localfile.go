@@ -6,9 +6,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
-	"github.com/gabe565/nightscout-menu-bar/internal/util"
+	"gabe565.com/nightscout-menu-bar/internal/config"
+	"gabe565.com/nightscout-menu-bar/internal/nightscout"
+	"gabe565.com/nightscout-menu-bar/internal/util"
 )
 
 func New(conf *config.Config) *LocalFile {

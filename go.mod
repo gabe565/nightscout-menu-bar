@@ -1,4 +1,4 @@
-module github.com/gabe565/nightscout-menu-bar
+module gabe565.com/nightscout-menu-bar
 
 go 1.23.1
 

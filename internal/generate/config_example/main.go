@@ -4,7 +4,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"gabe565.com/nightscout-menu-bar/internal/config"
 	"github.com/pelletier/go-toml/v2"
 )
 

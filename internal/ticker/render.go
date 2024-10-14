@@ -5,9 +5,9 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
-	"github.com/gabe565/nightscout-menu-bar/internal/tray/messages"
-	"github.com/gabe565/nightscout-menu-bar/internal/util"
+	"gabe565.com/nightscout-menu-bar/internal/nightscout"
+	"gabe565.com/nightscout-menu-bar/internal/tray/messages"
+	"gabe565.com/nightscout-menu-bar/internal/util"
 )
 
 func (t *Ticker) beginRender(ctx context.Context) chan<- *nightscout.Properties {

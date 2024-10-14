@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/fetch"
-	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
+	"gabe565.com/nightscout-menu-bar/internal/fetch"
+	"gabe565.com/nightscout-menu-bar/internal/nightscout"
 )
 
 func (t *Ticker) beginFetch(ctx context.Context, render chan<- *nightscout.Properties) {

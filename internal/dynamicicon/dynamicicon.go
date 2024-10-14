@@ -12,10 +12,10 @@ import (
 	"sync"
 	"time"
 
+	"gabe565.com/nightscout-menu-bar/internal/config"
+	"gabe565.com/nightscout-menu-bar/internal/nightscout"
+	"gabe565.com/nightscout-menu-bar/internal/util"
 	"github.com/flopp/go-findfont"
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
-	"github.com/gabe565/nightscout-menu-bar/internal/util"
 	"github.com/goki/freetype/truetype"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"

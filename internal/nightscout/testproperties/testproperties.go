@@ -5,7 +5,7 @@ import (
 	_ "embed"
 	"time"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
+	"gabe565.com/nightscout-menu-bar/internal/nightscout"
 )
 
 var (

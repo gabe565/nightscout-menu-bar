@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/nightscout"
-	"github.com/gabe565/nightscout-menu-bar/internal/nightscout/testproperties"
+	"gabe565.com/nightscout-menu-bar/internal/config"
+	"gabe565.com/nightscout-menu-bar/internal/nightscout"
+	"gabe565.com/nightscout-menu-bar/internal/nightscout/testproperties"
 	"github.com/hhsnopek/etag"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

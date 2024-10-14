@@ -2,9 +2,9 @@ package preferences
 
 import (
 	"fyne.io/systray"
-	"github.com/gabe565/nightscout-menu-bar/internal/assets"
-	"github.com/gabe565/nightscout-menu-bar/internal/autostart"
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
+	"gabe565.com/nightscout-menu-bar/internal/assets"
+	"gabe565.com/nightscout-menu-bar/internal/autostart"
+	"gabe565.com/nightscout-menu-bar/internal/config"
 )
 
 func New(conf *config.Config) Preferences {

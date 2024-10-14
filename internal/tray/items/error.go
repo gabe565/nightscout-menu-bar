@@ -2,7 +2,7 @@ package items
 
 import (
 	"fyne.io/systray"
-	"github.com/gabe565/nightscout-menu-bar/internal/assets"
+	"gabe565.com/nightscout-menu-bar/internal/assets"
 )
 
 func NewError() *systray.MenuItem {

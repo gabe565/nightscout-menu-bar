@@ -2,8 +2,8 @@ package items
 
 import (
 	"fyne.io/systray"
-	"github.com/gabe565/nightscout-menu-bar/internal/config"
-	"github.com/gabe565/nightscout-menu-bar/internal/tray/items/preferences"
+	"gabe565.com/nightscout-menu-bar/internal/config"
+	"gabe565.com/nightscout-menu-bar/internal/tray/items/preferences"
 )
 
 type Items struct {
