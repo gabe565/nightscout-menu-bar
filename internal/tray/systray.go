@@ -2,6 +2,7 @@ package tray
 
 import (
 	"context"
+	"image/color"
 	"io"
 	"log/slog"
 	"os"
@@ -154,8 +155,8 @@ func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
 					} else {
 						if icon, err := t.dynamicIcon.Generate(msg.Properties); err == nil {
 							systray.SetTitle("")
-							switch t.config.DynamicIcon.FontColor {
-							case config.White():
+							switch t.config.DynamicIcon.FontColor.Color {
+							case color.White:
 								systray.SetTemplateIcon(icon, icon)
 							default:
 								systray.SetIcon(icon)

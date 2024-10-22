@@ -4,6 +4,7 @@ go 1.23.3
 
 require (
 	fyne.io/systray v1.11.0
+	gabe565.com/utils v0.0.0-20241114041836-facb2857c9b1
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/dmarkham/enumer v1.5.10
 	github.com/emersion/go-autostart v0.0.0-20210130080809-00ed301c8e9a
@@ -50,7 +51,7 @@ require (
 	github.com/tj/assert v0.0.3 // indirect
 	golang.org/x/crypto v0.26.0 // indirect
 	golang.org/x/mod v0.13.0 // indirect
-	golang.org/x/sys v0.25.0 // indirect
+	golang.org/x/sys v0.26.0 // indirect
 	golang.org/x/tools v0.14.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

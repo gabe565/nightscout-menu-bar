@@ -1,12 +1,14 @@
 package config
 
 import (
+	"image/color"
 	"log/slog"
 	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
 
+	"gabe565.com/utils/colorx"
 	flag "github.com/spf13/pflag"
 )
 
@@ -18,7 +20,7 @@ func New(opts ...Option) *Config {
 		Units: UnitMgdl,
 		DynamicIcon: DynamicIcon{
 			Enabled:     true,
-			FontColor:   White(),
+			FontColor:   colorx.Hex{Color: color.White},
 			MaxFontSize: 40,
 		},
 		Arrows: Arrows{
@@ -50,7 +52,7 @@ func New(opts ...Option) *Config {
 	case "darwin":
 		conf.DynamicIcon.Enabled = false
 	case "windows":
-		conf.DynamicIcon.FontColor = Black()
+		conf.DynamicIcon.FontColor = colorx.Hex{Color: color.Black}
 	}
 
 	conf.Flags = flag.NewFlagSet("", flag.ContinueOnError)

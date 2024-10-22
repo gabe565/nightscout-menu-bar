@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"gabe565.com/utils/colorx"
 	"github.com/spf13/pflag"
 )
 
@@ -26,10 +27,10 @@ type Config struct {
 }
 
 type DynamicIcon struct {
-	Enabled     bool     `toml:"enabled"`
-	FontColor   HexColor `toml:"font-color" comment:"Hex code used to render text."`
-	FontFile    string   `toml:"font-file" comment:"Font path or filename of a system font. If left blank, an embedded font will be used."`
-	MaxFontSize float64  `toml:"max-font-size" comment:"Maximum font size in points."`
+	Enabled     bool       `toml:"enabled"`
+	FontColor   colorx.Hex `toml:"font-color" comment:"Hex code used to render text."`
+	FontFile    string     `toml:"font-file" comment:"Font path or filename of a system font. If left blank, an embedded font will be used."`
+	MaxFontSize float64    `toml:"max-font-size" comment:"Maximum font size in points."`
 }
 
 type Arrows struct {

@@ -104,7 +104,7 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 
 	drawer := &font.Drawer{
 		Dst: d.img,
-		Src: image.NewUniform(d.config.DynamicIcon.FontColor.RGBA()),
+		Src: image.NewUniform(d.config.DynamicIcon.FontColor),
 	}
 
 	fontSize := d.config.DynamicIcon.MaxFontSize * 2
