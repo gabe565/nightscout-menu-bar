@@ -19,15 +19,15 @@ type Delta struct {
 	ElapsedMins  json.Number `json:"elapsedMins"`
 	Interpolated bool        `json:"interpolated"`
 	Mean5MinsAgo json.Number `json:"mean5MinsAgo"`
-	Mgdl         json.Number `json:"mgdl"`
+	Mgdl         Mgdl        `json:"mgdl"`
 	Previous     Reading     `json:"previous"`
-	Scaled       Mgdl        `json:"scaled"`
+	Scaled       json.Number `json:"scaled"`
 	Times        Times       `json:"times"`
 }
 
 func (d Delta) Display(units config.Unit) string {
 	if units == config.UnitMmol {
-		mmol := d.Scaled.Mmol()
+		mmol := d.Mgdl.Mmol()
 		mmol = math.Round(mmol*10) / 10
 		f := strconv.FormatFloat(mmol, 'f', -1, 64)
 		if mmol >= 0 {
@@ -36,5 +36,10 @@ func (d Delta) Display(units config.Unit) string {
 		return f
 	}
 
-	return d.DisplayVal
+	mgdl := d.Mgdl.Mgdl()
+	val := strconv.Itoa(mgdl)
+	if mgdl >= 0 {
+		return "+" + val
+	}
+	return val
 }

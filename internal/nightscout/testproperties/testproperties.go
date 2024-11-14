@@ -126,7 +126,7 @@ var (
 			ElapsedMins:  "4.987633333333333",
 			Interpolated: false,
 			Mean5MinsAgo: "122",
-			Mgdl:         "1",
+			Mgdl:         1,
 			Previous: nightscout.Reading{
 				Mean:      "122",
 				Last:      122,
@@ -148,7 +148,7 @@ var (
 					Unfiltered: "0",
 				}},
 			},
-			Scaled: 1,
+			Scaled: "1",
 			Times: nightscout.Times{
 				Previous: nightscout.Mills{Time: time.Date(2022, time.October, 2, 21, 25, 59, 159000000, time.Local)},
 				Recent:   nightscout.Mills{Time: time.Date(2022, time.October, 2, 21, 30, 58, 417000000, time.Local)},

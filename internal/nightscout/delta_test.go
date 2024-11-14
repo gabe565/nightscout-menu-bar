@@ -16,9 +16,9 @@ func TestDelta_Display(t *testing.T) {
 		ElapsedMins  json.Number
 		Interpolated bool
 		Mean5MinsAgo json.Number
-		Mgdl         json.Number
+		Mgdl         Mgdl
 		Previous     Reading
-		Scaled       Mgdl
+		Scaled       json.Number
 		Times        Times
 	}
 	type args struct {
@@ -33,25 +33,25 @@ func TestDelta_Display(t *testing.T) {
 		{
 			"mgdl",
 			args{config.UnitMgdl},
-			fields{DisplayVal: "+1"},
+			fields{Mgdl: 1},
 			"+1",
 		},
 		{
 			"mmol",
 			args{config.UnitMmol},
-			fields{Scaled: 9},
+			fields{Mgdl: 9},
 			"+0.5",
 		},
 		{
 			"mmol no decimal",
 			args{config.UnitMmol},
-			fields{Scaled: 0},
+			fields{Mgdl: 0},
 			"+0",
 		},
 		{
 			"mmol negative",
 			args{config.UnitMmol},
-			fields{Scaled: -9},
+			fields{Mgdl: -9},
 			"-0.5",
 		},
 	}

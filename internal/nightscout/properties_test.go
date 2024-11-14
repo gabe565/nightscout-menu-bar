@@ -33,7 +33,7 @@ func TestProperties_String(t *testing.T) {
 					Mills: Mills{time.Now()},
 					Sgvs:  []SGV{{Direction: "Flat"}},
 				},
-				Delta: Delta{DisplayVal: "+1"},
+				Delta: Delta{Mgdl: 1},
 			},
 			args{config.New()},
 			"100 → +1 [0m]",
