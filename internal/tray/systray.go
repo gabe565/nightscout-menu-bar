@@ -155,10 +155,9 @@ func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
 					} else {
 						if icon, err := t.dynamicIcon.Generate(msg.Properties); err == nil {
 							systray.SetTitle("")
-							switch t.config.DynamicIcon.FontColor.Color {
-							case color.White:
+							if t.config.DynamicIcon.FontColor.Color == color.White {
 								systray.SetTemplateIcon(icon, icon)
-							default:
+							} else {
 								systray.SetIcon(icon)
 							}
 						} else {
