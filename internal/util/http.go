@@ -1,11 +1,13 @@
 package util
 
 import (
-	"net/http"
+	"runtime"
 	"strings"
+
+	"gabe565.com/utils/httpx"
 )
 
-func NewUserAgentTransport(name, version string) *UserAgentTransport {
+func NewUserAgentTransport(name, version string) *httpx.UserAgentTransport {
 	ua := name + "/"
 	commit := strings.TrimPrefix(GetCommit(), "*")
 	if version != "" {
@@ -16,19 +18,7 @@ func NewUserAgentTransport(name, version string) *UserAgentTransport {
 	} else if commit != "" {
 		ua += commit
 	}
+	ua += " (" + runtime.GOOS + "/" + runtime.GOARCH + ")"
 
-	return &UserAgentTransport{
-		transport: http.DefaultTransport,
-		userAgent: ua,
-	}
-}
-
-type UserAgentTransport struct {
-	transport http.RoundTripper
-	userAgent string
-}
-
-func (u *UserAgentTransport) RoundTrip(r *http.Request) (*http.Response, error) {
-	r.Header.Set("User-Agent", u.userAgent)
-	return u.transport.RoundTrip(r)
+	return httpx.NewUserAgentTransport(nil, ua)
 }
