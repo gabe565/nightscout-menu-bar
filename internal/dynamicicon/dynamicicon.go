@@ -5,7 +5,6 @@ import (
 	_ "embed"
 	"errors"
 	"image"
-	"image/draw"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -36,15 +35,10 @@ type DynamicIcon struct {
 	mu     sync.Mutex
 
 	font *truetype.Font
-	img  *image.NRGBA
 }
 
 func New(conf *config.Config) *DynamicIcon {
-	d := &DynamicIcon{
-		config: conf,
-		img:    image.NewNRGBA(image.Rectangle{Max: image.Point{X: width, Y: height}}),
-	}
-	return d
+	return &DynamicIcon{config: conf}
 }
 
 var ErrFontSize = errors.New("unable to determine the correct font size")
@@ -104,8 +98,9 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 		}
 	}()
 
+	img := image.NewRGBA(image.Rect(0, 0, width, height))
 	drawer := &font.Drawer{
-		Dst: d.img,
+		Dst: img,
 		Src: image.NewUniform(d.config.DynamicIcon.FontColor),
 	}
 
@@ -129,14 +124,13 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 
 	metrics := face.Metrics()
 
-	draw.Draw(d.img, d.img.Bounds(), image.Transparent, image.Point{}, draw.Src)
 	drawer.Dot.X = (widthF - drawer.MeasureString(bgnow)) / 2
 	drawer.Dot.Y = (heightF + metrics.Ascent - metrics.Descent) / 2
 	drawer.DrawString(bgnow)
 
 	var buf bytes.Buffer
 	buf.Grow(2 * bytefmt.KiB)
-	if err := encode(&buf, d.img); err != nil {
+	if err := encode(&buf, img); err != nil {
 		return nil, err
 	}
 
