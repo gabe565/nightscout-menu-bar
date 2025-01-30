@@ -9,12 +9,14 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"slices"
 	"sync"
 	"time"
 
 	"gabe565.com/nightscout-menu-bar/internal/config"
 	"gabe565.com/nightscout-menu-bar/internal/nightscout"
 	"gabe565.com/nightscout-menu-bar/internal/util"
+	"gabe565.com/utils/bytefmt"
 	"github.com/flopp/go-findfont"
 	"github.com/goki/freetype/truetype"
 	"golang.org/x/image/font"
@@ -133,15 +135,17 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 	drawer.DrawString(bgnow)
 
 	var buf bytes.Buffer
+	buf.Grow(2 * bytefmt.KiB)
 	if err := encode(&buf, d.img); err != nil {
 		return nil, err
 	}
 
 	slog.Debug("Generated dynamic icon",
 		"took", time.Since(start),
+		"size", bytefmt.Encode(int64(buf.Len())),
 		"font_size", fontSize,
 		"value", bgnow,
 		"size", buf.Len(),
 	)
-	return buf.Bytes(), nil
+	return slices.Clip(buf.Bytes()), nil
 }

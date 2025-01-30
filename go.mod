@@ -4,7 +4,7 @@ go 1.23.3
 
 require (
 	fyne.io/systray v1.11.0
-	gabe565.com/utils v0.0.0-20241114234101-e128cd3269b5
+	gabe565.com/utils v0.0.0-20250130072635-ed882da6fcdd
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/dmarkham/enumer v1.5.10
 	github.com/emersion/go-autostart v0.0.0-20210130080809-00ed301c8e9a
