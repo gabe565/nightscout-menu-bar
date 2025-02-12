@@ -57,7 +57,7 @@ func TestFetch_Do(t *testing.T) {
 		{
 			"no url",
 			fields{config: &config.Config{}},
-			args{context.Background()},
+			args{t.Context()},
 			nil,
 			"",
 			require.Error,
@@ -65,7 +65,7 @@ func TestFetch_Do(t *testing.T) {
 		{
 			"success",
 			fields{config: &config.Config{URL: server.URL}},
-			args{context.Background()},
+			args{t.Context()},
 			testproperties.Properties,
 			testproperties.Etag,
 			require.NoError,
@@ -73,7 +73,7 @@ func TestFetch_Do(t *testing.T) {
 		{
 			"same etag",
 			fields{config: &config.Config{URL: server.URL}, etag: testproperties.Etag},
-			args{context.Background()},
+			args{t.Context()},
 			nil,
 			testproperties.Etag,
 			require.Error,
@@ -81,7 +81,7 @@ func TestFetch_Do(t *testing.T) {
 		{
 			"different etag",
 			fields{config: &config.Config{URL: server.URL}, etag: etag.Generate([]byte("test"), true)},
-			args{context.Background()},
+			args{t.Context()},
 			testproperties.Properties,
 			testproperties.Etag,
 			require.NoError,

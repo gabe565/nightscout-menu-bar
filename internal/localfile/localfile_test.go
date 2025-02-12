@@ -21,11 +21,7 @@ func TestNew(t *testing.T) {
 func TestLocalFile(t *testing.T) {
 	t.Parallel()
 
-	temp, err := os.MkdirTemp("", "nightscout-")
-	require.NoError(t, err)
-	t.Cleanup(func() {
-		_ = os.RemoveAll(temp)
-	})
+	temp := t.TempDir()
 
 	conf := config.New()
 	conf.LocalFile.Enabled = true

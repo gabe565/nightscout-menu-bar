@@ -20,8 +20,8 @@ func TestTray_onError(t *testing.T) {
 	t.Parallel()
 	tray := New("")
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
+	ctx, cancel := context.WithTimeout(t.Context(), time.Second)
+	t.Cleanup(cancel)
 
 	go func() {
 		select {
