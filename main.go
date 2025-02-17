@@ -11,12 +11,13 @@ import (
 	"gabe565.com/nightscout-menu-bar/internal/pprof"
 	"gabe565.com/nightscout-menu-bar/internal/tray"
 	"gabe565.com/nightscout-menu-bar/internal/util"
+	"gabe565.com/utils/slogx"
 )
 
 var version string
 
 func main() {
-	config.InitLog(os.Stderr, slog.LevelInfo, config.FormatAuto)
+	config.InitLog(os.Stderr, slogx.LevelInfo, slogx.FormatAuto)
 
 	if version == "" {
 		version = "beta"

@@ -6,6 +6,7 @@ import (
 	"runtime"
 
 	"gabe565.com/utils/colorx"
+	"gabe565.com/utils/slogx"
 	"github.com/spf13/pflag"
 )
 
@@ -51,8 +52,8 @@ type LocalFile struct {
 }
 
 type Log struct {
-	Level  string `toml:"level" comment:"Values: trace, debug, info, warn, error, fatal, panic"`
-	Format string `toml:"format" comment:"Values: auto, color, plain, json"`
+	Level  slogx.Level  `toml:"level" comment:"Values: trace, debug, info, warn, error, fatal, panic"`
+	Format slogx.Format `toml:"format" comment:"Values: auto, color, plain, json"`
 }
 
 type Advanced struct {

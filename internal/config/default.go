@@ -2,13 +2,12 @@ package config
 
 import (
 	"image/color"
-	"log/slog"
 	"path/filepath"
 	"runtime"
-	"strings"
 	"time"
 
 	"gabe565.com/utils/colorx"
+	"gabe565.com/utils/slogx"
 	flag "github.com/spf13/pflag"
 )
 
@@ -38,8 +37,8 @@ func New(opts ...Option) *Config {
 			Path:   filepath.Join("$TMPDIR", "nightscout.csv"),
 		},
 		Log: Log{
-			Level:  strings.ToLower(slog.LevelInfo.String()),
-			Format: FormatAuto.String(),
+			Level:  slogx.LevelInfo,
+			Format: slogx.FormatAuto,
 		},
 		Advanced: Advanced{
 			FetchDelay:       Duration{30 * time.Second},
