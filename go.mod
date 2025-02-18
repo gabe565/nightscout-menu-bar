@@ -6,7 +6,6 @@ require (
 	fyne.io/systray v1.11.0
 	gabe565.com/utils v0.0.0-20250217005250-f306fa7738cd
 	github.com/Masterminds/sprig/v3 v3.3.0
-	github.com/dmarkham/enumer v1.5.10
 	github.com/emersion/go-autostart v0.0.0-20210130080809-00ed301c8e9a
 	github.com/flopp/go-findfont v0.1.0
 	github.com/goki/freetype v1.0.5
@@ -33,6 +32,7 @@ require (
 	github.com/akavel/rsrc v0.10.2 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dchest/jsmin v0.0.0-20220218165748-59f39799265f // indirect
+	github.com/dmarkham/enumer v1.5.11 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
@@ -50,8 +50,11 @@ require (
 	github.com/spf13/cast v1.7.0 // indirect
 	github.com/tj/assert v0.0.3 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
-	golang.org/x/mod v0.13.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
-	golang.org/x/tools v0.14.0 // indirect
+	golang.org/x/mod v0.23.0 // indirect
+	golang.org/x/sync v0.11.0 // indirect
+	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/tools v0.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+tool github.com/dmarkham/enumer
