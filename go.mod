@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	fyne.io/systray v1.11.0
-	gabe565.com/utils v0.0.0-20250217005250-f306fa7738cd
+	gabe565.com/utils v0.0.0-20250302063333-ede73b14282c
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/emersion/go-autostart v0.0.0-20210130080809-00ed301c8e9a
 	github.com/flopp/go-findfont v0.1.0
