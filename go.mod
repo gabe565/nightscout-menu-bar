@@ -6,7 +6,7 @@ require (
 	fyne.io/systray v1.11.0
 	gabe565.com/utils v0.0.0-20250217005250-f306fa7738cd
 	github.com/Masterminds/sprig/v3 v3.3.0
-	github.com/emersion/go-autostart v0.0.0-20210130080809-00ed301c8e9a
+	github.com/emersion/go-autostart v0.0.0-20250403115856-34830d6457d2
 	github.com/flopp/go-findfont v0.1.0
 	github.com/goki/freetype v1.0.5
 	github.com/hhsnopek/etag v0.0.0-20171206181245-aea95f647346
