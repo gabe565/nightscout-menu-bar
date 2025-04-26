@@ -78,7 +78,7 @@ jobs:
 
   build-windows:
     name: Build (windows)
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
