@@ -20,7 +20,7 @@ jobs:
           packages: gcc libgtk-3-dev libayatana-appindicator3-dev
           version: amd64
       - name: Lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v7
 
   test:
     name: Test
