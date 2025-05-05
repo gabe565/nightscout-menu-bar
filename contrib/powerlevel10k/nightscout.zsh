@@ -1,9 +1,11 @@
+#!/usr/bin/env zsh
+
 #################################[ nightscout: blood sugar ]#################################
 # Nightscout state file. Typically does not need to be changed.
-typeset -g NIGHTSCOUT_STATE_FILE="$TMPDIR/nightscout.csv"
+typeset -g NIGHTSCOUT_SOCKET="$TMPDIR/nightscout.sock"
 
 # Nightscout styling will be chosen if the reading is below a given value.
-typeset -g NIGHTSCOUT_THRESHOLD_OLD_MINS=5
+typeset -g NIGHTSCOUT_THRESHOLD_OLD_MINS=10
 typeset -g NIGHTSCOUT_THRESHOLD_URGENT_LOW=55
 typeset -g NIGHTSCOUT_THRESHOLD_LOW=80
 typeset -g NIGHTSCOUT_THRESHOLD_IN_RANGE=160
@@ -13,8 +15,6 @@ typeset -g NIGHTSCOUT_THRESHOLD_HIGH=260
 typeset -g NIGHTSCOUT_SHOW_ARROW=true
 typeset -g NIGHTSCOUT_SHOW_DELTA=true
 typeset -g NIGHTSCOUT_SHOW_TIMESTAMP=true
-# Can be commented out if timestamp is hidden.
-zmodload zsh/datetime
 
 # Nightscout colors.
 # Urgent low styling.
@@ -38,27 +38,34 @@ typeset -g POWERLEVEL9K_NIGHTSCOUT_OLD_FOREGROUND=0
 # Custom icon.
 # typeset -g POWERLEVEL9K_NIGHTSCOUT_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
+zmodload -F zsh/net/socket b:zsocket
+
+typeset -g NIGHTSCOUT_THRESHOLD_OLD_SECS=$(( NIGHTSCOUT_THRESHOLD_OLD_MINS * 60 ))
+
 # Creates segment with Nightscout blood sugar data.
 #
 # Example output: 120 → -1 [1m]
 function prompt_nightscout() {
   emulate -L zsh
 
-  if [[ -s "$NIGHTSCOUT_STATE_FILE" ]]; then
-    # Read state file into local variables.
-    typeset bgnow arrow delta timestamp
-    IFS=, read -r bgnow arrow delta timestamp <"$NIGHTSCOUT_STATE_FILE"
+  if [[ -S "$NIGHTSCOUT_SOCKET" ]]; then
+    # Read socket into local variables.
+    typeset REPLY bgnow arrow delta timeago relative
+    zsocket "$NIGHTSCOUT_SOCKET"
+    {
+      IFS=, read -t 0.25 -r bgnow arrow delta timeago relative <&$REPLY
+    } always {
+      exec {REPLY}>&-
+    }
 
     # State file is invalid. Segment will be hidden.
-    if [[ -z "$bgnow" ]]; then
+    if [[ -z "$bgnow" || -z "$relative" ]]; then
       p10k segment -c ''
       return
     fi
 
-    typeset relative="$(( (EPOCHSECONDS - timestamp) / 60 ))"
-
     # Choose current state for styling.
-    if (( relative > NIGHTSCOUT_THRESHOLD_OLD_MINS )); then
+    if (( relative > NIGHTSCOUT_THRESHOLD_OLD_SECS )); then
       typeset state=OLD
     elif (( bgnow <= NIGHTSCOUT_THRESHOLD_URGENT_LOW )); then
       typeset state=URGENT_LOW
@@ -76,7 +83,7 @@ function prompt_nightscout() {
     typeset text="$bgnow"
     [[ "$NIGHTSCOUT_SHOW_ARROW" == true ]] && text+=" $arrow"
     [[ "$NIGHTSCOUT_SHOW_DELTA" == true && -n "$delta" ]] && text+=" $delta"
-    [[ "$NIGHTSCOUT_SHOW_TIMESTAMP" == true ]] && text+=" [${relative}m]"
+    [[ "$NIGHTSCOUT_SHOW_TIMESTAMP" == true ]] && text+=" [${timeago}]"
 
     # Write segment.
     p10k segment -s "$state" -i $'\UF058C' -t "$text"

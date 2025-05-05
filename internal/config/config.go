@@ -22,7 +22,7 @@ type Config struct {
 	Units       Unit        `toml:"units" comment:"Blood sugar unit. (one of: mg/dL, mmol/L)"`
 	DynamicIcon DynamicIcon `toml:"dynamic-icon" comment:"Makes the tray icon show the current blood sugar reading."`
 	Arrows      Arrows      `toml:"arrows" comment:"Customize the arrows."`
-	LocalFile   LocalFile   `toml:"local-file" comment:"Enables writing the latest blood sugar to a local temporary file."`
+	Socket      Socket      `toml:"socket" comment:"Exposes the latest reading to other applications over a local socket."`
 	Log         Log         `toml:"log" comment:"Log configuration"`
 	Advanced    Advanced    `toml:"advanced" comment:"Advanced settings."`
 }
@@ -45,10 +45,10 @@ type Arrows struct {
 	Unknown       string `toml:"unknown"`
 }
 
-type LocalFile struct {
+type Socket struct {
 	Enabled bool   `toml:"enabled"`
 	Format  string `toml:"format" comment:"Local file format. (one of: csv)"`
-	Path    string `toml:"path" comment:"Local file path. $TMPDIR will be replaced with the current temp directory."`
+	Path    string `toml:"path" comment:"File path. $TMPDIR will be replaced with the current temp directory."`
 }
 
 type Log struct {

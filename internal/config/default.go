@@ -11,7 +11,7 @@ import (
 	flag "github.com/spf13/pflag"
 )
 
-const LocalFileFormatCsv = "csv"
+const SocketFormatCSV = "csv"
 
 func New(opts ...Option) *Config {
 	conf := &Config{
@@ -32,9 +32,9 @@ func New(opts ...Option) *Config {
 			DoubleDown:    "⇊",
 			Unknown:       "-",
 		},
-		LocalFile: LocalFile{
-			Format: LocalFileFormatCsv,
-			Path:   filepath.Join("$TMPDIR", "nightscout.csv"),
+		Socket: Socket{
+			Format: SocketFormatCSV,
+			Path:   filepath.Join("$TMPDIR", "nightscout.sock"),
 		},
 		Log: Log{
 			Level:  slogx.LevelInfo,

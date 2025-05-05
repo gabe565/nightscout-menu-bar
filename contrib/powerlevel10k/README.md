@@ -11,7 +11,7 @@ Adds a custom segment to the [Powerlevel10k](https://github.com/romkatv/powerlev
 #### Enable local file writes
 1. Open the nightscout-menu-bar menu.
 2. Hover over "Preferences".
-3. Check "Write to local file".[^1]
+3. Check "Expose readings over local socket".[^1]
 
 ### Install the Powerlevel10k segment
 
@@ -48,7 +48,7 @@ This method places the custom segment's code and configuration in a separate fil
 5. Search for `POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS`.
 6. Add `nightscout` somewhere in this array, depending on where you would like the widget to be rendered.
 7. Open a new shell, or restart your current shell with `exec zsh`.
-8. Nightscout data should be rendered as a right-segment!
+8. Nightscout data should be rendered as a segment!
 </details>
 
 [^1]: If this option is unavailable, update nightscout-menu-bar.

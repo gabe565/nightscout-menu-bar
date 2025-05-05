@@ -127,8 +127,8 @@ func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
 					}
 					t.items.Preferences.StartOnLogin.Check()
 				}
-			case <-t.items.Preferences.LocalFile.ClickedCh:
-				if err := t.items.Preferences.LocalFile.Toggle(); err != nil {
+			case <-t.items.Preferences.Socket.ClickedCh:
+				if err := t.items.Preferences.Socket.Toggle(); err != nil {
 					t.onError(err)
 				}
 			case <-t.items.Preferences.DynamicIcon.ClickedCh:

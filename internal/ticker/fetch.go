@@ -36,10 +36,8 @@ func (t *Ticker) Fetch(render chan<- *nightscout.Properties) time.Duration {
 		if render != nil {
 			render <- properties
 		}
-		if t.config.LocalFile.Enabled {
-			if err := t.localFile.Write(properties); err != nil {
-				slog.Error("Failed to write local file", "error", err)
-			}
+		if t.config.Socket.Enabled {
+			t.socket.Write(properties)
 		}
 		if len(properties.Buckets) != 0 {
 			bucket := properties.Buckets[0]

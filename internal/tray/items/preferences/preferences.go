@@ -25,7 +25,7 @@ func New(conf *config.Config) Preferences {
 	dynamicIconMenu := item.AddSubMenuItem("Dynamic icon", "")
 	dynamicIcon := NewDynamicIcon(conf, dynamicIconMenu)
 	dynamicIconColor := NewDynamicIconColor(conf, dynamicIconMenu)
-	localFile := NewLocalFile(conf, item)
+	socket := NewSocket(conf, item)
 
 	return Preferences{
 		MenuItem:         item,
@@ -35,7 +35,7 @@ func New(conf *config.Config) Preferences {
 		StartOnLogin:     startOnLogin,
 		DynamicIcon:      dynamicIcon,
 		DynamicIconColor: dynamicIconColor,
-		LocalFile:        localFile,
+		Socket:           socket,
 	}
 }
 
@@ -47,7 +47,7 @@ type Preferences struct {
 	StartOnLogin     *systray.MenuItem
 	DynamicIcon      DynamicIcon
 	DynamicIconColor DynamicIconColor
-	LocalFile        LocalFile
+	Socket           Socket
 }
 
 type Item interface {

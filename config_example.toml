@@ -28,13 +28,13 @@ single-down = '↓'
 double-down = '⇊'
 unknown = '-'
 
-# Enables writing the latest blood sugar to a local temporary file.
-[local-file]
+# Exposes the latest reading to other applications over a local socket.
+[socket]
 enabled = false
 # Local file format. (one of: csv)
 format = 'csv'
-# Local file path. $TMPDIR will be replaced with the current temp directory.
-path = '$TMPDIR/nightscout.csv'
+# File path. $TMPDIR will be replaced with the current temp directory.
+path = '$TMPDIR/nightscout.sock'
 
 # Log configuration
 [log]
