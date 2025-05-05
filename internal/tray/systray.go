@@ -67,7 +67,7 @@ func (t *Tray) Quit() {
 	systray.Quit()
 }
 
-func (t *Tray) onReady(ctx context.Context) func() { //nolint:gocyclo
+func (t *Tray) onReady(ctx context.Context) func() {
 	return func() {
 		systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
 		if t.dynamicIcon == nil {

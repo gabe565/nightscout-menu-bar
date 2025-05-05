@@ -2,7 +2,7 @@ package fetch
 
 import (
 	"context"
-	"crypto/sha1"
+	"crypto/sha1" //nolint:gosec
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -111,7 +111,7 @@ func (f *Fetch) UpdateURL() error {
 	slog.Debug("Generated URL", "value", f.url)
 
 	if token := f.config.Token; token != "" {
-		rawChecksum := sha1.Sum([]byte(token))
+		rawChecksum := sha1.Sum([]byte(token)) //nolint:gosec
 		f.tokenChecksum = hex.EncodeToString(rawChecksum[:])
 		slog.Debug("Generated token checksum", "value", f.tokenChecksum)
 	} else {
