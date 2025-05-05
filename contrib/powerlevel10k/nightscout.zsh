@@ -47,11 +47,12 @@ typeset -g NIGHTSCOUT_THRESHOLD_OLD_SECS=$(( NIGHTSCOUT_THRESHOLD_OLD_MINS * 60 
 # Example output: 120 → -1 [1m]
 function prompt_nightscout() {
   emulate -L zsh
+  set err_return
 
   if [[ -S "$NIGHTSCOUT_SOCKET" ]]; then
     # Read socket into local variables.
     typeset REPLY bgnow arrow delta timeago relative
-    zsocket "$NIGHTSCOUT_SOCKET"
+    zsocket "$NIGHTSCOUT_SOCKET" 2>/dev/null
     {
       IFS=, read -t 0.25 -r bgnow arrow delta timeago relative <&$REPLY
     } always {
