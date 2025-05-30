@@ -47,7 +47,7 @@ typeset -g NIGHTSCOUT_THRESHOLD_OLD_SECS=$(( NIGHTSCOUT_THRESHOLD_OLD_MINS * 60 
 # Example output: 120 → -1 [1m]
 function prompt_nightscout() {
   emulate -L zsh
-  set err_return
+  setopt err_return
 
   if [[ -S "$NIGHTSCOUT_SOCKET" ]]; then
     # Read socket into local variables.
