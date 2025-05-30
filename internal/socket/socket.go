@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net"
 	"strconv"
+	"sync"
 	"time"
 
 	"gabe565.com/nightscout-menu-bar/internal/config"
@@ -27,6 +28,7 @@ type Socket struct {
 	config   *config.Config
 	listener *net.UnixListener
 	last     *nightscout.Properties
+	mu       sync.RWMutex
 }
 
 func (s *Socket) Format(last *nightscout.Properties) string {
@@ -57,6 +59,8 @@ func (s *Socket) reloadConfig() {
 }
 
 func (s *Socket) Write(last *nightscout.Properties) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	s.last = last
 }
 
@@ -89,7 +93,10 @@ func (s *Socket) Listen() error {
 					_ = conn.Close()
 				}()
 				_ = conn.SetDeadline(time.Now().Add(time.Second))
-				_, _ = io.WriteString(conn, s.Format(s.last))
+				s.mu.RLock()
+				last := s.last
+				s.mu.RUnlock()
+				_, _ = io.WriteString(conn, s.Format(last))
 			}()
 		}
 	}()
