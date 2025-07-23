@@ -17,8 +17,8 @@ import (
 	"gabe565.com/nightscout-menu-bar/internal/util"
 	"gabe565.com/utils/bytefmt"
 	"github.com/flopp/go-findfont"
-	"github.com/goki/freetype/truetype"
 	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
 	"golang.org/x/image/math/fixed"
 )
 
@@ -34,7 +34,7 @@ type DynamicIcon struct {
 	config *config.Config
 	mu     sync.Mutex
 
-	font *truetype.Font
+	font *opentype.Font
 }
 
 func New(conf *config.Config) *DynamicIcon {
@@ -80,7 +80,7 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 			}
 		}
 
-		f, err := truetype.Parse(b)
+		f, err := opentype.Parse(b)
 		if err != nil {
 			return nil, err
 		}
@@ -106,9 +106,14 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 
 	fontSize := d.config.DynamicIcon.MaxFontSize * 2
 	for {
-		face = truetype.NewFace(d.font, &truetype.Options{
+		var err error
+		if face, err = opentype.NewFace(d.font, &opentype.FaceOptions{
 			Size: fontSize,
-		})
+			DPI:  72,
+		}); err != nil {
+			return nil, err
+		}
+
 		drawer.Face = face
 
 		if textWidth := drawer.MeasureString(bgnow); textWidth <= widthF+fixed.I(2) {
