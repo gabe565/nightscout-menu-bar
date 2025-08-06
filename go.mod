@@ -1,6 +1,6 @@
 module gabe565.com/nightscout-menu-bar
 
-go 1.24.2
+go 1.24.6
 
 require (
 	fyne.io/systray v1.11.0
