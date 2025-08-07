@@ -19,7 +19,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.4
 	github.com/prashantgupta24/mac-sleep-notifier v1.0.1
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
-	github.com/spf13/pflag v1.0.6
+	github.com/spf13/pflag v1.0.7
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/image v0.29.0
 )
