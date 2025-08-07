@@ -32,21 +32,22 @@ func (t *Ticker) Fetch(render chan<- *nightscout.Properties) time.Duration {
 	if err != nil && !errors.Is(err, fetch.ErrNotModified) {
 		t.bus <- err
 	}
+	data := t.config.Data()
 	if properties != nil {
 		if render != nil {
 			render <- properties
 		}
-		if t.config.Socket.Enabled {
+		if data.Socket.Enabled {
 			t.socket.Write(properties)
 		}
 		if len(properties.Buckets) != 0 {
 			bucket := properties.Buckets[0]
 			lastDiff := bucket.ToMills.Sub(bucket.FromMills.Time)
-			nextRead := properties.Bgnow.Mills.Add(lastDiff + t.config.Advanced.FetchDelay.Duration)
+			nextRead := properties.Bgnow.Mills.Add(lastDiff + data.Advanced.FetchDelay.Duration)
 			if until := time.Until(nextRead); until > 0 {
 				return until
 			}
 		}
 	}
-	return t.config.Advanced.FallbackInterval.Duration
+	return data.Advanced.FallbackInterval.Duration
 }

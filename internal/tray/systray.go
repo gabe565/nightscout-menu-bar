@@ -37,7 +37,7 @@ func New(version string) *Tray {
 
 	t.ticker = ticker.New(t.config, t.bus)
 
-	if t.config.DynamicIcon.Enabled {
+	if t.config.Data().DynamicIcon.Enabled {
 		t.dynamicIcon = dynamicicon.New(t.config)
 	}
 
@@ -71,9 +71,9 @@ func (t *Tray) onReady(ctx context.Context) func() {
 	return func() {
 		systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
 		if t.dynamicIcon == nil {
-			systray.SetTitle(t.config.Title)
+			systray.SetTitle(t.config.Data().Title)
 		}
-		systray.SetTooltip(t.config.Title)
+		systray.SetTooltip(t.config.Data().Title)
 
 		t.items = items.New(t.config)
 
@@ -82,7 +82,7 @@ func (t *Tray) onReady(ctx context.Context) func() {
 			case <-ctx.Done():
 				t.Quit()
 			case <-t.items.OpenNightscout.ClickedCh:
-				u, err := fetch.BuildURLWithToken(t.config)
+				u, err := fetch.BuildURLWithToken(t.config.Data())
 				if err != nil {
 					t.onError(err)
 					return
@@ -148,14 +148,14 @@ func (t *Tray) onReady(ctx context.Context) func() {
 						t.items.Error.Hide()
 					}
 
-					value := msg.Properties.String(t.config)
+					value := msg.Properties.String(t.config.Data())
 					slog.Debug("Updating reading", "value", value)
 					if t.dynamicIcon == nil {
 						systray.SetTitle(value)
 					} else {
 						if icon, err := t.dynamicIcon.Generate(msg.Properties); err == nil {
 							systray.SetTitle("")
-							if t.config.DynamicIcon.FontColor.Color == color.White {
+							if t.config.Data().DynamicIcon.FontColor.Color == color.White {
 								systray.SetTemplateIcon(icon, icon)
 							} else {
 								systray.SetIcon(icon)
@@ -171,9 +171,9 @@ func (t *Tray) onReady(ctx context.Context) func() {
 
 					for i, reading := range msg.Properties.Buckets {
 						if i < len(t.items.History.Subitems) {
-							t.items.History.Subitems[i].SetTitle(reading.String(t.config))
+							t.items.History.Subitems[i].SetTitle(reading.String(t.config.Data()))
 						} else {
-							entry := t.items.History.AddSubMenuItem(reading.String(t.config), "")
+							entry := t.items.History.AddSubMenuItem(reading.String(t.config.Data()), "")
 							entry.Disable()
 							t.items.History.Subitems = append(t.items.History.Subitems, entry)
 						}
@@ -183,7 +183,7 @@ func (t *Tray) onReady(ctx context.Context) func() {
 					t.items.Error.SetTitle(msg.Error())
 					t.items.Error.Show()
 				case messages.ReloadConfigMsg:
-					if t.config.DynamicIcon.Enabled {
+					if t.config.Data().DynamicIcon.Enabled {
 						t.dynamicIcon = dynamicicon.New(t.config)
 					} else if t.dynamicIcon != nil {
 						t.dynamicIcon = nil

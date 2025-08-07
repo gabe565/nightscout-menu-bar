@@ -7,3 +7,9 @@ func WithVersion(version string) Option {
 		conf.Version = version
 	}
 }
+
+func WithData(data Data) Option {
+	return func(conf *Config) {
+		conf.data.Store(&data)
+	}
+}

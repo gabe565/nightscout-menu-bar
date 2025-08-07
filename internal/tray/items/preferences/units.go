@@ -25,7 +25,7 @@ func (n Units) Prompt() error {
 		config.UnitStrings(),
 		zenity.Title("Nightscout Units"),
 		zenity.DisallowEmpty(),
-		zenity.DefaultItems(n.config.Units.String()),
+		zenity.DefaultItems(n.config.Data().Units.String()),
 	)
 	if err != nil {
 		if errors.Is(err, zenity.ErrCanceled) {
@@ -34,11 +34,11 @@ func (n Units) Prompt() error {
 		return err
 	}
 
-	if err := n.config.Units.UnmarshalText([]byte(unit)); err != nil {
+	data := n.config.Data()
+	if err := data.Units.UnmarshalText([]byte(unit)); err != nil {
 		return err
 	}
-
-	if err := n.config.Write(); err != nil {
+	if err := n.config.Write(data); err != nil {
 		return err
 	}
 	return nil

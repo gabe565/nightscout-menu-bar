@@ -10,7 +10,7 @@ func NewDynamicIcon(conf *config.Config, parent *systray.MenuItem) DynamicIcon {
 	item.MenuItem = parent.AddSubMenuItemCheckbox(
 		"Enabled",
 		"",
-		conf.DynamicIcon.Enabled,
+		conf.Data().DynamicIcon.Enabled,
 	)
 	return item
 }
@@ -27,8 +27,9 @@ func (l DynamicIcon) Toggle() error {
 		l.Check()
 	}
 
-	l.config.DynamicIcon.Enabled = l.Checked()
-	if err := l.config.Write(); err != nil {
+	data := l.config.Data()
+	data.DynamicIcon.Enabled = l.Checked()
+	if err := l.config.Write(data); err != nil {
 		return err
 	}
 	return nil

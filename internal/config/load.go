@@ -57,20 +57,23 @@ func (conf *Config) Load() error {
 		return err
 	}
 
-	if err := k.UnmarshalWithConf("", &conf, koanf.UnmarshalConf{Tag: "toml"}); err != nil {
+	data := conf.Data()
+
+	if err := k.UnmarshalWithConf("", &data, koanf.UnmarshalConf{Tag: "toml"}); err != nil {
 		return err
 	}
 
-	if err := conf.Write(); err != nil {
+	if err := conf.Write(data); err != nil {
 		return err
 	}
 
 	conf.InitLog(os.Stderr)
+
 	slog.Info("Loaded config", "file", conf.File)
 	return nil
 }
 
-func (conf *Config) Write() error {
+func (conf *Config) Write(data Data) error {
 	// Find config file
 	if conf.File == "" {
 		cfgDir, err := GetDir()
@@ -92,7 +95,7 @@ func (conf *Config) Write() error {
 		}
 	}
 
-	newCfg, err := toml.Marshal(conf)
+	newCfg, err := toml.Marshal(&data)
 	if err != nil {
 		return err
 	}
@@ -114,6 +117,7 @@ func (conf *Config) Write() error {
 		}
 	}
 
+	conf.data.Store(&data)
 	return nil
 }
 

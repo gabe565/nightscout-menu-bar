@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"sync"
 	"time"
 
 	"gabe565.com/nightscout-menu-bar/internal/config"
@@ -36,6 +37,7 @@ func NewFetch(conf *config.Config) *Fetch {
 }
 
 type Fetch struct {
+	mu            sync.Mutex
 	config        *config.Config
 	client        *http.Client
 	url           string
@@ -44,10 +46,13 @@ type Fetch struct {
 }
 
 func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
 	start := time.Now()
 
 	if f.url == "" {
-		if err := f.UpdateURL(); err != nil {
+		if err := f.updateURLLocked(); err != nil {
 			return nil, err
 		}
 	}
@@ -101,7 +106,15 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 }
 
 func (f *Fetch) UpdateURL() error {
-	u, err := BuildURL(f.config)
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	return f.updateURLLocked()
+}
+
+func (f *Fetch) updateURLLocked() error {
+	data := f.config.Data()
+
+	u, err := BuildURL(data)
 	if err != nil {
 		return err
 	}
@@ -110,7 +123,7 @@ func (f *Fetch) UpdateURL() error {
 	f.url = u.String()
 	slog.Debug("Generated URL", "value", f.url)
 
-	if token := f.config.Token; token != "" {
+	if token := data.Token; token != "" {
 		rawChecksum := sha1.Sum([]byte(token)) //nolint:gosec
 		f.tokenChecksum = hex.EncodeToString(rawChecksum[:])
 		slog.Debug("Generated token checksum", "value", f.tokenChecksum)
@@ -122,13 +135,16 @@ func (f *Fetch) UpdateURL() error {
 }
 
 func (f *Fetch) Reset() {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
 	slog.Debug("Resetting fetch cache")
 	f.url = ""
 	f.tokenChecksum = ""
 	f.etag = ""
 }
 
-func BuildURL(conf *config.Config) (*url.URL, error) {
+func BuildURL(conf config.Data) (*url.URL, error) {
 	if conf.URL == "" {
 		return nil, ErrNoURL
 	}
@@ -136,7 +152,7 @@ func BuildURL(conf *config.Config) (*url.URL, error) {
 	return url.Parse(conf.URL)
 }
 
-func BuildURLWithToken(conf *config.Config) (*url.URL, error) {
+func BuildURLWithToken(conf config.Data) (*url.URL, error) {
 	u, err := BuildURL(conf)
 	if err != nil {
 		return u, err

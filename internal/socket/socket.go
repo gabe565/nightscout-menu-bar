@@ -32,26 +32,31 @@ type Socket struct {
 }
 
 func (s *Socket) Format(last *nightscout.Properties) string {
-	switch s.config.Socket.Format {
+	data := s.config.Data()
+
+	switch data.Socket.Format {
 	case config.SocketFormatCSV:
-		return last.Bgnow.DisplayBg(s.config.Units) + "," +
-			last.Bgnow.Arrow(s.config.Arrows) + "," +
-			last.Delta.Display(s.config.Units) + "," +
-			last.Bgnow.Mills.Relative(s.config.Advanced.RoundAge) + "," +
+		return last.Bgnow.DisplayBg(data.Units) + "," +
+			last.Bgnow.Arrow(data.Arrows) + "," +
+			last.Delta.Display(data.Units) + "," +
+			last.Bgnow.Mills.Relative(data.Advanced.RoundAge) + "," +
 			strconv.Itoa(int(time.Since(last.Bgnow.Mills.Time).Seconds())) +
 			"\n"
 	default:
-		slog.Error("Unknown socket format", "value", s.config.Socket.Format)
+		slog.Error("Unknown socket format", "value", data.Socket.Format)
 		return ""
 	}
 }
 
 func (s *Socket) reloadConfig() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	if err := s.Close(); err != nil {
 		slog.Error("Failed to close socket", "error", err)
 	}
 
-	if s.config.Socket.Enabled {
+	if s.config.Data().Socket.Enabled {
 		if err := s.Listen(); err != nil {
 			slog.Error("Failed to listen on socket", "error", err)
 		}
@@ -71,7 +76,7 @@ func (s *Socket) Listen() error {
 
 	var err error
 	s.listener, err = net.ListenUnix("unix", &net.UnixAddr{
-		Name: util.ResolvePath(s.config.Socket.Path),
+		Name: util.ResolvePath(s.config.Data().Socket.Path),
 		Net:  "unix",
 	})
 	if err != nil {

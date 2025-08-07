@@ -27,9 +27,12 @@ func TestSocket(t *testing.T) {
 
 	temp := t.TempDir()
 
-	conf := config.New()
-	conf.Socket.Enabled = true
-	conf.Socket.Path = filepath.Join(temp, "nightscout.sock")
+	conf := config.New(config.WithData(config.Data{
+		Socket: config.Socket{
+			Enabled: true,
+			Path:    filepath.Join(temp, "nightscout.sock"),
+		},
+	}))
 
 	socket := New(conf)
 	require.NotNil(t, socket)
@@ -39,7 +42,7 @@ func TestSocket(t *testing.T) {
 
 	socket.Write(testproperties.Properties)
 
-	path := util.ResolvePath(conf.Socket.Path)
+	path := util.ResolvePath(conf.Data().Socket.Path)
 
 	conn, err := net.DialUnix("unix", nil, &net.UnixAddr{Name: path, Net: "unix"})
 	require.NoError(t, err)
@@ -63,7 +66,7 @@ func TestSocket_Format(t *testing.T) {
 		_ = socket.Close()
 	})
 
-	timeAgo := testproperties.Properties.Bgnow.Mills.Relative(conf.Advanced.RoundAge)
+	timeAgo := testproperties.Properties.Bgnow.Mills.Relative(conf.Data().Advanced.RoundAge)
 	relative := strconv.Itoa(int(time.Since(testproperties.Properties.Bgnow.Mills.Time).Seconds()))
 	assert.Equal(t, "123,→,+1,"+timeAgo+","+relative+"\n", socket.Format(testproperties.Properties))
 }

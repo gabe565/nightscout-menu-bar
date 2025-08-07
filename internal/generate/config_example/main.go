@@ -18,13 +18,14 @@ func main() {
 func createConfig() error {
 	conf := config.New()
 	conf.InitLog(os.Stderr)
+	data := conf.Data()
 
 	f, err := os.Create("config_example.toml")
 	if err != nil {
 		return err
 	}
 
-	if err := toml.NewEncoder(f).Encode(conf); err != nil {
+	if err := toml.NewEncoder(f).Encode(&data); err != nil {
 		return err
 	}
 

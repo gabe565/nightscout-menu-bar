@@ -23,7 +23,7 @@ func New(conf *config.Config) Items {
 	items.Error = NewError()
 	systray.AddSeparator()
 
-	items.OpenNightscout = NewOpenNightscout(conf.Title)
+	items.OpenNightscout = NewOpenNightscout(conf.Data().Title)
 	items.History = NewHistory()
 	systray.AddSeparator()
 

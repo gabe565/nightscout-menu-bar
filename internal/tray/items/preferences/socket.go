@@ -10,7 +10,7 @@ func NewSocket(conf *config.Config, parent *systray.MenuItem) Socket {
 	item.MenuItem = parent.AddSubMenuItemCheckbox(
 		"Expose readings over local socket",
 		"",
-		conf.Socket.Enabled,
+		conf.Data().Socket.Enabled,
 	)
 	return item
 }
@@ -27,8 +27,9 @@ func (s Socket) Toggle() error {
 		s.Check()
 	}
 
-	s.config.Socket.Enabled = s.Checked()
-	if err := s.config.Write(); err != nil {
+	data := s.config.Data()
+	data.Socket.Enabled = s.Checked()
+	if err := s.config.Write(data); err != nil {
 		return err
 	}
 	return nil

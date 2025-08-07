@@ -11,14 +11,14 @@ type Properties struct {
 	Direction Direction `json:"direction"`
 }
 
-func (p Properties) String(conf *config.Config) string {
-	result := p.Bgnow.DisplayBg(conf.Units) +
-		" " + p.Bgnow.Arrow(conf.Arrows)
-	if delta := p.Delta.Display(conf.Units); delta != "" {
-		result += " " + p.Delta.Display(conf.Units)
+func (p Properties) String(data config.Data) string {
+	result := p.Bgnow.DisplayBg(data.Units) +
+		" " + p.Bgnow.Arrow(data.Arrows)
+	if delta := p.Delta.Display(data.Units); delta != "" {
+		result += " " + p.Delta.Display(data.Units)
 	}
-	if rel := p.Bgnow.Mills.Relative(conf.Advanced.RoundAge); rel != "" {
-		result += " [" + p.Bgnow.Mills.Relative(conf.Advanced.RoundAge) + "]"
+	if rel := p.Bgnow.Mills.Relative(data.Advanced.RoundAge); rel != "" {
+		result += " [" + p.Bgnow.Mills.Relative(data.Advanced.RoundAge) + "]"
 	}
 	return result
 }

@@ -22,7 +22,7 @@ type DynamicIconColor struct {
 func (l DynamicIconColor) Choose() error {
 	c, err := zenity.SelectColor(
 		zenity.Title("Dynamic Icon Color"),
-		zenity.Color(l.config.DynamicIcon.FontColor),
+		zenity.Color(l.config.Data().DynamicIcon.FontColor),
 	)
 	if err != nil {
 		if errors.Is(err, zenity.ErrCanceled) {
@@ -31,8 +31,9 @@ func (l DynamicIconColor) Choose() error {
 		return err
 	}
 
-	l.config.DynamicIcon.FontColor.Color = c
-	if err := l.config.Write(); err != nil {
+	data := l.config.Data()
+	data.DynamicIcon.FontColor.Color = c
+	if err := l.config.Write(data); err != nil {
 		return err
 	}
 	return nil

@@ -12,7 +12,8 @@ import (
 )
 
 func (conf *Config) InitLog(w io.Writer) {
-	InitLog(w, conf.Log.Level, conf.Log.Format)
+	data := conf.Data()
+	InitLog(w, data.Log.Level, data.Log.Format)
 }
 
 func InitLog(w io.Writer, level slogx.Level, format slogx.Format) {

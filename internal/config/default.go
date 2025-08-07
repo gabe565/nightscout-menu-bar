@@ -14,7 +14,7 @@ import (
 const SocketFormatCSV = "csv"
 
 func New(opts ...Option) *Config {
-	conf := &Config{
+	data := &Data{
 		Title: "Nightscout",
 		Units: UnitMgdl,
 		DynamicIcon: DynamicIcon{
@@ -49,10 +49,13 @@ func New(opts ...Option) *Config {
 
 	switch runtime.GOOS {
 	case "darwin":
-		conf.DynamicIcon.Enabled = false
+		data.DynamicIcon.Enabled = false
 	case "windows":
-		conf.DynamicIcon.FontColor = colorx.Hex{Color: color.Black}
+		data.DynamicIcon.FontColor = colorx.Hex{Color: color.Black}
 	}
+
+	conf := &Config{}
+	conf.data.Store(data)
 
 	conf.Flags = flag.NewFlagSet("", flag.ContinueOnError)
 	conf.RegisterFlags()

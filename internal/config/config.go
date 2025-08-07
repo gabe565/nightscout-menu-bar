@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"sync/atomic"
 
 	"gabe565.com/utils/colorx"
 	"gabe565.com/utils/slogx"
@@ -12,11 +13,22 @@ import (
 )
 
 type Config struct {
-	File      string         `toml:"-"`
-	Flags     *pflag.FlagSet `toml:"-"`
-	Version   string         `toml:"-"`
-	callbacks []func()       `toml:"-"`
+	File      string
+	Flags     *pflag.FlagSet
+	Version   string
+	callbacks []func()
+	data      atomic.Pointer[Data]
+}
 
+func (conf *Config) Data() Data {
+	d := conf.data.Load()
+	if d != nil {
+		return *d
+	}
+	return Data{}
+}
+
+type Data struct {
 	Title       string      `toml:"title"        comment:"Tray title."`
 	URL         string      `toml:"url"          comment:"Nightscout URL. (required)"`
 	Token       string      `toml:"token"        comment:"Nightscout token. Using an access token is recommended instead of the API secret."`

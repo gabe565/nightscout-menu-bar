@@ -23,7 +23,7 @@ func (n Token) Prompt() error {
 	token, err := zenity.Entry(
 		"Enter new Nightscout API token:",
 		zenity.Title("Nightscout API Token"),
-		zenity.EntryText(n.config.Token),
+		zenity.EntryText(n.config.Data().Token),
 	)
 	if err != nil {
 		if errors.Is(err, zenity.ErrCanceled) {
@@ -32,8 +32,9 @@ func (n Token) Prompt() error {
 		return err
 	}
 
-	n.config.Token = token
-	if err := n.config.Write(); err != nil {
+	data := n.config.Data()
+	data.Token = token
+	if err := n.config.Write(data); err != nil {
 		return err
 	}
 	return nil

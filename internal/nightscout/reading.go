@@ -49,15 +49,15 @@ func (r *Reading) Arrow(conf config.Arrows) string {
 	return direction
 }
 
-func (r *Reading) String(conf *config.Config) string {
+func (r *Reading) String(data config.Data) string {
 	if r.Last == 0 {
 		return ""
 	}
 
-	result := r.DisplayBg(conf.Units) +
-		" " + r.Arrow(conf.Arrows)
-	if rel := r.Mills.Relative(conf.Advanced.RoundAge); rel != "" {
-		result += " [" + r.Mills.Relative(conf.Advanced.RoundAge) + "]"
+	result := r.DisplayBg(data.Units) +
+		" " + r.Arrow(data.Arrows)
+	if rel := r.Mills.Relative(data.Advanced.RoundAge); rel != "" {
+		result += " [" + r.Mills.Relative(data.Advanced.RoundAge) + "]"
 	}
 	return result
 }

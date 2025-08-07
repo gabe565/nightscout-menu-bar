@@ -64,7 +64,7 @@ func TestFetch_Do(t *testing.T) {
 		},
 		{
 			"success",
-			fields{config: &config.Config{URL: server.URL}},
+			fields{config: config.New(config.WithData(config.Data{URL: server.URL}))},
 			args{t.Context()},
 			testproperties.Properties,
 			testproperties.Etag,
@@ -72,7 +72,7 @@ func TestFetch_Do(t *testing.T) {
 		},
 		{
 			"same etag",
-			fields{config: &config.Config{URL: server.URL}, etag: testproperties.Etag},
+			fields{config: config.New(config.WithData(config.Data{URL: server.URL})), etag: testproperties.Etag},
 			args{t.Context()},
 			nil,
 			testproperties.Etag,
@@ -80,7 +80,10 @@ func TestFetch_Do(t *testing.T) {
 		},
 		{
 			"different etag",
-			fields{config: &config.Config{URL: server.URL}, etag: etag.Generate([]byte("test"), true)},
+			fields{
+				config: config.New(config.WithData(config.Data{URL: server.URL})),
+				etag:   etag.Generate([]byte("test"), true),
+			},
 			args{t.Context()},
 			testproperties.Properties,
 			testproperties.Etag,

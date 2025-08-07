@@ -47,12 +47,14 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 
+	data := d.config.Data()
+
 	if d.font == nil {
 		var b []byte
-		if d.config.DynamicIcon.FontFile == "" {
+		if data.DynamicIcon.FontFile == "" {
 			b = defaultFont
 		} else {
-			path := util.ResolvePath(d.config.DynamicIcon.FontFile)
+			path := util.ResolvePath(data.DynamicIcon.FontFile)
 
 			if !filepath.IsAbs(path) {
 				dir, err := config.GetDir()
@@ -69,7 +71,7 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 					return nil, err
 				}
 
-				path, findErr := findfont.Find(d.config.DynamicIcon.FontFile)
+				path, findErr := findfont.Find(data.DynamicIcon.FontFile)
 				if findErr != nil {
 					return nil, errors.Join(err, findErr)
 				}
@@ -89,7 +91,7 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 	}
 
 	start := time.Now()
-	bgnow := p.Bgnow.DisplayBg(d.config.Units)
+	bgnow := p.Bgnow.DisplayBg(data.Units)
 
 	var face font.Face
 	defer func() {
@@ -101,10 +103,10 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 	drawer := &font.Drawer{
 		Dst: img,
-		Src: image.NewUniform(d.config.DynamicIcon.FontColor),
+		Src: image.NewUniform(data.DynamicIcon.FontColor),
 	}
 
-	fontSize := d.config.DynamicIcon.MaxFontSize * 2
+	fontSize := data.DynamicIcon.MaxFontSize * 2
 	for {
 		var err error
 		if face, err = opentype.NewFace(d.font, &opentype.FaceOptions{

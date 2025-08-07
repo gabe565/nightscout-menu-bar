@@ -23,7 +23,7 @@ func (n URL) Prompt() error {
 	url, err := zenity.Entry(
 		"Enter new Nightscout URL:",
 		zenity.Title("Nightscout URL"),
-		zenity.EntryText(n.config.URL),
+		zenity.EntryText(n.config.Data().URL),
 	)
 	if err != nil {
 		if errors.Is(err, zenity.ErrCanceled) {
@@ -32,8 +32,9 @@ func (n URL) Prompt() error {
 		return err
 	}
 
-	n.config.URL = url
-	if err := n.config.Write(); err != nil {
+	data := n.config.Data()
+	data.URL = url
+	if err := n.config.Write(data); err != nil {
 		return err
 	}
 	return nil
