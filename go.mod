@@ -21,7 +21,7 @@ require (
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/spf13/pflag v1.0.6
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/image v0.27.0
+	golang.org/x/image v0.29.0
 )
 
 require (
