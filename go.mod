@@ -20,7 +20,7 @@ require (
 	github.com/prashantgupta24/mac-sleep-notifier v1.0.1
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/spf13/pflag v1.0.7
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	golang.org/x/image v0.29.0
 )
 
