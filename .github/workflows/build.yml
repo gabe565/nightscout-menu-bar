@@ -21,7 +21,7 @@ jobs:
           go-version-file: go.mod
           cache: false
       - name: Install systray dependencies
-        uses: awalsh128/cache-apt-pkgs-action@4c82c3ccdc1344ee11e9775dbdbdf43aa8a5614e # v1.5.1
+        uses: awalsh128/cache-apt-pkgs-action@acb598e5ddbc6f68a970c5da0688d2f3a9f04d05 # v1.6.0
         with:
           packages: gcc libgtk-3-dev libayatana-appindicator3-dev
           version: amd64
@@ -41,7 +41,7 @@ jobs:
         with:
           go-version-file: go.mod
       - name: Install systray dependencies
-        uses: awalsh128/cache-apt-pkgs-action@4c82c3ccdc1344ee11e9775dbdbdf43aa8a5614e # v1.5.1
+        uses: awalsh128/cache-apt-pkgs-action@acb598e5ddbc6f68a970c5da0688d2f3a9f04d05 # v1.6.0
         with:
           packages: gcc libgtk-3-dev libayatana-appindicator3-dev
           version: amd64
@@ -70,7 +70,7 @@ jobs:
         with:
           go-version-file: go.mod
       - name: Install systray dependencies
-        uses: awalsh128/cache-apt-pkgs-action@4c82c3ccdc1344ee11e9775dbdbdf43aa8a5614e # v1.5.1
+        uses: awalsh128/cache-apt-pkgs-action@acb598e5ddbc6f68a970c5da0688d2f3a9f04d05 # v1.6.0
         with:
           packages: gcc libgtk-3-dev libayatana-appindicator3-dev
           version: ${{ matrix.platform }}
