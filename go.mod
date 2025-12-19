@@ -9,7 +9,7 @@ require (
 	github.com/emersion/go-autostart v0.0.0-20250403115856-34830d6457d2
 	github.com/flopp/go-findfont v0.1.0
 	github.com/hhsnopek/etag v0.0.0-20171206181245-aea95f647346
-	github.com/knadh/koanf/providers/file v1.2.0
+	github.com/knadh/koanf/providers/file v1.2.1
 	github.com/knadh/koanf/providers/rawbytes v1.0.0
 	github.com/knadh/koanf/providers/structs v1.0.0
 	github.com/knadh/koanf/v2 v2.2.2
