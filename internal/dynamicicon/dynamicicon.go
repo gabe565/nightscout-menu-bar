@@ -5,6 +5,8 @@ import (
 	_ "embed"
 	"errors"
 	"image"
+	"image/color"
+	"image/draw"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -131,9 +133,18 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 
 	metrics := face.Metrics()
 
-	drawer.Dot.X = (widthF - drawer.MeasureString(bgnow)) / 2
-	drawer.Dot.Y = (heightF + metrics.Ascent - metrics.Descent) / 2
+	readingX := (widthF - drawer.MeasureString(bgnow)) / 2
+	readingY := (heightF + metrics.Ascent - metrics.Descent) / 2
+	drawer.Dot = fixed.Point26_6{X: readingX, Y: readingY}
 	drawer.DrawString(bgnow)
+
+	if time.Since(p.Bgnow.Mills.Time) > 15*time.Minute {
+		// Strikethrough
+		const thickness = 4
+		y := readingY.Round() - int(float64(metrics.XHeight)/64/2) - thickness/2
+		rect := image.Rect(readingX.Round(), y, int(drawer.Dot.X/64), y+thickness)
+		draw.Draw(img, rect, image.NewUniform(color.Black), image.Point{}, draw.Over)
+	}
 
 	var buf bytes.Buffer
 	buf.Grow(2 * bytefmt.KiB)
