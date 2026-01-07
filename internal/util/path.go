@@ -8,11 +8,11 @@ import (
 
 func ResolvePath(path string) string {
 	var prefixHome bool
-	if strings.HasPrefix(path, "$HOME") {
-		path = strings.TrimPrefix(path, "$HOME")
+	if after, ok := strings.CutPrefix(path, "$HOME"); ok {
+		path = after
 		prefixHome = true
-	} else if strings.HasPrefix(path, "~") {
-		path = strings.TrimPrefix(path, "~")
+	} else if after, ok := strings.CutPrefix(path, "~"); ok {
+		path = after
 		prefixHome = true
 	}
 
@@ -22,8 +22,8 @@ func ResolvePath(path string) string {
 		}
 	}
 
-	if strings.HasPrefix(path, "$TMPDIR") {
-		path = strings.TrimPrefix(path, "$TMPDIR")
+	if after, ok := strings.CutPrefix(path, "$TMPDIR"); ok {
+		path = after
 		path = filepath.Join(os.TempDir(), path)
 	}
 

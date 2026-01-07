@@ -215,13 +215,13 @@ func TestReading_UnmarshalJSON(t *testing.T) {
 		{
 			"simple",
 			fields{},
-			args{[]byte(fmt.Sprintf(normalReading, now.UnixMilli(), now.UnixMilli()))},
+			args{fmt.Appendf(nil, normalReading, now.UnixMilli(), now.UnixMilli())},
 			require.NoError,
 		},
 		{
 			"low",
 			fields{},
-			args{[]byte(fmt.Sprintf(lowReading, now.UnixMilli()))},
+			args{fmt.Appendf(nil, lowReading, now.UnixMilli())},
 			require.NoError,
 		},
 		{

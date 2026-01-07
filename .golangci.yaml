@@ -57,6 +57,7 @@ linters:
     - loggercheck
     - makezero
     - mirror
+    - modernize
     - musttag
     - nakedret
     - nilerr
@@ -156,9 +157,6 @@ linters:
       - linters:
           - revive
         text: var-naming
-      - linters:
-          - noctx
-        text: .*log/slog.* must not be called. use .*log/slog.*Context
       - path: _test\.go
         linters:
           - dupl

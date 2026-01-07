@@ -19,8 +19,8 @@ type Reading struct {
 	Last      Mgdl        `json:"last"`
 	Mills     Mills       `json:"mills"`
 	Index     json.Number `json:"index,omitempty"`
-	FromMills Mills       `json:"fromMills,omitempty"`
-	ToMills   Mills       `json:"toMills,omitempty"`
+	FromMills Mills       `json:"fromMills"`
+	ToMills   Mills       `json:"toMills"`
 	Sgvs      []SGV       `json:"sgvs"`
 }
 
