@@ -4,7 +4,7 @@ go 1.25.5
 
 require (
 	fyne.io/systray v1.11.0
-	gabe565.com/utils v0.0.0-20250302063333-ede73b14282c
+	gabe565.com/utils v0.0.0-20251001054419-00a1424779a7
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/emersion/go-autostart v0.0.0-20250403115856-34830d6457d2
 	github.com/flopp/go-findfont v0.1.0
@@ -19,7 +19,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.4
 	github.com/prashantgupta24/mac-sleep-notifier v1.0.1
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
-	github.com/spf13/pflag v1.0.7
+	github.com/spf13/pflag v1.0.10
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/image v0.29.0
 )
