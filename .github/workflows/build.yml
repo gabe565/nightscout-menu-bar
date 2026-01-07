@@ -161,7 +161,7 @@ jobs:
         id: changelog
         uses: gabe565/changelog-generator@733bb2c02fab0bb0e2dd9a059e0dc9f668d05c95 # v1.1.5
       - name: Release
-        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           body: ${{ steps.changelog.outputs.changelog }}
           files: |
