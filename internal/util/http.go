@@ -8,17 +8,20 @@ import (
 )
 
 func NewUserAgentTransport(name, version string) *httpx.UserAgentTransport {
-	ua := name + "/"
+	var ua strings.Builder
+	ua.WriteString(name)
+	ua.WriteRune('/')
 	commit := strings.TrimPrefix(GetCommit(), "*")
 	if version != "" {
-		ua += version
+		ua.WriteString(version)
 		if commit != "" {
-			ua += "-" + commit
+			ua.WriteRune('-')
+			ua.WriteString(commit)
 		}
 	} else if commit != "" {
-		ua += commit
+		ua.WriteString(commit)
 	}
-	ua += " (" + runtime.GOOS + "/" + runtime.GOARCH + ")"
+	ua.WriteString(" (" + runtime.GOOS + "/" + runtime.GOARCH + ")")
 
-	return httpx.NewUserAgentTransport(nil, ua)
+	return httpx.NewUserAgentTransport(nil, ua.String())
 }

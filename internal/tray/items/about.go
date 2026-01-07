@@ -8,15 +8,19 @@ import (
 )
 
 func NewAbout(version string) *systray.MenuItem {
-	title := "Nightscout Menu Bar"
+	var title strings.Builder
+	title.WriteString("Nightscout Menu Bar")
 	if version != "" {
 		if strings.HasPrefix(version, "v") {
-			title += " " + version
+			title.WriteRune(' ')
+			title.WriteString(version)
 		} else {
-			title += " (" + version + ")"
+			title.WriteString(" (")
+			title.WriteString(version)
+			title.WriteRune(')')
 		}
 	}
-	item := systray.AddMenuItem(title, "")
+	item := systray.AddMenuItem(title.String(), "")
 	item.SetTemplateIcon(assets.About, assets.About)
 	return item
 }

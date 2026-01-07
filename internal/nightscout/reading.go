@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"math"
 	"strconv"
+	"strings"
 
 	"gabe565.com/nightscout-menu-bar/internal/config"
 )
@@ -54,12 +55,19 @@ func (r *Reading) String(data config.Data) string {
 		return ""
 	}
 
-	result := r.DisplayBg(data.Units) +
-		" " + r.Arrow(data.Arrows)
+	var result strings.Builder
+
+	result.WriteString(r.DisplayBg(data.Units))
+	result.WriteRune(' ')
+	result.WriteString(r.Arrow(data.Arrows))
+
 	if rel := r.Mills.Relative(data.Advanced.RoundAge); rel != "" {
-		result += " [" + r.Mills.Relative(data.Advanced.RoundAge) + "]"
+		result.WriteString(" [")
+		result.WriteString(rel)
+		result.WriteRune(']')
 	}
-	return result
+
+	return result.String()
 }
 
 func (r *Reading) UnmarshalJSON(bytes []byte) error {

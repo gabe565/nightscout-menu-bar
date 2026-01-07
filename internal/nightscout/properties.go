@@ -1,6 +1,8 @@
 package nightscout
 
 import (
+	"strings"
+
 	"gabe565.com/nightscout-menu-bar/internal/config"
 )
 
@@ -12,13 +14,22 @@ type Properties struct {
 }
 
 func (p Properties) String(data config.Data) string {
-	result := p.Bgnow.DisplayBg(data.Units) +
-		" " + p.Bgnow.Arrow(data.Arrows)
+	var result strings.Builder
+
+	result.WriteString(p.Bgnow.DisplayBg(data.Units))
+	result.WriteRune(' ')
+	result.WriteString(p.Bgnow.Arrow(data.Arrows))
+
 	if delta := p.Delta.Display(data.Units); delta != "" {
-		result += " " + p.Delta.Display(data.Units)
+		result.WriteRune(' ')
+		result.WriteString(delta)
 	}
+
 	if rel := p.Bgnow.Mills.Relative(data.Advanced.RoundAge); rel != "" {
-		result += " [" + p.Bgnow.Mills.Relative(data.Advanced.RoundAge) + "]"
+		result.WriteString(" [")
+		result.WriteString(rel)
+		result.WriteRune(']')
 	}
-	return result
+
+	return result.String()
 }
