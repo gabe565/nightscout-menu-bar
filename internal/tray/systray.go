@@ -32,7 +32,7 @@ func New(version string) *Tray {
 	}
 
 	if err := t.config.Load(); err != nil {
-		t.onError(err)
+		t.displayError(err)
 	}
 
 	t.ticker = ticker.New(t.config, t.bus)
@@ -56,15 +56,15 @@ type Tray struct {
 }
 
 func (t *Tray) Run(ctx context.Context) {
+	defer func() {
+		slog.Info("Exiting")
+		t.Close()
+	}()
 	t.ticker.Start(ctx)
 	if err := t.config.Watch(ctx); err != nil {
-		t.onError(err)
+		t.displayError(err)
 	}
-	systray.Run(t.onReady(ctx), t.onExit)
-}
-
-func (t *Tray) Quit() {
-	systray.Quit()
+	systray.Run(t.onReady(ctx), nil)
 }
 
 func (t *Tray) onReady(ctx context.Context) func() {
@@ -80,67 +80,67 @@ func (t *Tray) onReady(ctx context.Context) func() {
 		for {
 			select {
 			case <-ctx.Done():
-				t.Quit()
+				systray.Quit()
 			case <-t.items.OpenNightscout.ClickedCh:
 				u, err := fetch.BuildURLWithToken(t.config.Data())
 				if err != nil {
-					t.onError(err)
+					t.displayError(err)
 					return
 				}
 				slog.Debug("Opening Nightscout", "url", u)
 				if err := open.Run(u.String()); err != nil {
-					t.onError(err)
+					t.displayError(err)
 				}
 			case <-t.items.Preferences.URL.ClickedCh:
 				go func() {
 					if err := t.items.Preferences.URL.Prompt(); err != nil {
-						t.onError(err)
+						t.displayError(err)
 					}
 				}()
 			case <-t.items.About.ClickedCh:
 				if err := open.Run(AboutURL); err != nil {
-					t.onError(err)
+					t.displayError(err)
 				}
 			case <-t.items.Preferences.Token.ClickedCh:
 				go func() {
 					if err := t.items.Preferences.Token.Prompt(); err != nil {
-						t.onError(err)
+						t.displayError(err)
 					}
 				}()
 			case <-t.items.Preferences.Units.ClickedCh:
 				go func() {
 					if err := t.items.Preferences.Units.Prompt(); err != nil {
-						t.onError(err)
+						t.displayError(err)
 					}
 				}()
 			case <-t.items.Preferences.StartOnLogin.ClickedCh:
 				if t.items.Preferences.StartOnLogin.Checked() {
 					if err := autostart.Disable(); err != nil {
-						t.onError(err)
+						t.displayError(err)
 						continue
 					}
 					t.items.Preferences.StartOnLogin.Uncheck()
 				} else {
 					if err := autostart.Enable(); err != nil {
-						t.onError(err)
+						t.displayError(err)
 						continue
 					}
 					t.items.Preferences.StartOnLogin.Check()
 				}
 			case <-t.items.Preferences.Socket.ClickedCh:
 				if err := t.items.Preferences.Socket.Toggle(); err != nil {
-					t.onError(err)
+					t.displayError(err)
 				}
 			case <-t.items.Preferences.DynamicIcon.ClickedCh:
 				if err := t.items.Preferences.DynamicIcon.Toggle(); err != nil {
-					t.onError(err)
+					t.displayError(err)
 				}
 			case <-t.items.Preferences.DynamicIconColor.ClickedCh:
 				if err := t.items.Preferences.DynamicIconColor.Choose(); err != nil {
-					t.onError(err)
+					t.displayError(err)
 				}
 			case <-t.items.Quit.ClickedCh:
-				t.Quit()
+				systray.Quit()
 			case msg := <-t.bus:
 				switch msg := msg.(type) {
 				case messages.RenderMessage:
@@ -161,7 +161,7 @@ func (t *Tray) onReady(ctx context.Context) func() {
 								systray.SetIcon(icon)
 							}
 						} else {
-							t.onError(err)
+							t.displayError(err)
 							systray.SetTitle(value)
 							systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
 						}
@@ -195,7 +195,7 @@ func (t *Tray) onReady(ctx context.Context) func() {
 	}
 }
 
-func (t *Tray) onError(err error) {
+func (t *Tray) displayError(err error) {
 	select {
 	case t.bus <- err:
 	default:
@@ -203,8 +203,11 @@ func (t *Tray) onError(err error) {
 	}
 }
 
-func (t *Tray) onExit() {
-	slog.Info("Exiting")
-	t.ticker.Close()
-	close(t.bus)
+func (t *Tray) Close() {
+	if t.ticker != nil {
+		t.ticker.Close()
+	}
+	if t.bus != nil {
+		close(t.bus)
+	}
 }
