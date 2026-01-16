@@ -2,10 +2,8 @@ module gabe565.com/nightscout-menu-bar
 
 go 1.25.5
 
-replace fyne.io/systray v1.12.0 => github.com/gabe565/systray v0.0.0-20260116103033-9483f6fb4738
-
 require (
-	fyne.io/systray v1.12.0
+	fyne.io/systray v1.12.1-0.20260116214250-81f8e1a496f9
 	gabe565.com/utils v0.0.0-20251001054419-00a1424779a7
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/emersion/go-autostart v0.0.0-20250403115856-34830d6457d2
