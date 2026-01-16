@@ -1,4 +1,3 @@
-//nolint:golines
 package config
 
 import (
