@@ -9,6 +9,8 @@ units = 'mg/dL'
 
 # Disable parts of the menu bar text. Only supported on macOS and Linux.
 [last-reading]
+# Readings older than this duration will be displayed as stale (strikethrough).
+stale-threshold = '15m'
 hide-arrow = false
 hide-delta = false
 hide-time-ago = false

@@ -17,6 +17,9 @@ func New(opts ...Option) *Config {
 	data := &Data{
 		Title: "Nightscout",
 		Units: UnitMgdl,
+		LastReading: LastReading{
+			StaleThreshold: Duration{15 * time.Minute},
+		},
 		DynamicIcon: DynamicIcon{
 			Enabled:     true,
 			FontColor:   colorx.Hex{Color: color.White},

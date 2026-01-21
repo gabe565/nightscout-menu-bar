@@ -1,6 +1,7 @@
 package config
 
 import (
+	"strings"
 	"time"
 )
 
@@ -10,6 +11,9 @@ type Duration struct {
 
 func (d Duration) MarshalText() ([]byte, error) {
 	s := d.String()
+	if before, found := strings.CutSuffix(s, "m0s"); found {
+		s = before + "m"
+	}
 	return []byte(s), nil
 }
 

@@ -138,7 +138,7 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 	drawer.Dot = fixed.Point26_6{X: readingX, Y: readingY}
 	drawer.DrawString(bgnow)
 
-	if time.Since(p.Bgnow.Mills.Time) > 15*time.Minute {
+	if time.Since(p.Bgnow.Mills.Time) > data.LastReading.StaleThreshold.Duration {
 		// Strikethrough
 		const thickness = 4
 		y := readingY.Round() - int(float64(metrics.XHeight)/64/2) - thickness/2

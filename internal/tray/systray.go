@@ -151,9 +151,13 @@ func (t *Tray) onReady(ctx context.Context) func() {
 
 					conf := t.config.Data()
 					shortValue := msg.Properties.String(conf)
-					conf.LastReading = config.LastReading{}
+					conf.LastReading.HideArrow = false
+					conf.LastReading.HideDelta = false
+					conf.LastReading.HideTimeAgo = false
 					fullValue := msg.Properties.String(conf)
-					isOldReading := time.Since(msg.Properties.Bgnow.Mills.Time) > 15*time.Minute
+					isOldReading := time.Since(
+						msg.Properties.Bgnow.Mills.Time,
+					) > conf.LastReading.StaleThreshold.Duration
 
 					slog.Debug("Updating reading", "value", fullValue)
 					if t.dynamicIcon == nil {

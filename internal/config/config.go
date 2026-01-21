@@ -48,9 +48,10 @@ type DynamicIcon struct {
 }
 
 type LastReading struct {
-	HideArrow   bool `toml:"hide-arrow"`
-	HideDelta   bool `toml:"hide-delta"`
-	HideTimeAgo bool `toml:"hide-time-ago"`
+	StaleThreshold Duration `toml:"stale-threshold" comment:"Readings older than this duration will be displayed as stale (strikethrough)."`
+	HideArrow      bool     `toml:"hide-arrow"`
+	HideDelta      bool     `toml:"hide-delta"`
+	HideTimeAgo    bool     `toml:"hide-time-ago"`
 }
 
 type Arrows struct {
