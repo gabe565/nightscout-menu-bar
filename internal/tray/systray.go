@@ -6,6 +6,7 @@ import (
 	"io"
 	"log/slog"
 	"os"
+	"time"
 
 	"fyne.io/systray"
 	"gabe565.com/nightscout-menu-bar/internal/assets"
@@ -152,10 +153,11 @@ func (t *Tray) onReady(ctx context.Context) func() {
 					shortValue := msg.Properties.String(conf)
 					conf.LastReading = config.LastReading{}
 					fullValue := msg.Properties.String(conf)
+					isOldReading := time.Since(msg.Properties.Bgnow.Mills.Time) > 15*time.Minute
 
 					slog.Debug("Updating reading", "value", fullValue)
 					if t.dynamicIcon == nil {
-						systray.SetTitle(shortValue)
+						systray.SetTitleStrikethrough(shortValue, isOldReading)
 					} else {
 						if icon, err := t.dynamicIcon.Generate(msg.Properties); err == nil {
 							systray.SetTitle("")
@@ -166,7 +168,7 @@ func (t *Tray) onReady(ctx context.Context) func() {
 							}
 						} else {
 							t.displayError(err)
-							systray.SetTitle(shortValue)
+							systray.SetTitleStrikethrough(shortValue, isOldReading)
 							systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
 						}
 					}
