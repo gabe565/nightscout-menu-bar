@@ -17,18 +17,24 @@ func (p Properties) String(data config.Data) string {
 	var result strings.Builder
 
 	result.WriteString(p.Bgnow.DisplayBg(data.Units))
-	result.WriteRune(' ')
-	result.WriteString(p.Bgnow.Arrow(data.Arrows))
-
-	if delta := p.Delta.Display(data.Units); delta != "" {
+	if !data.LastReading.HideArrow {
 		result.WriteRune(' ')
-		result.WriteString(delta)
+		result.WriteString(p.Bgnow.Arrow(data.Arrows))
 	}
 
-	if rel := p.Bgnow.Mills.Relative(data.Advanced.RoundAge); rel != "" {
-		result.WriteString(" [")
-		result.WriteString(rel)
-		result.WriteRune(']')
+	if !data.LastReading.HideDelta {
+		if delta := p.Delta.Display(data.Units); delta != "" {
+			result.WriteRune(' ')
+			result.WriteString(delta)
+		}
+	}
+
+	if !data.LastReading.HideTimeAgo {
+		if rel := p.Bgnow.Mills.Relative(data.Advanced.RoundAge); rel != "" {
+			result.WriteString(" [")
+			result.WriteString(rel)
+			result.WriteRune(']')
+		}
 	}
 
 	return result.String()

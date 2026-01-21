@@ -148,10 +148,14 @@ func (t *Tray) onReady(ctx context.Context) func() {
 						t.items.Error.Hide()
 					}
 
-					value := msg.Properties.String(t.config.Data())
-					slog.Debug("Updating reading", "value", value)
+					conf := t.config.Data()
+					shortValue := msg.Properties.String(conf)
+					conf.LastReading = config.LastReading{}
+					fullValue := msg.Properties.String(conf)
+
+					slog.Debug("Updating reading", "value", fullValue)
 					if t.dynamicIcon == nil {
-						systray.SetTitle(value)
+						systray.SetTitle(shortValue)
 					} else {
 						if icon, err := t.dynamicIcon.Generate(msg.Properties); err == nil {
 							systray.SetTitle("")
@@ -162,12 +166,12 @@ func (t *Tray) onReady(ctx context.Context) func() {
 							}
 						} else {
 							t.displayError(err)
-							systray.SetTitle(value)
+							systray.SetTitle(shortValue)
 							systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
 						}
 					}
-					systray.SetTooltip(value)
-					t.items.LastReading.SetTitle(value)
+					systray.SetTooltip(fullValue)
+					t.items.LastReading.SetTitle(fullValue)
 
 					for i, reading := range msg.Properties.Buckets {
 						if i < len(t.items.History.Subitems) {

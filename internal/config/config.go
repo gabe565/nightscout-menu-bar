@@ -32,6 +32,7 @@ type Data struct {
 	URL         string      `toml:"url"          comment:"Nightscout URL. (required)"`
 	Token       string      `toml:"token"        comment:"Nightscout token. Using an access token is recommended instead of the API secret."`
 	Units       Unit        `toml:"units"        comment:"Blood sugar unit. (one of: mg/dL, mmol/L)"`
+	LastReading LastReading `toml:"last-reading" comment:"Disable parts of the menu bar text. Only supported on macOS and Linux."`
 	DynamicIcon DynamicIcon `toml:"dynamic-icon" comment:"Makes the tray icon show the current blood sugar reading."`
 	Arrows      Arrows      `toml:"arrows"       comment:"Customize the arrows."`
 	Socket      Socket      `toml:"socket"       comment:"Exposes the latest reading to other applications over a local socket."`
@@ -44,6 +45,12 @@ type DynamicIcon struct {
 	FontColor   colorx.Hex `toml:"font-color"    comment:"Hex code used to render text."`
 	FontFile    string     `toml:"font-file"     comment:"Font path or filename of a system font. If left blank, an embedded font will be used."`
 	MaxFontSize float64    `toml:"max-font-size" comment:"Maximum font size in points."`
+}
+
+type LastReading struct {
+	HideArrow   bool `toml:"hide-arrow"`
+	HideDelta   bool `toml:"hide-delta"`
+	HideTimeAgo bool `toml:"hide-time-ago"`
 }
 
 type Arrows struct {

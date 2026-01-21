@@ -7,6 +7,12 @@ token = ''
 # Blood sugar unit. (one of: mg/dL, mmol/L)
 units = 'mg/dL'
 
+# Disable parts of the menu bar text. Only supported on macOS and Linux.
+[last-reading]
+hide-arrow = false
+hide-delta = false
+hide-time-ago = false
+
 # Makes the tray icon show the current blood sugar reading.
 [dynamic-icon]
 enabled = false
