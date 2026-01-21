@@ -4,6 +4,6 @@ package assets
 
 import _ "embed"
 
-//go:generate ./convert-icon.sh src/rectangle-history-solid.svg dist/rectangle-history-solid.png
-//go:embed dist/rectangle-history-solid.png
+//go:generate ./convert-icon.sh src/history.svg dist/history.png
+//go:embed dist/history.png
 var History []byte

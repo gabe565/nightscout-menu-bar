@@ -9,7 +9,7 @@ import (
 
 func New(conf *config.Config) Preferences {
 	item := systray.AddMenuItem("Preferences", "")
-	item.SetTemplateIcon(assets.Gear, assets.Gear)
+	item.SetTemplateIcon(assets.Preferences, assets.Preferences)
 
 	url := NewURL(conf, item)
 	token := NewToken(conf, item)

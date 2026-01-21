@@ -4,6 +4,6 @@ package assets
 
 import _ "embed"
 
-//go:generate ./convert-icon.sh src/github-brands-solid.svg dist/github-brands-solid.png
-//go:embed dist/github-brands-solid.png
+//go:generate ./convert-icon.sh src/about.svg dist/about.png
+//go:embed dist/about.png
 var About []byte

@@ -7,6 +7,6 @@ import (
 
 func NewLastReading() *systray.MenuItem {
 	item := systray.AddMenuItem("Last Reading", "")
-	item.SetTemplateIcon(assets.Droplet, assets.Droplet)
+	item.SetTemplateIcon(assets.Reading, assets.Reading)
 	return item
 }

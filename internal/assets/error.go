@@ -4,6 +4,6 @@ package assets
 
 import _ "embed"
 
-//go:generate ./convert-icon.sh src/triangle-exclamation-solid.svg dist/triangle-exclamation-solid.png
-//go:embed dist/triangle-exclamation-solid.png
+//go:generate ./convert-icon.sh src/error.svg dist/error.png
+//go:embed dist/error.png
 var Error []byte
