@@ -14,6 +14,12 @@ func New(conf *config.Config) Preferences {
 	url := NewURL(conf, item)
 	token := NewToken(conf, item)
 	units := NewUnits(conf, item)
+	item.AddSeparator()
+
+	dynamicIconMenu := item.AddSubMenuItem("Dynamic icon", "")
+	dynamicIcon := NewDynamicIcon(conf, dynamicIconMenu)
+	dynamicIconColor := NewDynamicIconColor(conf, dynamicIconMenu)
+	item.AddSeparator()
 
 	autostartEnabled, _ := autostart.IsEnabled()
 	startOnLogin := item.AddSubMenuItemCheckbox(
@@ -21,10 +27,8 @@ func New(conf *config.Config) Preferences {
 		"",
 		autostartEnabled,
 	)
+	item.AddSeparator()
 
-	dynamicIconMenu := item.AddSubMenuItem("Dynamic icon", "")
-	dynamicIcon := NewDynamicIcon(conf, dynamicIconMenu)
-	dynamicIconColor := NewDynamicIconColor(conf, dynamicIconMenu)
 	socket := NewSocket(conf, item)
 
 	return Preferences{
@@ -32,9 +36,9 @@ func New(conf *config.Config) Preferences {
 		URL:              url,
 		Token:            token,
 		Units:            units,
-		StartOnLogin:     startOnLogin,
 		DynamicIcon:      dynamicIcon,
 		DynamicIconColor: dynamicIconColor,
+		StartOnLogin:     startOnLogin,
 		Socket:           socket,
 	}
 }
@@ -44,9 +48,9 @@ type Preferences struct {
 	URL              URL
 	Token            Token
 	Units            Units
-	StartOnLogin     *systray.MenuItem
 	DynamicIcon      DynamicIcon
 	DynamicIconColor DynamicIconColor
+	StartOnLogin     *systray.MenuItem
 	Socket           Socket
 }
 
