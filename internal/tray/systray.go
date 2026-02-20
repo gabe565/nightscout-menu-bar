@@ -28,7 +28,7 @@ func New(version string) *Tray {
 		bus:    make(chan any, 1),
 	}
 	if err := t.config.Flags.Parse(os.Args[1:]); err != nil {
-		_, _ = io.WriteString(os.Stderr, err.Error()+"\n")
+		_, _ = io.WriteString(os.Stderr, err.Error()+"\n") //nolint:gosec
 		os.Exit(2)
 	}
 
@@ -88,7 +88,7 @@ func (t *Tray) onReady(ctx context.Context) func() {
 					t.displayError(err)
 					return
 				}
-				slog.Debug("Opening Nightscout", "url", u)
+				slog.Debug("Opening Nightscout", "url", u) //nolint:gosec
 				if err := open.Run(u.String()); err != nil {
 					t.displayError(err)
 				}
