@@ -5,7 +5,7 @@ go 1.26.0
 replace fyne.io/systray => github.com/gabe565/systray v0.0.0-20260121093915-c87fa6891dbf
 
 require (
-	fyne.io/systray v1.12.1-0.20260210172649-43b10c6dd8f0
+	fyne.io/systray v1.12.1-0.20260224174210-614d12c91a50
 	gabe565.com/utils v0.0.0-20251001054419-00a1424779a7
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/emersion/go-autostart v0.0.0-20250403115856-34830d6457d2
