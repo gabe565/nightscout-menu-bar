@@ -40,17 +40,17 @@ linters:
     - gochecksumtype
     - goconst
     - gocritic
+    - godot
     - godox
     - goheader
-    - godot
     - goprintffuncname
     - gosec
-    - importas
-    - inamedparam
-    - interfacebloat
     - govet
     - iface
+    - importas
+    - inamedparam
     - ineffassign
+    - interfacebloat
     - intrange
     - ireturn
     - loggercheck
@@ -153,9 +153,6 @@ linters:
       - legacy
       - std-error-handling
     rules:
-      - linters:
-          - revive
-        text: var-naming
       - path: _test\.go
         linters:
           - dupl

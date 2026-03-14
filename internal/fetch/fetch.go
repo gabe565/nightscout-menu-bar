@@ -75,7 +75,7 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 		"secret", f.tokenChecksum != "",
 	)
 
-	resp, err := f.client.Do(req) //nolint:gosec
+	resp, err := f.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
