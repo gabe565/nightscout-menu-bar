@@ -45,7 +45,9 @@ func (t *Ticker) reloadConfig() {
 	if t.renderTicker != nil {
 		t.renderTicker.Reset(time.Millisecond)
 	}
-	t.fetch.Reset()
+	if t.fetch != nil {
+		t.fetch.Reset()
+	}
 	if t.fetchTicker != nil {
 		t.fetchTicker.Reset(time.Millisecond)
 	}

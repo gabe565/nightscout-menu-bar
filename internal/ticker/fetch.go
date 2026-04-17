@@ -12,16 +12,18 @@ import (
 
 func (t *Ticker) beginFetch(ctx context.Context, render chan<- *nightscout.Properties) {
 	go func() {
-		t.fetchTicker = time.NewTicker(time.Millisecond)
+		t.fetchTicker = time.NewTicker(t.config.Data().Advanced.FallbackInterval.Duration)
 		defer t.fetchTicker.Stop()
+
 		for {
+			next := t.Fetch(render)
+			t.fetchTicker.Reset(next)
+			slog.Debug("Scheduled next fetch", "in", next)
+
 			select {
 			case <-ctx.Done():
 				return
 			case <-t.fetchTicker.C:
-				next := t.Fetch(render)
-				t.fetchTicker.Reset(next)
-				slog.Debug("Scheduled next fetch", "in", next)
 			}
 		}
 	}()
