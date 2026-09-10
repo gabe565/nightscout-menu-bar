@@ -15,10 +15,10 @@ Works on Windows, MacOS, and Linux.
 
 ## Install
 
-### Brew (macOS)
+### Brew (macOS and Linux)
 
 ```shell
-brew install gabe565/tap/nightscout-menu-bar --no-quarantine
+brew install gabe565/tap/nightscout-menu-bar
 ```
 
 ### Binary
@@ -57,4 +57,4 @@ for required dependencies.
 #### macOS
 
 To generate a Mac app, run [hack/build-darwin.sh](hack/build-darwin.sh).
-An app will be created in the `dist` directory.
+An app for each architecture will be created in the `dist` directory.

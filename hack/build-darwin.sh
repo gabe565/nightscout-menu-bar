@@ -10,7 +10,7 @@ set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 
-rm -rf dist/*.app assets/{"$ICONSET","$ICNS"}
+rm -rf dist/{amd64,arm64} assets/{"$ICONSET","$ICNS"}
 mkdir -p dist
 
 # Generate icns
@@ -25,24 +25,14 @@ iconutil --convert icns --output "assets/$ICNS" "assets/$ICONSET"
 
 export GOOS=darwin CGO_ENABLED=1
 for ARCH in amd64 arm64; do
-  echo Build "$BINARY_NAME-$ARCH"
-  GOARCH="$ARCH" go build -ldflags="-w -s -X main.version=$VERSION" -trimpath -o "dist/$BINARY_NAME-$ARCH" .
+  echo Build "$BINARY_NAME ($ARCH)"
+  APP_CONTENTS="dist/$ARCH/$APP_NAME.app/Contents"
+  mkdir -p "$APP_CONTENTS/MacOS" "$APP_CONTENTS/Resources"
+  GOARCH="$ARCH" go build -ldflags="-w -s -X main.version=$VERSION" -trimpath -o "$APP_CONTENTS/MacOS/$BINARY_NAME" .
+  go run ./assets/darwin/info --version="$VERSION" > "$APP_CONTENTS/info.plist"
+  cp "assets/$ICNS" "$APP_CONTENTS/Resources"
+
+  echo Compress "$APP_NAME.app ($ARCH)"
+  tar -czvf "dist/${BINARY_NAME}_darwin_$ARCH.tar.gz" -C "dist/$ARCH" "$APP_NAME.app"
+  echo ...done
 done
-lipo -create -output "dist/$BINARY_NAME" "dist/$BINARY_NAME-amd64" "dist/$BINARY_NAME-arm64"
-rm "dist/$BINARY_NAME-amd64" "dist/$BINARY_NAME-arm64"
-echo ...done
-
-echo Generate "$APP_NAME.app"
-APP_CONTENTS="dist/$APP_NAME.app/Contents"
-mkdir -p "$APP_CONTENTS"
-go run ./assets/darwin/info --version="$VERSION" > "$APP_CONTENTS/info.plist"
-mkdir "$APP_CONTENTS/Resources"
-cp "assets/$ICNS" "$APP_CONTENTS/Resources"
-mkdir "$APP_CONTENTS/MacOS"
-mv "dist/$BINARY_NAME" "$APP_CONTENTS/MacOS"
-
-echo Compress "$APP_NAME.app"
-tar_name="dist/nightscout-menu-bar_darwin.tar.gz"
-tar -czvf "$tar_name" -C dist "$APP_NAME.app"
-go run ./assets/darwin/cask --path="$tar_name" --version="$VERSION" > dist/nightscout-menu-bar.rb
-echo ...done
