@@ -115,7 +115,7 @@ jobs:
 
   build-darwin:
     name: Build (darwin)
-    runs-on: macos-15
+    runs-on: macos-26
     permissions:
       contents: read
     steps:
