@@ -6,7 +6,7 @@ replace fyne.io/systray => github.com/gabe565/systray v0.0.0-20260121093915-c87f
 
 require (
 	fyne.io/systray v1.12.1-0.20260224174210-614d12c91a50
-	gabe565.com/utils v0.0.0-20260310002041-b3b94f17b36b
+	gabe565.com/utils v0.0.0-20260511235214-4059440fa83b
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/emersion/go-autostart v0.0.0-20250403115856-34830d6457d2
 	github.com/flopp/go-findfont v0.1.0
