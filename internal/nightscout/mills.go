@@ -11,11 +11,12 @@ type Mills struct {
 }
 
 func (m *Mills) UnmarshalJSON(bytes []byte) error {
-	var mills int64
+	// Some Nightscout instances return mills as a float
+	var mills float64
 	if err := json.Unmarshal(bytes, &mills); err != nil {
 		return err
 	}
-	m.Time = time.UnixMilli(mills)
+	m.Time = time.UnixMicro(int64(mills * 1000))
 	return nil
 }
 

@@ -55,6 +55,8 @@ func TestMills_UnmarshalJSON(t *testing.T) {
 		wantErr require.ErrorAssertionFunc
 	}{
 		{"now", args{[]byte(strconv.Itoa(int(now.UnixMilli())))}, Mills{now}, require.NoError},
+		{"float", args{[]byte("1774257805390.101")}, Mills{time.UnixMicro(1774257805390101)}, require.NoError},
+		{"float whole", args{[]byte("1774257805390.0")}, Mills{time.UnixMilli(1774257805390)}, require.NoError},
 		{"error", args{[]byte("a")}, Mills{time.Time{}}, require.Error},
 	}
 	for _, tt := range tests {
