@@ -82,27 +82,53 @@ type Advanced struct {
 	RoundAge         bool     `toml:"round-age"         comment:"If enabled, the reading's age will be rounded up to the nearest minute.\nNightscout rounds the age, so enable this if you want the values to match."`
 }
 
-const configDir = "nightscout-menu-bar"
+const (
+	configDir  = "nightscout-menu-bar"
+	configFile = "config.toml"
+)
 
 func GetDir() (string, error) {
-	switch runtime.GOOS {
-	case "darwin":
-		if xdgConfigHome := os.Getenv("XDG_CONFIG_HOME"); xdgConfigHome != "" {
-			return filepath.Join(xdgConfigHome, configDir), nil
-		}
-
-		homeDir, err := os.UserHomeDir()
-		if err != nil {
-			return "", err
-		}
-		return filepath.Join(homeDir, ".config", configDir), nil
-	default:
-		dir, err := os.UserConfigDir()
-		if err != nil {
-			return "", err
-		}
-
-		dir = filepath.Join(dir, configDir)
-		return dir, nil
+	dirs, err := GetDirs()
+	if err != nil {
+		return "", err
 	}
+	return resolveDir(dirs), nil
+}
+
+func GetDirs() ([]string, error) {
+	dir, err := os.UserConfigDir()
+	if err != nil {
+		return nil, err
+	}
+	dirs := []string{filepath.Join(dir, configDir)}
+
+	if runtime.GOOS == "darwin" {
+		legacy, err := legacyDarwinDir()
+		if err != nil {
+			return nil, err
+		}
+		dirs = append(dirs, legacy)
+	}
+
+	return dirs, nil
+}
+
+func legacyDarwinDir() (string, error) {
+	if xdgConfigHome := os.Getenv("XDG_CONFIG_HOME"); xdgConfigHome != "" {
+		return filepath.Join(xdgConfigHome, configDir), nil
+	}
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(homeDir, ".config", configDir), nil
+}
+
+func resolveDir(dirs []string) string {
+	for _, dir := range dirs {
+		if _, err := os.Stat(filepath.Join(dir, configFile)); err == nil {
+			return dir
+		}
+	}
+	return dirs[0]
 }

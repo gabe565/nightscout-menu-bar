@@ -38,7 +38,7 @@ func (conf *Config) Load() error {
 			return err
 		}
 
-		conf.File = filepath.Join(cfgDir, "config.toml")
+		conf.File = filepath.Join(cfgDir, configFile)
 	}
 
 	// Load config file if exists
@@ -81,7 +81,7 @@ func (conf *Config) Write(data Data) error {
 			return err
 		}
 
-		conf.File = filepath.Join(cfgDir, "config.toml")
+		conf.File = filepath.Join(cfgDir, configFile)
 	}
 
 	var cfgNotExists bool
