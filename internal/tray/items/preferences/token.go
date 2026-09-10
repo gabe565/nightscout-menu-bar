@@ -9,9 +9,10 @@ import (
 )
 
 func NewToken(config *config.Config, parent *systray.MenuItem) Token {
-	token := Token{config: config}
-	token.MenuItem = parent.AddSubMenuItem("API Token", "")
-	return token
+	return Token{
+		config:   config,
+		MenuItem: parent.AddSubMenuItem("API Token", ""),
+	}
 }
 
 type Token struct {

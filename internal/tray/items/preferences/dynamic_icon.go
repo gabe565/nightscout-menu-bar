@@ -6,13 +6,14 @@ import (
 )
 
 func NewDynamicIcon(conf *config.Config, parent *systray.MenuItem) DynamicIcon {
-	item := DynamicIcon{config: conf}
-	item.MenuItem = parent.AddSubMenuItemCheckbox(
-		"Enabled",
-		"",
-		conf.Data().DynamicIcon.Enabled,
-	)
-	return item
+	return DynamicIcon{
+		config: conf,
+		MenuItem: parent.AddSubMenuItemCheckbox(
+			"Enabled",
+			"",
+			conf.Data().DynamicIcon.Enabled,
+		),
+	}
 }
 
 type DynamicIcon struct {

@@ -9,9 +9,10 @@ import (
 )
 
 func NewDynamicIconColor(conf *config.Config, parent *systray.MenuItem) DynamicIconColor {
-	item := DynamicIconColor{config: conf}
-	item.MenuItem = parent.AddSubMenuItem("Color", "")
-	return item
+	return DynamicIconColor{
+		config:   conf,
+		MenuItem: parent.AddSubMenuItem("Color", ""),
+	}
 }
 
 type DynamicIconColor struct {

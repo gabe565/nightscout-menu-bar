@@ -97,7 +97,7 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 
 		slog.Debug("Parsed response", "took", time.Since(start), "data", properties)
 
-		f.etag = resp.Header.Get("etag")
+		f.etag = resp.Header.Get("ETag")
 		return &properties, nil
 	default:
 		f.etag = ""

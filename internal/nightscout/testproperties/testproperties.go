@@ -8,6 +8,12 @@ import (
 	"gabe565.com/nightscout-menu-bar/internal/nightscout"
 )
 
+const (
+	device    = "xDrip-DexcomG5"
+	direction = "Flat"
+	sgvType   = "sgv"
+)
+
 var (
 	//go:embed fetch_test_properties.json
 	JSON []byte
@@ -22,15 +28,15 @@ var (
 			ToMills:   nightscout.Mills{Time: time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC)},
 			Sgvs: []nightscout.SGV{{
 				ID:         "633a49639fc610138697ba4d",
-				Device:     "xDrip-DexcomG5",
-				Direction:  "Flat",
+				Device:     device,
+				Direction:  direction,
 				Filtered:   "0",
 				Mgdl:       123,
 				Mills:      nightscout.Mills{Time: time.Date(2022, time.October, 2, 21, 30, 58, 417000000, time.Local)},
 				Noise:      "1",
 				Rssi:       "100",
 				Scaled:     "123",
-				Type:       "sgv",
+				Type:       sgvType,
 				Unfiltered: "0",
 			}},
 		},
@@ -44,8 +50,8 @@ var (
 				ToMills:   nightscout.Mills{Time: time.Date(2022, time.October, 2, 21, 33, 28, 417000000, time.Local)},
 				Sgvs: []nightscout.SGV{{
 					ID:        "633a49639fc610138697ba4d",
-					Device:    "xDrip-DexcomG5",
-					Direction: "Flat",
+					Device:    device,
+					Direction: direction,
 					Filtered:  "0",
 					Mgdl:      123,
 					Mills: nightscout.Mills{
@@ -54,7 +60,7 @@ var (
 					Noise:      "1",
 					Rssi:       "100",
 					Scaled:     "123",
-					Type:       "sgv",
+					Type:       sgvType,
 					Unfiltered: "0",
 				}},
 			},
@@ -67,8 +73,8 @@ var (
 				ToMills:   nightscout.Mills{Time: time.Date(2022, time.October, 2, 21, 28, 28, 417000000, time.Local)},
 				Sgvs: []nightscout.SGV{{
 					ID:        "633a48389fc610138697b95b",
-					Device:    "xDrip-DexcomG5",
-					Direction: "Flat",
+					Device:    device,
+					Direction: direction,
 					Filtered:  "0",
 					Mgdl:      122,
 					Mills: nightscout.Mills{
@@ -77,7 +83,7 @@ var (
 					Noise:      "1",
 					Rssi:       "100",
 					Scaled:     "122",
-					Type:       "sgv",
+					Type:       sgvType,
 					Unfiltered: "0",
 				}},
 			},
@@ -90,8 +96,8 @@ var (
 				ToMills:   nightscout.Mills{Time: time.Date(2022, time.October, 2, 21, 23, 28, 417000000, time.Local)},
 				Sgvs: []nightscout.SGV{{
 					ID:        "633a470d9fc610138697b86a",
-					Device:    "xDrip-DexcomG5",
-					Direction: "Flat",
+					Device:    device,
+					Direction: direction,
 					Filtered:  "0",
 					Mgdl:      119,
 					Mills: nightscout.Mills{
@@ -100,7 +106,7 @@ var (
 					Noise:      "1",
 					Rssi:       "100",
 					Scaled:     "119",
-					Type:       "sgv",
+					Type:       sgvType,
 					Unfiltered: "0",
 				}},
 			},
@@ -113,8 +119,8 @@ var (
 				ToMills:   nightscout.Mills{Time: time.Date(2022, time.October, 2, 21, 18, 28, 417000000, time.Local)},
 				Sgvs: []nightscout.SGV{{
 					ID:        "633a45e09fc610138697b779",
-					Device:    "xDrip-DexcomG5",
-					Direction: "Flat",
+					Device:    device,
+					Direction: direction,
 					Filtered:  "0",
 					Mgdl:      116,
 					Mills: nightscout.Mills{
@@ -123,7 +129,7 @@ var (
 					Noise:      "1",
 					Rssi:       "100",
 					Scaled:     "116",
-					Type:       "sgv",
+					Type:       sgvType,
 					Unfiltered: "0",
 				}},
 			},
@@ -144,8 +150,8 @@ var (
 				ToMills:   nightscout.Mills{Time: time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC)},
 				Sgvs: []nightscout.SGV{{
 					ID:        "633a48389fc610138697b95b",
-					Device:    "xDrip-DexcomG5",
-					Direction: "Flat",
+					Device:    device,
+					Direction: direction,
 					Filtered:  "0",
 					Mgdl:      122,
 					Mills: nightscout.Mills{
@@ -154,7 +160,7 @@ var (
 					Noise:      "1",
 					Rssi:       "100",
 					Scaled:     "122",
-					Type:       "sgv",
+					Type:       sgvType,
 					Unfiltered: "0",
 				}},
 			},
@@ -167,7 +173,7 @@ var (
 		Direction: nightscout.Direction{
 			Entity: "&#8594;",
 			Label:  "→",
-			Value:  "Flat",
+			Value:  direction,
 		},
 	}
 

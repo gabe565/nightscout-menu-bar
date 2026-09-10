@@ -9,9 +9,10 @@ import (
 )
 
 func NewUnits(config *config.Config, parent *systray.MenuItem) Units {
-	item := Units{config: config}
-	item.MenuItem = parent.AddSubMenuItem("Units", "")
-	return item
+	return Units{
+		config:   config,
+		MenuItem: parent.AddSubMenuItem("Units", ""),
+	}
 }
 
 type Units struct {

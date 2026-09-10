@@ -116,6 +116,8 @@ linters:
               desc: Use log/slog instead, see https://go.dev/blog/slog
     errcheck:
       check-type-assertions: true
+    goconst:
+      ignore-tests: true
     gocritic:
       settings:
         captLocal:

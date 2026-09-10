@@ -32,7 +32,7 @@ func TestFetch_Do(t *testing.T) {
 			return
 		}
 
-		w.Header().Set("Etag", etag)
+		w.Header().Set("ETag", etag)
 		_, _ = w.Write(testproperties.JSON)
 	}))
 	t.Cleanup(server.Close)

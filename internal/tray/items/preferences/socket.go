@@ -6,13 +6,14 @@ import (
 )
 
 func NewSocket(conf *config.Config, parent *systray.MenuItem) Socket {
-	item := Socket{config: conf}
-	item.MenuItem = parent.AddSubMenuItemCheckbox(
-		"Expose readings over local socket",
-		"",
-		conf.Data().Socket.Enabled,
-	)
-	return item
+	return Socket{
+		config: conf,
+		MenuItem: parent.AddSubMenuItemCheckbox(
+			"Expose readings over local socket",
+			"",
+			conf.Data().Socket.Enabled,
+		),
+	}
 }
 
 type Socket struct {

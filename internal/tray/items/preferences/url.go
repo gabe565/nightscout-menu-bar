@@ -9,9 +9,10 @@ import (
 )
 
 func NewURL(conf *config.Config, parent *systray.MenuItem) URL {
-	item := URL{config: conf}
-	item.MenuItem = parent.AddSubMenuItem("Nightscout URL", "")
-	return item
+	return URL{
+		config:   conf,
+		MenuItem: parent.AddSubMenuItem("Nightscout URL", ""),
+	}
 }
 
 type URL struct {
