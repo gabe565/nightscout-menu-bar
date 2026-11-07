@@ -14,6 +14,7 @@ import (
 	"gabe565.com/nightscout-menu-bar/internal/config"
 	"gabe565.com/nightscout-menu-bar/internal/dynamicicon"
 	"gabe565.com/nightscout-menu-bar/internal/fetch"
+	"gabe565.com/nightscout-menu-bar/internal/oauth"
 	"gabe565.com/nightscout-menu-bar/internal/ticker"
 	"gabe565.com/nightscout-menu-bar/internal/tray/items"
 	"gabe565.com/nightscout-menu-bar/internal/tray/messages"
@@ -36,7 +37,12 @@ func New(version string) *Tray {
 		t.displayError(err)
 	}
 
-	t.ticker = ticker.New(t.config, t.bus)
+	t.oauth = oauth.NewStore(t.config)
+	if err := t.oauth.Load(); err != nil {
+		t.displayError(err)
+	}
+
+	t.ticker = ticker.New(t.config, t.oauth, t.bus)
 
 	if t.config.Data().DynamicIcon.Enabled {
 		t.dynamicIcon = dynamicicon.New(t.config)
@@ -50,6 +56,7 @@ func New(version string) *Tray {
 
 type Tray struct {
 	config      *config.Config
+	oauth       *oauth.Store
 	ticker      *ticker.Ticker
 	dynamicIcon *dynamicicon.DynamicIcon
 	bus         chan any
@@ -76,7 +83,7 @@ func (t *Tray) onReady(ctx context.Context) func() {
 		}
 		systray.SetTooltip(t.config.Data().Title)
 
-		t.items = items.New(t.config)
+		t.items = items.New(t.config, t.oauth)
 
 		for {
 			select {
@@ -107,6 +114,13 @@ func (t *Tray) onReady(ctx context.Context) func() {
 					if err := t.items.Preferences.Token.Prompt(); err != nil {
 						t.displayError(err)
 					}
+				}()
+			case <-t.items.Preferences.Nocturne.ClickedCh:
+				go func() {
+					if err := t.items.Preferences.Nocturne.Toggle(ctx); err != nil {
+						t.displayError(err)
+					}
+					t.ticker.Reload()
 				}()
 			case <-t.items.Preferences.Units.ClickedCh:
 				go func() {
@@ -193,6 +207,7 @@ func (t *Tray) onReady(ctx context.Context) func() {
 					t.items.Error.SetTitle(msg.Error())
 					t.items.Error.Show()
 				case messages.ReloadConfigMsg:
+					t.items.Preferences.Nocturne.UpdateTitle()
 					if t.config.Data().DynamicIcon.Enabled {
 						t.dynamicIcon = dynamicicon.New(t.config)
 					} else if t.dynamicIcon != nil {

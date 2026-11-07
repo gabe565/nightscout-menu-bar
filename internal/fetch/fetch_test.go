@@ -3,13 +3,18 @@ package fetch
 import (
 	"context"
 	_ "embed"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"testing"
+	"time"
 
 	"gabe565.com/nightscout-menu-bar/internal/config"
 	"gabe565.com/nightscout-menu-bar/internal/nightscout"
 	"gabe565.com/nightscout-menu-bar/internal/nightscout/testproperties"
+	"gabe565.com/nightscout-menu-bar/internal/oauth"
 	"github.com/hhsnopek/etag"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -17,7 +22,7 @@ import (
 
 func TestNewFetch(t *testing.T) {
 	t.Parallel()
-	fetch := NewFetch(config.New())
+	fetch := NewFetch(config.New(), nil)
 	require.NotNil(t, fetch)
 	assert.NotNil(t, fetch.config)
 }
@@ -93,7 +98,7 @@ func TestFetch_Do(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			f := NewFetch(tt.fields.config)
+			f := NewFetch(tt.fields.config, nil)
 			f.url = tt.fields.url
 			f.tokenChecksum = tt.fields.tokenChecksum
 			f.etag = tt.fields.etag
@@ -104,4 +109,36 @@ func TestFetch_Do(t *testing.T) {
 			assert.Equal(t, tt.wantEtag, f.etag)
 		})
 	}
+}
+
+func TestFetch_Do_OAuth(t *testing.T) {
+	t.Parallel()
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Header.Get("Authorization") != "Bearer access-1" || r.Header.Get("Api-Secret") != "" {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		_, _ = w.Write(testproperties.JSON)
+	}))
+	t.Cleanup(server.Close)
+
+	dir := t.TempDir()
+	creds, err := json.Marshal(oauth.Credentials{
+		URL:          server.URL,
+		ClientID:     "client-1",
+		AccessToken:  "access-1",
+		RefreshToken: "refresh-1",
+		Expiry:       time.Now().Add(time.Hour),
+	})
+	require.NoError(t, err)
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "oauth.json"), creds, 0o600))
+
+	conf := config.New(config.WithData(config.Data{URL: server.URL, Token: "ignored-when-connected"}))
+	conf.File = filepath.Join(dir, "config.toml")
+	store := oauth.NewStore(conf)
+	require.NoError(t, store.Load())
+
+	got, err := NewFetch(conf, store).Do(t.Context())
+	require.NoError(t, err)
+	assert.Equal(t, testproperties.Properties, got)
 }

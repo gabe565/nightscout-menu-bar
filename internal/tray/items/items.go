@@ -3,6 +3,7 @@ package items
 import (
 	"fyne.io/systray"
 	"gabe565.com/nightscout-menu-bar/internal/config"
+	"gabe565.com/nightscout-menu-bar/internal/oauth"
 	"gabe565.com/nightscout-menu-bar/internal/tray/items/preferences"
 )
 
@@ -16,7 +17,7 @@ type Items struct {
 	Quit           *systray.MenuItem
 }
 
-func New(conf *config.Config) Items {
+func New(conf *config.Config, store *oauth.Store) Items {
 	var items Items
 
 	items.LastReading = NewLastReading()
@@ -27,7 +28,7 @@ func New(conf *config.Config) Items {
 	items.OpenNightscout = NewOpenNightscout(conf.Data().Title)
 	systray.AddSeparator()
 
-	items.Preferences = preferences.New(conf)
+	items.Preferences = preferences.New(conf, store)
 	systray.AddSeparator()
 
 	items.About = NewAbout(conf.Version)

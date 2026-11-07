@@ -5,14 +5,17 @@ import (
 	"gabe565.com/nightscout-menu-bar/internal/assets"
 	"gabe565.com/nightscout-menu-bar/internal/autostart"
 	"gabe565.com/nightscout-menu-bar/internal/config"
+	"gabe565.com/nightscout-menu-bar/internal/oauth"
 )
 
-func New(conf *config.Config) Preferences {
+func New(conf *config.Config, store *oauth.Store) Preferences {
 	item := systray.AddMenuItem("Preferences", "")
 	item.SetTemplateIcon(assets.Preferences, assets.Preferences)
 
 	url := NewURL(conf, item)
-	token := NewToken(conf, item)
+	authMenu := item.AddSubMenuItem("Authentication", "")
+	token := NewToken(conf, authMenu)
+	nocturne := NewNocturne(conf, store, authMenu)
 	units := NewUnits(conf, item)
 	item.AddSeparator()
 
@@ -35,6 +38,7 @@ func New(conf *config.Config) Preferences {
 		MenuItem:         item,
 		URL:              url,
 		Token:            token,
+		Nocturne:         nocturne,
 		Units:            units,
 		DynamicIcon:      dynamicIcon,
 		DynamicIconColor: dynamicIconColor,
@@ -47,6 +51,7 @@ type Preferences struct {
 	*systray.MenuItem
 	URL              URL
 	Token            Token
+	Nocturne         *Nocturne
 	Units            Units
 	DynamicIcon      DynamicIcon
 	DynamicIconColor DynamicIconColor

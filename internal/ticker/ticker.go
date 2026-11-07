@@ -7,13 +7,14 @@ import (
 
 	"gabe565.com/nightscout-menu-bar/internal/config"
 	"gabe565.com/nightscout-menu-bar/internal/fetch"
+	"gabe565.com/nightscout-menu-bar/internal/oauth"
 	"gabe565.com/nightscout-menu-bar/internal/socket"
 )
 
-func New(conf *config.Config, updateCh chan<- any) *Ticker {
+func New(conf *config.Config, store *oauth.Store, updateCh chan<- any) *Ticker {
 	t := &Ticker{
 		config: conf,
-		fetch:  fetch.NewFetch(conf),
+		fetch:  fetch.NewFetch(conf, store),
 		socket: socket.New(conf),
 		bus:    updateCh,
 	}
@@ -39,6 +40,10 @@ func (t *Ticker) Start(ctx context.Context) {
 	renderCh := t.beginRender(ctx)
 	t.beginFetch(ctx, renderCh)
 	t.beginSleepNotifier(ctx)
+}
+
+func (t *Ticker) Reload() {
+	t.reloadConfig()
 }
 
 func (t *Ticker) reloadConfig() {

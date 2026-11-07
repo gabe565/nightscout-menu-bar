@@ -11,7 +11,7 @@ import (
 func NewToken(config *config.Config, parent *systray.MenuItem) Token {
 	return Token{
 		config:   config,
-		MenuItem: parent.AddSubMenuItem("API Token", ""),
+		MenuItem: parent.AddSubMenuItem("API Token…", ""),
 	}
 }
 

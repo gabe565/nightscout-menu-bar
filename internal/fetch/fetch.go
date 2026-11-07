@@ -17,6 +17,7 @@ import (
 
 	"gabe565.com/nightscout-menu-bar/internal/config"
 	"gabe565.com/nightscout-menu-bar/internal/nightscout"
+	"gabe565.com/nightscout-menu-bar/internal/oauth"
 	"gabe565.com/nightscout-menu-bar/internal/util"
 )
 
@@ -26,9 +27,10 @@ var (
 	ErrNoURL       = errors.New("please configure your Nightscout URL")
 )
 
-func NewFetch(conf *config.Config) *Fetch {
+func NewFetch(conf *config.Config, store *oauth.Store) *Fetch {
 	return &Fetch{
 		config: conf,
+		oauth:  store,
 		client: &http.Client{
 			Transport: util.NewUserAgentTransport("nightscout-menu-bar", conf.Version),
 			Timeout:   time.Minute,
@@ -39,6 +41,7 @@ func NewFetch(conf *config.Config) *Fetch {
 type Fetch struct {
 	mu            sync.Mutex
 	config        *config.Config
+	oauth         *oauth.Store
 	client        *http.Client
 	url           string
 	tokenChecksum string
@@ -66,13 +69,21 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 		req.Header.Set("If-None-Match", f.etag)
 	}
 
-	if f.tokenChecksum != "" {
+	useOAuth := f.oauth.Connected(f.config.Data().URL)
+	if useOAuth {
+		token, err := f.oauth.Token(ctx)
+		if err != nil {
+			return nil, err
+		}
+		req.Header.Set("Authorization", "Bearer "+token)
+	} else if f.tokenChecksum != "" {
 		req.Header.Set("Api-Secret", f.tokenChecksum)
 	}
 
 	slog.Debug("Fetching data",
 		"etag", f.etag != "",
 		"secret", f.tokenChecksum != "",
+		"oauth", useOAuth,
 	)
 
 	resp, err := f.client.Do(req)
@@ -99,6 +110,12 @@ func (f *Fetch) Do(ctx context.Context) (*nightscout.Properties, error) {
 
 		f.etag = resp.Header.Get("ETag")
 		return &properties, nil
+	case http.StatusUnauthorized, http.StatusForbidden:
+		f.etag = ""
+		if useOAuth {
+			return nil, fmt.Errorf("%w: %d (try reconnecting to Nocturne in Preferences)", ErrHTTP, resp.StatusCode)
+		}
+		return nil, fmt.Errorf("%w: %d", ErrHTTP, resp.StatusCode)
 	default:
 		f.etag = ""
 		return nil, fmt.Errorf("%w: %d", ErrHTTP, resp.StatusCode)

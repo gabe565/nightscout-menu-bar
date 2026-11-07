@@ -31,7 +31,9 @@ After launching Nightscout Menu Bar, you will need to open its tray menu, then h
 
 The preferences menu contains the following options:
 - Nightscout URL (required)
-- API Token
+- Authentication
+  - API Token
+  - Connect to Nocturne: links the app via Nocturne's Connected Apps. A code is shown and your browser opens to approve it; no token needs to be copied. When connected, this takes precedence over the API token.
 - Units: mg/dL or mmol/L
 - Start on login
 - Write to a local file (see [`contrib/powerlevel10k`](contrib/powerlevel10k))
