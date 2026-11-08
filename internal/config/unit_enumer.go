@@ -31,9 +31,12 @@ func _UnitNoOp() {
 var _UnitValues = []Unit{UnitMgdl, UnitMmol}
 
 var _UnitNameToValueMap = map[string]Unit{
-	_UnitName[0:5]:       UnitMgdl,
+	_UnitName[0:5]:  UnitMgdl,
+	_UnitName[5:11]: UnitMmol,
+}
+
+var _UnitLowerNameToValueMap = map[string]Unit{
 	_UnitLowerName[0:5]:  UnitMgdl,
-	_UnitName[5:11]:      UnitMmol,
 	_UnitLowerName[5:11]: UnitMmol,
 }
 
@@ -49,7 +52,7 @@ func UnitString(s string) (Unit, error) {
 		return val, nil
 	}
 
-	if val, ok := _UnitNameToValueMap[strings.ToLower(s)]; ok {
+	if val, ok := _UnitLowerNameToValueMap[strings.ToLower(s)]; ok {
 		return val, nil
 	}
 	return 0, fmt.Errorf("%s does not belong to Unit values", s)
