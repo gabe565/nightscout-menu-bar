@@ -10,7 +10,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/emersion/go-autostart v0.0.0-20250403115856-34830d6457d2
 	github.com/flopp/go-findfont v0.1.0
-	github.com/fsnotify/fsnotify v1.9.0
+	github.com/fsnotify/fsnotify v1.10.1
 	github.com/hhsnopek/etag v0.0.0-20171206181245-aea95f647346
 	github.com/knadh/koanf/providers/file v1.2.1
 	github.com/knadh/koanf/providers/rawbytes v1.0.1
