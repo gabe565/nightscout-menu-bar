@@ -9,12 +9,16 @@ type Duration struct {
 	time.Duration
 }
 
-func (d Duration) MarshalText() ([]byte, error) {
-	s := d.String()
+func (d Duration) String() string {
+	s := d.Duration.String()
 	if before, found := strings.CutSuffix(s, "m0s"); found {
 		s = before + "m"
 	}
-	return []byte(s), nil
+	return s
+}
+
+func (d Duration) MarshalText() ([]byte, error) {
+	return []byte(d.String()), nil
 }
 
 func (d *Duration) UnmarshalText(text []byte) error {
