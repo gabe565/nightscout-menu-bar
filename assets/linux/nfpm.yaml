@@ -26,12 +26,15 @@ depends:
   - libgtk-4-1 (>= 4.14)
   - libwebkitgtk-6.0-4
   - libx11-6
-recommends:
-  - gnome-shell-extension-appindicator
 
 overrides:
+  deb:
+    suggests:
+      - gnome-shell-extension-appindicator
   rpm:
     depends:
       - gtk4 >= 4.14
       - webkitgtk6.0
       - libX11
+    recommends:
+      - (gnome-shell-extension-appindicator if gnome-shell)
