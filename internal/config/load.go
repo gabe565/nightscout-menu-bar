@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"image/color"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -13,6 +14,7 @@ import (
 	"time"
 
 	"gabe565.com/nightscout-menu-bar/internal/secret"
+	"gabe565.com/utils/colorx"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/providers/rawbytes"
 	"github.com/knadh/koanf/providers/structs"
@@ -199,6 +201,12 @@ func (conf *Config) reload() {
 	}
 }
 
+func sameColor(a, b color.Color) bool {
+	ar, ag, ab, aa := a.RGBA()
+	br, bg, bb, ba := b.RGBA()
+	return ar == br && ag == bg && ab == bb && aa == ba
+}
+
 func (conf *Config) saveToken(token string) error {
 	if conf.Secrets == nil {
 		return nil
@@ -235,6 +243,16 @@ func migrateConfig(k *koanf.Koanf) error {
 	if k.Exists("interval") {
 		slog.Info("Migrating config: interval to advanced.fallback-interval")
 		if err := k.Set("advanced.fallback-interval", k.Get("interval")); err != nil {
+			return err
+		}
+	}
+
+	// Configs from before auto-color keep a custom font color
+	if k.Exists("dynamic-icon.font-color") && !k.Exists("dynamic-icon.auto-color") {
+		c, err := colorx.ParseHex(k.String("dynamic-icon.font-color"))
+		isDefault := err == nil && sameColor(c, New().Data().DynamicIcon.FontColor)
+		slog.Info("Migrating config: dynamic-icon.auto-color", "value", isDefault)
+		if err := k.Set("dynamic-icon.auto-color", isDefault); err != nil {
 			return err
 		}
 	}

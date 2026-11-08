@@ -46,6 +46,13 @@ func (t *Ticker) Reload() {
 	t.reloadConfig()
 }
 
+// Rerender redraws the last reading without fetching.
+func (t *Ticker) Rerender() {
+	if t.renderTicker != nil {
+		t.renderTicker.Reset(time.Millisecond)
+	}
+}
+
 func (t *Ticker) reloadConfig() {
 	if t.renderTicker != nil {
 		t.renderTicker.Reset(time.Millisecond)

@@ -16,6 +16,7 @@ import (
 	"gabe565.com/nightscout-menu-bar/internal/dynamicicon"
 	"gabe565.com/nightscout-menu-bar/internal/fetch"
 	"gabe565.com/nightscout-menu-bar/internal/oauth"
+	"gabe565.com/nightscout-menu-bar/internal/systheme"
 	"gabe565.com/nightscout-menu-bar/internal/ticker"
 	"gabe565.com/nightscout-menu-bar/internal/tray/items"
 	"gabe565.com/nightscout-menu-bar/internal/tray/messages"
@@ -80,6 +81,9 @@ func (t *Tray) Run(ctx context.Context) {
 	if err := t.config.WatchSecrets(ctx); err != nil {
 		t.displayError(err)
 	}
+	if err := systheme.Watch(ctx, func() { t.bus <- messages.ThemeChangedMsg{} }); err != nil {
+		t.displayError(err)
+	}
 	if err := t.oauth.Watch(ctx, t.ticker.Reload); err != nil {
 		t.displayError(err)
 	}
@@ -95,6 +99,7 @@ func (t *Tray) onReady(ctx context.Context) func() {
 		systray.SetTooltip(t.config.Data().Title)
 
 		t.items = items.New(t.config)
+		t.items.UpdateIcons()
 		go t.eventLoop(ctx)
 	}
 }
@@ -148,7 +153,7 @@ func (t *Tray) eventLoop(ctx context.Context) {
 				} else {
 					if icon, err := t.dynamicIcon.Generate(msg.Properties); err == nil {
 						systray.SetTitle("")
-						if t.config.Data().DynamicIcon.FontColor.Color == color.White {
+						if dynamicicon.Color(t.config.Data()) == color.White {
 							systray.SetTemplateIcon(icon, icon)
 						} else {
 							systray.SetIcon(icon)
@@ -175,6 +180,9 @@ func (t *Tray) eventLoop(ctx context.Context) {
 				slog.Error("Displaying error", "error", msg)
 				t.items.Error.SetTitle(msg.Error())
 				t.items.Error.Show()
+			case messages.ThemeChangedMsg:
+				t.items.UpdateIcons()
+				t.ticker.Rerender()
 			case messages.ReloadConfigMsg:
 				if t.config.Data().DynamicIcon.Enabled {
 					t.dynamicIcon = dynamicicon.New(t.config)

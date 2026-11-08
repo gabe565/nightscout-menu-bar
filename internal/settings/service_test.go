@@ -14,6 +14,8 @@ import (
 	"gabe565.com/nightscout-menu-bar/internal/nightscout/testproperties"
 	"gabe565.com/nightscout-menu-bar/internal/oauth"
 	"gabe565.com/nightscout-menu-bar/internal/secret"
+	"gabe565.com/nightscout-menu-bar/internal/systheme"
+	"gabe565.com/utils/colorx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/image/font/sfnt"
@@ -266,4 +268,19 @@ func TestService_ServeFont(t *testing.T) {
 
 	assert.Equal(t, http.StatusBadRequest, serve("/etc/passwd.txt").Code)
 	assert.Equal(t, http.StatusNotFound, serve("does-not-exist.ttf").Code)
+}
+
+func TestService_PreviewAutoColor(t *testing.T) {
+	t.Parallel()
+	s, _ := newTestService(t)
+	settings := s.Load()
+	settings.DynamicIcon = true
+	settings.FontColor = "#ff0000"
+
+	settings.AutoColor = false
+	assert.Equal(t, "#ff0000", s.Preview(settings).IconColor)
+
+	settings.AutoColor = true
+	want := hexColor(colorx.Hex{Color: systheme.IconColor()})
+	assert.Equal(t, want, s.Preview(settings).IconColor)
 }

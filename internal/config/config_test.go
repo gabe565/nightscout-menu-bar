@@ -144,3 +144,36 @@ func TestConfig_Token(t *testing.T) {
 	_, err = conf.Secrets.Get(TokenKey)
 	require.ErrorIs(t, err, secret.ErrNotFound)
 }
+
+func TestConfig_MigrateAutoColor(t *testing.T) {
+	t.Parallel()
+	fontColor := New().Data().DynamicIcon.FontColor
+	defaultColor, err := fontColor.MarshalText()
+	require.NoError(t, err)
+
+	tests := []struct {
+		name string
+		file string
+		want bool
+	}{
+		{"new config", "", true},
+		{"default color", "[dynamic-icon]\nfont-color = '" + string(defaultColor) + "'\n", true},
+		{"custom color", "[dynamic-icon]\nfont-color = '#f00'\n", false},
+		{"explicit", "[dynamic-icon]\nfont-color = '#f00'\nauto-color = true\n", true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			dir := t.TempDir()
+			path := filepath.Join(dir, "config.toml")
+			if tt.file != "" {
+				require.NoError(t, os.WriteFile(path, []byte(tt.file), 0o600))
+			}
+			conf := New()
+			conf.File = path
+			conf.Secrets = secret.NewWithBackend(dir, &secret.Memory{})
+			require.NoError(t, conf.Load())
+			assert.Equal(t, tt.want, conf.Data().DynamicIcon.AutoColor)
+		})
+	}
+}

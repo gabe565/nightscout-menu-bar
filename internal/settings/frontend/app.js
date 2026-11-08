@@ -137,7 +137,8 @@ function syncDisabled() {
   $("dynamic-icon-options").disabled = !$("dynamicIcon").checked;
   if (!$("dynamicIcon").checked) fontPicker.close();
   $("socket-options").disabled = !$("socket").checked;
-  $("fontColor-hex").textContent = $("fontColor").value;
+  $("fontColor").disabled = $("autoColor").checked;
+  $("fontColor-hex").textContent = $("autoColor").checked ? "" : $("fontColor").value;
 }
 
 // Connection test
@@ -184,7 +185,7 @@ async function updatePreview() {
   bar.classList.remove("on-dark", "on-light");
   if (preview.icon) {
     // Use a background the icon color is visible on
-    bar.classList.add(isLight(settings.fontColor) ? "on-dark" : "on-light");
+    bar.classList.add(isLight(preview.iconColor) ? "on-dark" : "on-light");
     icon.src = preview.icon;
     icon.hidden = false;
     text.hidden = true;

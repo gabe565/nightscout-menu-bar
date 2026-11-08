@@ -4,6 +4,8 @@ import "gabe565.com/nightscout-menu-bar/internal/nightscout"
 
 type ReloadConfigMsg struct{}
 
+type ThemeChangedMsg struct{}
+
 type RenderType uint8
 
 const (

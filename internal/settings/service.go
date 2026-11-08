@@ -56,6 +56,7 @@ type Settings struct {
 	StaleThreshold string `json:"staleThreshold"`
 
 	DynamicIcon bool    `json:"dynamicIcon"`
+	AutoColor   bool    `json:"autoColor"`
 	FontColor   string  `json:"fontColor"`
 	FontFile    string  `json:"fontFile"`
 	MaxFontSize float64 `json:"maxFontSize"`
@@ -77,11 +78,12 @@ type Options struct {
 }
 
 type Preview struct {
-	Text  string `json:"text"`
-	Stale bool   `json:"stale"`
-	Icon  string `json:"icon,omitempty"`
-	Error string `json:"error,omitempty"`
-	Live  bool   `json:"live"`
+	Text      string `json:"text"`
+	Stale     bool   `json:"stale"`
+	Icon      string `json:"icon,omitempty"`
+	IconColor string `json:"iconColor,omitempty"`
+	Error     string `json:"error,omitempty"`
+	Live      bool   `json:"live"`
 }
 
 type NocturneCode struct {
@@ -142,6 +144,7 @@ func (s *Service) Load() Settings {
 		StaleThreshold: formatDuration(data.LastReading.StaleThreshold),
 
 		DynamicIcon: data.DynamicIcon.Enabled,
+		AutoColor:   data.DynamicIcon.AutoColor,
 		FontColor:   hexColor(data.DynamicIcon.FontColor),
 		FontFile:    data.DynamicIcon.FontFile,
 		MaxFontSize: data.DynamicIcon.MaxFontSize,
@@ -191,6 +194,7 @@ func (s *Service) toData(settings Settings) (config.Data, error) {
 	data.LastReading.HideTimeAgo = !settings.ShowTimeAgo
 
 	data.DynamicIcon.Enabled = settings.DynamicIcon
+	data.DynamicIcon.AutoColor = settings.AutoColor
 	if settings.FontColor != "" {
 		if err := data.DynamicIcon.FontColor.UnmarshalText([]byte(settings.FontColor)); err != nil {
 			return data, fmt.Errorf("font color: %w", err)
@@ -280,6 +284,7 @@ func (s *Service) Preview(settings Settings) Preview {
 			return p
 		}
 		p.Icon = "data:image/png;base64," + base64.StdEncoding.EncodeToString(buf.Bytes())
+		p.IconColor = hexColor(colorx.Hex{Color: dynamicicon.Color(data)})
 	}
 	return p
 }

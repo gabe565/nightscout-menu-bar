@@ -16,6 +16,7 @@ import (
 
 	"gabe565.com/nightscout-menu-bar/internal/config"
 	"gabe565.com/nightscout-menu-bar/internal/nightscout"
+	"gabe565.com/nightscout-menu-bar/internal/systheme"
 	"gabe565.com/nightscout-menu-bar/internal/util"
 	"gabe565.com/utils/bytefmt"
 	"github.com/flopp/go-findfont"
@@ -64,6 +65,14 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 		"size", bytefmt.Encode(int64(buf.Len())),
 	)
 	return slices.Clip(buf.Bytes()), nil
+}
+
+// Color is the icon's text color, which can contrast with the taskbar or menu bar.
+func Color(data config.Data) color.Color {
+	if data.DynamicIcon.AutoColor {
+		return systheme.IconColor()
+	}
+	return data.DynamicIcon.FontColor
 }
 
 // LoadFont reads a font by path, path relative to the config directory, or the
@@ -127,7 +136,7 @@ func (d *DynamicIcon) Render(p *nightscout.Properties) (*image.RGBA, error) {
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 	drawer := &font.Drawer{
 		Dst: img,
-		Src: image.NewUniform(data.DynamicIcon.FontColor),
+		Src: image.NewUniform(Color(data)),
 	}
 
 	fontSize := data.DynamicIcon.MaxFontSize * 2

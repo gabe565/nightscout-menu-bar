@@ -50,6 +50,7 @@ type Data struct {
 
 type DynamicIcon struct {
 	Enabled     bool       `toml:"enabled"`
+	AutoColor   bool       `toml:"auto-color"    comment:"Use black or white to contrast with the taskbar or menu bar, instead of font-color."`
 	FontColor   colorx.Hex `toml:"font-color"    comment:"Hex code used to render text."`
 	FontFile    string     `toml:"font-file"     comment:"Font path or filename of a system font. If left blank, an embedded font will be used."`
 	MaxFontSize float64    `toml:"max-font-size" comment:"Maximum font size in points."`

@@ -22,6 +22,7 @@ func New(opts ...Option) *Config {
 		},
 		DynamicIcon: DynamicIcon{
 			Enabled:     true,
+			AutoColor:   true,
 			FontColor:   colorx.Hex{Color: color.White},
 			MaxFontSize: 40,
 		},

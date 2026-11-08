@@ -7,7 +7,7 @@ import (
 
 type Items struct {
 	LastReading    *systray.MenuItem
-	Error          *systray.MenuItem
+	Error          *Error
 	History        History
 	OpenNightscout *systray.MenuItem
 	Settings       *systray.MenuItem

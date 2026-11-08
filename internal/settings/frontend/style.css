@@ -133,7 +133,7 @@ fieldset:disabled { opacity: 0.45; }
 .or::before, .or::after { content: ""; flex: 1; border-top: 1px solid var(--separator); }
 .or + .row { border-top: 0; }
 .checks { display: flex; flex-wrap: wrap; gap: 4px 14px; }
-.checks label { display: inline-flex; align-items: center; gap: 4px; }
+.checks label, label.inline { display: inline-flex; align-items: center; gap: 4px; }
 .hint { font-size: 11px; color: var(--secondary); }
 .note { font-size: 11px; color: var(--secondary); margin: 6px 2px 0; }
 .status { font-size: 11px; margin: 0 10px 8px; overflow-wrap: anywhere; }
