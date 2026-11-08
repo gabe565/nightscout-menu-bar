@@ -24,8 +24,6 @@ func New(conf *config.Config) Items {
 	systray.AddSeparator()
 
 	items.OpenNightscout = NewOpenNightscout(conf.Data().Title)
-	systray.AddSeparator()
-
 	items.Settings = NewSettings()
 	systray.AddSeparator()
 
