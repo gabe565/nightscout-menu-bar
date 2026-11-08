@@ -9,9 +9,9 @@ Adds a custom segment to the [Powerlevel10k](https://github.com/romkatv/powerlev
 ### Prerequisites
 
 #### Enable local socket
-1. Open the nightscout-menu-bar menu.
-2. Hover over "Preferences".
-3. Check "Expose readings over local socket".[^1]
+1. Open the nightscout-menu-bar menu and choose "Settings…".
+2. Open the "General" tab.
+3. Turn on "Expose readings over a local socket", then click "Save".[^1]
 
 ### Install the Powerlevel10k segment
 

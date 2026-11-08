@@ -39,13 +39,6 @@ The settings window runs in a separate process, so its memory is released when i
 
 Tokens are stored in the system keyring: Keychain on macOS, Credential Manager on Windows, or the Secret Service on Linux.
 
-Additional configuration is available in a configuration file, which can be found in the following locations:
-- **Windows:** `%AppData%\nightscout-menu-bar\config.toml`
-- **macOS:** `~/Library/Application Support/nightscout-menu-bar/config.toml`
-- **Linux:** `~/.config/nightscout-menu-bar/config.toml`
-
-An example configuration is available at [`config_example.toml`](config_example.toml).
-
 ## Contrib
 
 Integrations with external tools are available in the [contrib](contrib) directory.
