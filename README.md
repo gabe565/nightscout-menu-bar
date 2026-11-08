@@ -13,11 +13,75 @@ Works on Windows, MacOS, and Linux.
 
 ## Install
 
-### Brew (macOS and Linux)
+### Homebrew (macOS, Linux)
 
+<details>
+  <summary>Click to expand</summary>
+
+Install Nightscout Menu Bar from [gabe565/homebrew-tap](https://github.com/gabe565/homebrew-tap):
 ```shell
 brew install gabe565/tap/nightscout-menu-bar
 ```
+</details>
+
+### APT (Ubuntu, Debian)
+
+<details>
+  <summary>Click to expand</summary>
+
+1. If you don't have it already, install the `ca-certificates` package
+   ```shell
+   sudo apt install ca-certificates
+   ```
+
+2. Add gabe565 apt repository
+   ```
+   echo 'deb [trusted=yes] https://apt.gabe565.com /' | sudo tee /etc/apt/sources.list.d/gabe565.list
+   ```
+
+3. Update apt repositories
+   ```shell
+   sudo apt update
+   ```
+
+4. Install nightscout-menu-bar
+   ```shell
+   sudo apt install nightscout-menu-bar
+   ```
+</details>
+
+### RPM (Fedora, RHEL)
+
+<details>
+  <summary>Click to expand</summary>
+
+1. If you don't have it already, install the `ca-certificates` package
+   ```shell
+   sudo dnf install ca-certificates
+   ```
+
+2. Add gabe565 rpm repository to `/etc/yum.repos.d/gabe565.repo`
+   ```ini
+   [gabe565]
+   name=gabe565
+   baseurl=https://rpm.gabe565.com
+   enabled=1
+   gpgcheck=0
+   ```
+
+3. Install nightscout-menu-bar
+   ```shell
+   sudo dnf install nightscout-menu-bar
+   ```
+</details>
+
+### AUR (Arch Linux)
+
+<details>
+  <summary>Click to expand</summary>
+
+Install [nightscout-menu-bar-bin](https://aur.archlinux.org/packages/nightscout-menu-bar-bin) with your [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) of choice.
+</details>
 
 ### Binary
 
@@ -25,7 +89,7 @@ Automated builds are uploaded during the release process. See the [latest releas
 
 ### Linux requirements
 
-Linux builds need GTK 4.14+ and WebKitGTK 6.0, which are available on Ubuntu 24.04, Debian 13, Fedora 40, and newer:
+The packages above install these automatically. Linux builds need GTK 4.14+ and WebKitGTK 6.0, which are available on Ubuntu 24.04, Debian 13, Fedora 40, and newer:
 
 - **Debian/Ubuntu:** `sudo apt install libgtk-4-1 libwebkitgtk-6.0-4`
 - **Fedora:** `sudo dnf install gtk4 webkitgtk6.0`
