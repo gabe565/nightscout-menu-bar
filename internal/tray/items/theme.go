@@ -23,6 +23,10 @@ func (i Items) UpdateIcons() {
 	i.History.SetIcon(pick(assets.History, assets.HistoryWhite))
 	i.OpenNightscout.SetIcon(pick(assets.Open, assets.OpenWhite))
 	i.Settings.SetIcon(pick(assets.Preferences, assets.PreferencesWhite))
+	i.Update.SetIcon(pick(assets.Update, assets.UpdateWhite))
+	if !i.Update.visible {
+		i.Update.MenuItem.Hide()
+	}
 	i.About.SetIcon(pick(assets.About, assets.AboutWhite))
 	i.Quit.SetIcon(pick(assets.Quit, assets.QuitWhite))
 }

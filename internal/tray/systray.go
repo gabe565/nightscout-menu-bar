@@ -29,6 +29,7 @@ func New(version string) *Tray {
 	t := &Tray{
 		config:       config.New(config.WithVersion(version)),
 		bus:          make(chan any, 1),
+		checkUpdate:  make(chan struct{}, 1),
 		settingsCmds: make(map[*exec.Cmd]struct{}),
 	}
 	if err := t.config.Flags.Parse(os.Args[1:]); err != nil {
@@ -65,6 +66,8 @@ type Tray struct {
 	bus         chan any
 	items       items.Items
 
+	checkUpdate chan struct{}
+
 	settingsMu   sync.Mutex
 	settingsCmds map[*exec.Cmd]struct{}
 }
@@ -76,6 +79,7 @@ func (t *Tray) Run(ctx context.Context) {
 	}()
 	t.ticker.Start(ctx)
 	t.checkTrayHost(ctx)
+	go t.checkUpdates(ctx)
 	if err := t.config.Watch(ctx); err != nil {
 		t.displayError(err)
 	}
@@ -123,6 +127,10 @@ func (t *Tray) eventLoop(ctx context.Context) {
 			}
 		case <-t.items.Settings.ClickedCh:
 			if err := t.openSettings(ctx); err != nil {
+				t.displayError(err)
+			}
+		case <-t.items.Update.ClickedCh:
+			if err := open.Run(t.items.Update.URL); err != nil {
 				t.displayError(err)
 			}
 		case <-t.items.About.ClickedCh:
@@ -181,10 +189,20 @@ func (t *Tray) eventLoop(ctx context.Context) {
 				slog.Error("Displaying error", "error", msg)
 				t.items.Error.SetTitle(msg.Error())
 				t.items.Error.Show()
+			case messages.UpdateAvailableMsg:
+				t.items.Update.Show(msg.Release)
 			case messages.ThemeChangedMsg:
 				t.items.UpdateIcons()
 				t.ticker.Rerender()
 			case messages.ReloadConfigMsg:
+				if t.config.Data().Updates.Check {
+					select {
+					case t.checkUpdate <- struct{}{}:
+					default:
+					}
+				} else {
+					t.items.Update.Hide()
+				}
 				if t.config.Data().DynamicIcon.Enabled {
 					t.dynamicIcon = dynamicicon.New(t.config)
 				} else if t.dynamicIcon != nil {

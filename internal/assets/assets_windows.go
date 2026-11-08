@@ -26,6 +26,9 @@ var Quit []byte
 //go:embed dist/reading.ico
 var Reading []byte
 
+//go:embed dist/update.ico
+var Update []byte
+
 // White variants
 
 //go:embed dist/about-white.ico
@@ -48,3 +51,6 @@ var QuitWhite []byte
 
 //go:embed dist/reading-white.ico
 var ReadingWhite []byte
+
+//go:embed dist/update-white.ico
+var UpdateWhite []byte

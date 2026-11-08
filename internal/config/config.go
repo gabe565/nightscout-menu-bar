@@ -41,6 +41,7 @@ type Data struct {
 	DynamicIcon DynamicIcon `toml:"dynamic-icon" comment:"Makes the tray icon show the current blood sugar reading."`
 	Arrows      Arrows      `toml:"arrows"       comment:"Customize the arrows."`
 	Socket      Socket      `toml:"socket"       comment:"Exposes the latest reading to other applications over a local socket."`
+	Updates     Updates     `toml:"updates"      comment:"Check GitHub for new releases."`
 	Log         Log         `toml:"log"          comment:"Log configuration"`
 	Advanced    Advanced    `toml:"advanced"     comment:"Advanced settings."`
 
@@ -78,6 +79,10 @@ type Socket struct {
 	Enabled bool   `toml:"enabled"`
 	Format  string `toml:"format"  comment:"Local file format. (one of: csv)"`
 	Path    string `toml:"path"    comment:"File path. $TMPDIR will be replaced with the current temp directory."`
+}
+
+type Updates struct {
+	Check bool `toml:"check"`
 }
 
 type Log struct {

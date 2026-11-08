@@ -43,6 +43,7 @@ func TestService_Save(t *testing.T) {
 	settings.ShowDelta = false
 	settings.FetchDelay = "1m"
 	settings.FontColor = "#ff0000"
+	settings.CheckUpdates = false
 	require.NoError(t, s.Save(settings))
 
 	data := conf.Data()
@@ -51,6 +52,7 @@ func TestService_Save(t *testing.T) {
 	assert.True(t, data.LastReading.HideDelta)
 	assert.False(t, data.LastReading.HideArrow)
 	assert.Equal(t, time.Minute, data.Advanced.FetchDelay.Duration)
+	assert.False(t, data.Updates.Check)
 
 	contents, err := os.ReadFile(conf.File)
 	require.NoError(t, err)

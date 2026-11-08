@@ -4,7 +4,7 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
-for icon in about error history open preferences quit reading; do
+for icon in about error history open preferences quit reading update; do
   ./convert-icon.sh "src/$icon.svg" "dist/$icon.png"
   ./convert-icon.sh "src/$icon.svg" "dist/$icon.ico"
   ./convert-icon.sh "src/$icon.svg" "dist/$icon-white.png" 8 '#fff'

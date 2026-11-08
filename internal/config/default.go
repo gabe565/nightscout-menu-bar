@@ -40,6 +40,9 @@ func New(opts ...Option) *Config {
 			Format: SocketFormatCSV,
 			Path:   filepath.Join("$TMPDIR", "nightscout.sock"),
 		},
+		Updates: Updates{
+			Check: true,
+		},
 		Log: Log{
 			Level:  slogx.LevelInfo,
 			Format: slogx.FormatAuto,

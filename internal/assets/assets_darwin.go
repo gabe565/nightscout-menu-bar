@@ -25,3 +25,6 @@ var Quit []byte
 
 //go:embed dist/reading.png
 var Reading []byte
+
+//go:embed dist/update.png
+var Update []byte
