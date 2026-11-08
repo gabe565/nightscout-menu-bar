@@ -24,6 +24,7 @@ cp -a assets/"$ICONSET"/icon_{512x512,256x256@2x}.png
 iconutil --convert icns --output "assets/$ICNS" "assets/$ICONSET"
 
 export GOOS=darwin CGO_ENABLED=1
+export CGO_CFLAGS='-O2 -g -mmacosx-version-min=13.0' CGO_LDFLAGS='-O2 -g -mmacosx-version-min=13.0'
 for ARCH in amd64 arm64; do
   echo Build "$BINARY_NAME ($ARCH)"
   APP_CONTENTS="dist/$ARCH/$APP_NAME.app/Contents"
