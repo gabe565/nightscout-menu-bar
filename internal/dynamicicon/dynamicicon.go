@@ -45,43 +45,66 @@ func New(conf *config.Config) *DynamicIcon {
 
 var ErrFontSize = errors.New("unable to determine the correct font size")
 
+// Generate renders the icon and encodes it for the system tray.
 func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
+	start := time.Now()
+	img, err := d.Render(p)
+	if err != nil {
+		return nil, err
+	}
+
+	var buf bytes.Buffer
+	buf.Grow(2 * bytefmt.KiB)
+	if err := encode(&buf, img); err != nil {
+		return nil, err
+	}
+
+	slog.Debug("Generated dynamic icon",
+		"took", time.Since(start),
+		"size", bytefmt.Encode(int64(buf.Len())),
+	)
+	return slices.Clip(buf.Bytes()), nil
+}
+
+// LoadFont reads a font by path, path relative to the config directory, or the
+// file name of an installed font. An empty name returns the embedded font.
+func LoadFont(name string) ([]byte, error) {
+	if name == "" {
+		return defaultFont, nil
+	}
+
+	path := util.ResolvePath(name)
+	if !filepath.IsAbs(path) {
+		dir, err := config.GetDir()
+		if err != nil {
+			return nil, err
+		}
+		path = filepath.Join(dir, path)
+	}
+
+	b, err := os.ReadFile(path)
+	if err == nil || !os.IsNotExist(err) {
+		return b, err
+	}
+
+	path, findErr := findfont.Find(name)
+	if findErr != nil {
+		return nil, errors.Join(err, findErr)
+	}
+	return os.ReadFile(path)
+}
+
+// Render draws the icon for the given reading.
+func (d *DynamicIcon) Render(p *nightscout.Properties) (*image.RGBA, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 
 	data := d.config.Data()
 
 	if d.font == nil {
-		var b []byte
-		if data.DynamicIcon.FontFile == "" {
-			b = defaultFont
-		} else {
-			path := util.ResolvePath(data.DynamicIcon.FontFile)
-
-			if !filepath.IsAbs(path) {
-				dir, err := config.GetDir()
-				if err != nil {
-					return nil, err
-				}
-
-				path = filepath.Join(dir, path)
-			}
-
-			var err error
-			if b, err = os.ReadFile(path); err != nil {
-				if !os.IsNotExist(err) {
-					return nil, err
-				}
-
-				path, findErr := findfont.Find(data.DynamicIcon.FontFile)
-				if findErr != nil {
-					return nil, errors.Join(err, findErr)
-				}
-
-				if b, err = os.ReadFile(path); err != nil {
-					return nil, err
-				}
-			}
+		b, err := LoadFont(data.DynamicIcon.FontFile)
+		if err != nil {
+			return nil, err
 		}
 
 		f, err := opentype.Parse(b)
@@ -92,7 +115,6 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 		d.font = f
 	}
 
-	start := time.Now()
 	bgnow := p.Bgnow.DisplayBg(data.Units)
 
 	var face font.Face
@@ -146,18 +168,6 @@ func (d *DynamicIcon) Generate(p *nightscout.Properties) ([]byte, error) {
 		draw.Draw(img, rect, image.NewUniform(color.Black), image.Point{}, draw.Over)
 	}
 
-	var buf bytes.Buffer
-	buf.Grow(2 * bytefmt.KiB)
-	if err := encode(&buf, img); err != nil {
-		return nil, err
-	}
-
-	slog.Debug("Generated dynamic icon",
-		"took", time.Since(start),
-		"size", bytefmt.Encode(int64(buf.Len())),
-		"font_size", fontSize,
-		"value", bgnow,
-		"size", buf.Len(),
-	)
-	return slices.Clip(buf.Bytes()), nil
+	slog.Debug("Rendered dynamic icon", "font_size", fontSize, "value", bgnow)
+	return img, nil
 }

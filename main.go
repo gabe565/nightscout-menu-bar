@@ -9,6 +9,7 @@ import (
 
 	"gabe565.com/nightscout-menu-bar/internal/config"
 	"gabe565.com/nightscout-menu-bar/internal/pprof"
+	"gabe565.com/nightscout-menu-bar/internal/settings"
 	"gabe565.com/nightscout-menu-bar/internal/tray"
 	"gabe565.com/nightscout-menu-bar/internal/util"
 	"gabe565.com/utils/slogx"
@@ -23,6 +24,14 @@ func main() {
 		version = "beta"
 	}
 	slog.Info("Nightscout Menu Bar", "version", version, "commit", util.GetCommit())
+
+	if len(os.Args) > 1 && os.Args[1] == "settings" {
+		if err := settings.Run(version, os.Args[2:]); err != nil {
+			slog.Error("Settings failed", "error", err)
+			os.Exit(1)
+		}
+		return
+	}
 
 	pprof.ListenAndServe()
 

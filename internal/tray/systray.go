@@ -6,11 +6,12 @@ import (
 	"io"
 	"log/slog"
 	"os"
+	"os/exec"
+	"sync"
 	"time"
 
 	"fyne.io/systray"
 	"gabe565.com/nightscout-menu-bar/internal/assets"
-	"gabe565.com/nightscout-menu-bar/internal/autostart"
 	"gabe565.com/nightscout-menu-bar/internal/config"
 	"gabe565.com/nightscout-menu-bar/internal/dynamicicon"
 	"gabe565.com/nightscout-menu-bar/internal/fetch"
@@ -25,8 +26,9 @@ const AboutURL = "https://github.com/gabe565/nightscout-menu-bar"
 
 func New(version string) *Tray {
 	t := &Tray{
-		config: config.New(config.WithVersion(version)),
-		bus:    make(chan any, 1),
+		config:       config.New(config.WithVersion(version)),
+		bus:          make(chan any, 1),
+		settingsCmds: make(map[*exec.Cmd]struct{}),
 	}
 	if err := t.config.Flags.Parse(os.Args[1:]); err != nil {
 		_, _ = io.WriteString(os.Stderr, err.Error()+"\n")
@@ -61,6 +63,9 @@ type Tray struct {
 	dynamicIcon *dynamicicon.DynamicIcon
 	bus         chan any
 	items       items.Items
+
+	settingsMu   sync.Mutex
+	settingsCmds map[*exec.Cmd]struct{}
 }
 
 func (t *Tray) Run(ctx context.Context) {
@@ -70,6 +75,9 @@ func (t *Tray) Run(ctx context.Context) {
 	}()
 	t.ticker.Start(ctx)
 	if err := t.config.Watch(ctx); err != nil {
+		t.displayError(err)
+	}
+	if err := t.oauth.Watch(ctx, t.ticker.Reload); err != nil {
 		t.displayError(err)
 	}
 	systray.Run(t.onReady(ctx), nil)
@@ -83,7 +91,7 @@ func (t *Tray) onReady(ctx context.Context) func() {
 		}
 		systray.SetTooltip(t.config.Data().Title)
 
-		t.items = items.New(t.config, t.oauth)
+		t.items = items.New(t.config)
 
 		for {
 			select {
@@ -99,59 +107,12 @@ func (t *Tray) onReady(ctx context.Context) func() {
 				if err := open.Run(u.String()); err != nil {
 					t.displayError(err)
 				}
-			case <-t.items.Preferences.URL.ClickedCh:
-				go func() {
-					if err := t.items.Preferences.URL.Prompt(); err != nil {
-						t.displayError(err)
-					}
-				}()
+			case <-t.items.Settings.ClickedCh:
+				if err := t.openSettings(ctx); err != nil {
+					t.displayError(err)
+				}
 			case <-t.items.About.ClickedCh:
 				if err := open.Run(AboutURL); err != nil {
-					t.displayError(err)
-				}
-			case <-t.items.Preferences.Token.ClickedCh:
-				go func() {
-					if err := t.items.Preferences.Token.Prompt(); err != nil {
-						t.displayError(err)
-					}
-				}()
-			case <-t.items.Preferences.Nocturne.ClickedCh:
-				go func() {
-					if err := t.items.Preferences.Nocturne.Toggle(ctx); err != nil {
-						t.displayError(err)
-					}
-					t.ticker.Reload()
-				}()
-			case <-t.items.Preferences.Units.ClickedCh:
-				go func() {
-					if err := t.items.Preferences.Units.Prompt(); err != nil {
-						t.displayError(err)
-					}
-				}()
-			case <-t.items.Preferences.StartOnLogin.ClickedCh:
-				if t.items.Preferences.StartOnLogin.Checked() {
-					if err := autostart.Disable(); err != nil {
-						t.displayError(err)
-						continue
-					}
-					t.items.Preferences.StartOnLogin.Uncheck()
-				} else {
-					if err := autostart.Enable(); err != nil {
-						t.displayError(err)
-						continue
-					}
-					t.items.Preferences.StartOnLogin.Check()
-				}
-			case <-t.items.Preferences.Socket.ClickedCh:
-				if err := t.items.Preferences.Socket.Toggle(); err != nil {
-					t.displayError(err)
-				}
-			case <-t.items.Preferences.DynamicIcon.ClickedCh:
-				if err := t.items.Preferences.DynamicIcon.Toggle(); err != nil {
-					t.displayError(err)
-				}
-			case <-t.items.Preferences.DynamicIconColor.ClickedCh:
-				if err := t.items.Preferences.DynamicIconColor.Choose(); err != nil {
 					t.displayError(err)
 				}
 			case <-t.items.Quit.ClickedCh:
@@ -207,7 +168,6 @@ func (t *Tray) onReady(ctx context.Context) func() {
 					t.items.Error.SetTitle(msg.Error())
 					t.items.Error.Show()
 				case messages.ReloadConfigMsg:
-					t.items.Preferences.Nocturne.UpdateTitle()
 					if t.config.Data().DynamicIcon.Enabled {
 						t.dynamicIcon = dynamicicon.New(t.config)
 					} else if t.dynamicIcon != nil {
@@ -229,6 +189,7 @@ func (t *Tray) displayError(err error) {
 }
 
 func (t *Tray) Close() {
+	t.closeSettings()
 	if t.ticker != nil {
 		t.ticker.Close()
 	}

@@ -27,16 +27,15 @@ Automated builds are uploaded during the release process. See the [latest releas
 
 ## Usage
 
-After launching Nightscout Menu Bar, you will need to open its tray menu, then hover over "Preferences" to configure the integration.
+After launching Nightscout Menu Bar, open its tray menu and choose "Settings…" to configure the integration.
 
-The preferences menu contains the following options:
-- Nightscout URL (required)
-- Authentication
-  - API Token
-  - Connect to Nocturne: links the app via Nocturne's Connected Apps. A code is shown and your browser opens to approve it; no token needs to be copied. When connected, this takes precedence over the API token.
-- Units: mg/dL or mmol/L
-- Start on login
-- Write to a local file (see [`contrib/powerlevel10k`](contrib/powerlevel10k))
+The settings window contains the following options:
+- **Connection:** Nightscout URL (required), API token, and Nocturne connected apps. Connecting to Nocturne shows a code and opens your browser to approve it; no token needs to be copied. When connected, this takes precedence over the API token.
+- **Display:** title, units (mg/dL or mmol/L), which parts of the reading appear in the menu bar, and the dynamic icon.
+- **General:** start on login, and exposing readings over a local socket (see [`contrib/powerlevel10k`](contrib/powerlevel10k)).
+- **Advanced:** fetch timing, age rounding, and log level.
+
+The settings window runs in a separate process, so its memory is released when it's closed.
 
 Additional configuration is available in a configuration file, which can be found in the following locations:
 - **Windows:** `%AppData%\nightscout-menu-bar\config.toml`
@@ -55,6 +54,10 @@ The systray menu is provided by
 [fyne.io/systray](https://github.com/fyne-io/systray). See
 [systray's platform notes](https://github.com/getlantern/systray#platform-notes)
 for required dependencies.
+
+The settings window is built with [Wails](https://wails.io), which uses the
+system webview. On Linux, building it requires GTK 4 and WebKitGTK 6.0
+development packages (e.g. `libgtk-4-dev libwebkitgtk-6.0-dev` on Debian/Ubuntu).
 
 #### macOS
 

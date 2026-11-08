@@ -32,7 +32,7 @@
         "printer-driver-isolation": false,
         "gdi-scaling": false,
         "segment-heap": false,
-        "use-common-controls-v6": false
+        "use-common-controls-v6": true
       }
     }
   },

@@ -15,6 +15,7 @@ import (
 
 	"gabe565.com/nightscout-menu-bar/internal/config"
 	"gabe565.com/nightscout-menu-bar/internal/util"
+	"github.com/fsnotify/fsnotify"
 	"golang.org/x/oauth2"
 )
 
@@ -72,27 +73,92 @@ func (s *Store) path() (string, error) {
 func (s *Store) Load() error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	_, err := s.loadLocked()
+	return err
+}
 
+func (s *Store) loadLocked() (bool, error) {
 	p, err := s.path()
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	b, err := os.ReadFile(p)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
+			changed := s.creds != nil
 			s.creds = nil
-			return nil
+			return changed, nil
 		}
-		return err
+		return false, err
 	}
 
 	var creds Credentials
 	if err := json.Unmarshal(b, &creds); err != nil {
-		return err
+		return false, err
+	}
+	if s.creds != nil && *s.creds == creds {
+		return false, nil
 	}
 	s.creds = &creds
 	slog.Info("Loaded Nocturne credentials", "file", p, "url", creds.URL)
+	return true, nil
+}
+
+// Watch reloads credentials changed by another process, like the settings window.
+func (s *Store) Watch(ctx context.Context, onChange func()) error {
+	p, err := s.path()
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(filepath.Dir(p), 0o777); err != nil {
+		return err
+	}
+
+	w, err := fsnotify.NewWatcher()
+	if err != nil {
+		return err
+	}
+	// The file is replaced atomically, so the directory must be watched
+	if err := w.Add(filepath.Dir(p)); err != nil {
+		_ = w.Close()
+		return err
+	}
+
+	go func() {
+		defer func() {
+			_ = w.Close()
+		}()
+
+		var debounce <-chan time.Time
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case event, ok := <-w.Events:
+				if !ok {
+					return
+				}
+				if filepath.Base(event.Name) == credentialsFile {
+					debounce = time.After(100 * time.Millisecond)
+				}
+			case err, ok := <-w.Errors:
+				if !ok {
+					return
+				}
+				slog.Error("Nocturne credentials watcher failed", "error", err)
+			case <-debounce:
+				s.mu.Lock()
+				changed, err := s.loadLocked()
+				s.mu.Unlock()
+				if err != nil {
+					slog.Error("Failed to reload Nocturne credentials", "error", err)
+				} else if changed {
+					onChange()
+				}
+			}
+		}
+	}()
 	return nil
 }
 
@@ -152,6 +218,15 @@ func (s *Store) clearLocked() error {
 
 func normalizeURL(u string) string {
 	return strings.TrimRight(u, "/")
+}
+
+// Supported reports whether the server supports connected apps.
+func (s *Store) Supported(ctx context.Context, serverURL string) bool {
+	_, err := Discover(ctx, s.client, serverURL)
+	if err != nil {
+		slog.Debug("Server does not support connected apps", "url", serverURL, "error", err)
+	}
+	return err == nil
 }
 
 func (s *Store) Connected(serverURL string) bool {
@@ -269,6 +344,11 @@ func (s *Store) Connect(ctx context.Context, serverURL string, onCode func(*oaut
 func (s *Store) Disconnect(ctx context.Context) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+
+	// Another process may have rotated the refresh token since it was loaded
+	if _, err := s.loadLocked(); err != nil {
+		slog.Warn("Failed to reload Nocturne credentials", "error", err)
+	}
 
 	if s.creds == nil {
 		return nil

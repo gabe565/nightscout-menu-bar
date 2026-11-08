@@ -227,6 +227,49 @@ func TestDiscover_Unsupported(t *testing.T) {
 	require.ErrorIs(t, err, ErrUnsupported)
 }
 
+func TestStore_Watch(t *testing.T) {
+	t.Parallel()
+	store := newTestStore(t)
+	other := NewStore(store.config)
+
+	changed := make(chan struct{}, 1)
+	require.NoError(t, store.Watch(t.Context(), func() {
+		changed <- struct{}{}
+	}))
+
+	// Another process connecting
+	other.mu.Lock()
+	require.NoError(t, other.saveLocked(&Credentials{URL: "https://example.com", RefreshToken: "refresh-1"}))
+	other.mu.Unlock()
+	select {
+	case <-changed:
+	case <-time.After(5 * time.Second):
+		t.Fatal("timed out waiting for connect")
+	}
+	assert.True(t, store.Connected("https://example.com"))
+
+	// Another process disconnecting
+	other.mu.Lock()
+	require.NoError(t, other.clearLocked())
+	other.mu.Unlock()
+	select {
+	case <-changed:
+	case <-time.After(5 * time.Second):
+		t.Fatal("timed out waiting for disconnect")
+	}
+	assert.False(t, store.Connected("https://example.com"))
+}
+
+func TestStore_Supported(t *testing.T) {
+	t.Parallel()
+	store := newTestStore(t)
+	assert.True(t, store.Supported(t.Context(), newFakeServer(t).URL))
+
+	nightscout := httptest.NewServer(http.NotFoundHandler())
+	t.Cleanup(nightscout.Close)
+	assert.False(t, store.Supported(t.Context(), nightscout.URL))
+}
+
 // Nocturne answers polls that arrive before the interval has elapsed with slow_down,
 // with no tolerance for network jitter.
 func TestStore_ConnectPollsWithMargin(t *testing.T) {
