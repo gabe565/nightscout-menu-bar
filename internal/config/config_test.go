@@ -6,6 +6,7 @@ import (
 	"runtime"
 	"testing"
 
+	"gabe565.com/nightscout-menu-bar/internal/secret"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -106,4 +107,40 @@ func TestGetDir(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, preferred, dir)
 	})
+}
+
+func TestConfig_Token(t *testing.T) {
+	t.Parallel()
+	dir := t.TempDir()
+	path := filepath.Join(dir, "config.toml")
+	// Older configs kept the token in the file
+	require.NoError(t, os.WriteFile(path, []byte("url = 'https://example.com'\ntoken = 'abc'\n"), 0o600))
+
+	conf := New()
+	conf.File = path
+	conf.Secrets = secret.NewWithBackend(dir, &secret.Memory{})
+	require.NoError(t, conf.Load())
+	assert.Equal(t, "abc", conf.Data().Token)
+
+	// Moved to the secret store
+	token, err := conf.Secrets.Get(TokenKey)
+	require.NoError(t, err)
+	assert.Equal(t, "abc", token)
+	contents, err := os.ReadFile(path)
+	require.NoError(t, err)
+	assert.NotContains(t, string(contents), "abc")
+
+	// Loaded from the secret store
+	reloaded := New()
+	reloaded.File = path
+	reloaded.Secrets = conf.Secrets
+	require.NoError(t, reloaded.Load())
+	assert.Equal(t, "abc", reloaded.Data().Token)
+
+	// Cleared tokens are deleted
+	data := reloaded.Data()
+	data.Token = ""
+	require.NoError(t, reloaded.Write(data))
+	_, err = conf.Secrets.Get(TokenKey)
+	require.ErrorIs(t, err, secret.ErrNotFound)
 }

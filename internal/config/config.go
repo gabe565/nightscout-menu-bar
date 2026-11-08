@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"sync"
 	"sync/atomic"
 
 	"gabe565.com/nightscout-menu-bar/internal/secret"
@@ -19,6 +20,9 @@ type Config struct {
 	Secrets   *secret.Store
 	callbacks []func()
 	data      atomic.Pointer[Data]
+
+	tokenMu     sync.Mutex
+	storedToken string
 }
 
 func (conf *Config) Data() Data {
@@ -32,7 +36,6 @@ func (conf *Config) Data() Data {
 type Data struct {
 	Title       string      `toml:"title"        comment:"Tray title."`
 	URL         string      `toml:"url"          comment:"Nightscout URL. (required)"`
-	Token       string      `toml:"token"        comment:"Nightscout token. Using an access token is recommended instead of the API secret."`
 	Units       Unit        `toml:"units"        comment:"Blood sugar unit. (one of: mg/dL, mmol/L)"`
 	LastReading LastReading `toml:"last-reading" comment:"Disable parts of the menu bar text. Only supported on macOS and Linux."`
 	DynamicIcon DynamicIcon `toml:"dynamic-icon" comment:"Makes the tray icon show the current blood sugar reading."`
@@ -40,6 +43,9 @@ type Data struct {
 	Socket      Socket      `toml:"socket"       comment:"Exposes the latest reading to other applications over a local socket."`
 	Log         Log         `toml:"log"          comment:"Log configuration"`
 	Advanced    Advanced    `toml:"advanced"     comment:"Advanced settings."`
+
+	// Token is kept in the secret store instead of the config file.
+	Token string `toml:"-"`
 }
 
 type DynamicIcon struct {

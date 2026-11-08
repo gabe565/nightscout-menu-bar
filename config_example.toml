@@ -2,8 +2,6 @@
 title = 'Nightscout'
 # Nightscout URL. (required)
 url = ''
-# Nightscout token. Using an access token is recommended instead of the API secret.
-token = ''
 # Blood sugar unit. (one of: mg/dL, mmol/L)
 units = 'mg/dL'
 

@@ -77,6 +77,9 @@ func (t *Tray) Run(ctx context.Context) {
 	if err := t.config.Watch(ctx); err != nil {
 		t.displayError(err)
 	}
+	if err := t.config.WatchSecrets(ctx); err != nil {
+		t.displayError(err)
+	}
 	if err := t.oauth.Watch(ctx, t.ticker.Reload); err != nil {
 		t.displayError(err)
 	}

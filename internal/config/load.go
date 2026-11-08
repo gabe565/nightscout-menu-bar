@@ -20,6 +20,8 @@ import (
 	"github.com/pelletier/go-toml/v2"
 )
 
+const TokenKey = "api-token"
+
 func (conf *Config) RegisterFlags() {
 	conf.Flags.StringVarP(&conf.File, "config", "c", "", "Config file")
 }
@@ -68,6 +70,19 @@ func (conf *Config) Load() error {
 		return err
 	}
 
+	// Older configs kept the token in the file. It's moved to the secret store by Write.
+	data.Token = k.String("token")
+	if data.Token == "" {
+		token, err := conf.Secrets.Get(TokenKey)
+		if err != nil && !errors.Is(err, secret.ErrNotFound) {
+			slog.Error("Failed to load token", "error", err)
+		}
+		data.Token = token
+		conf.tokenMu.Lock()
+		conf.storedToken = token
+		conf.tokenMu.Unlock()
+	}
+
 	if err := conf.Write(data); err != nil {
 		return err
 	}
@@ -98,6 +113,11 @@ func (conf *Config) Write(data Data) error {
 		} else {
 			return err
 		}
+	}
+
+	// Saved before the file so migrating the token out of the file can't lose it
+	if err := conf.saveToken(data.Token); err != nil {
+		return err
 	}
 
 	newCfg, err := toml.Marshal(&data)
@@ -145,14 +165,61 @@ func (conf *Config) Watch(ctx context.Context) error {
 		}
 
 		logger.Debug("Config watcher triggered")
-		if err := conf.Load(); err != nil {
-			logger.Error("Failed to load config", "error", err)
-		}
+		conf.reload()
+	})
+}
 
-		for _, fn := range conf.callbacks {
-			fn()
+// WatchSecrets reloads the config when another process changes the token.
+func (conf *Config) WatchSecrets(ctx context.Context) error {
+	if conf.Secrets == nil {
+		return nil
+	}
+	return conf.Secrets.Watch(ctx, func() {
+		token, err := conf.Secrets.Get(TokenKey)
+		if err != nil && !errors.Is(err, secret.ErrNotFound) {
+			slog.Error("Failed to load token", "error", err)
+			return
+		}
+		conf.tokenMu.Lock()
+		changed := token != conf.storedToken
+		conf.tokenMu.Unlock()
+		if changed {
+			slog.Debug("Token changed")
+			conf.reload()
 		}
 	})
+}
+
+func (conf *Config) reload() {
+	if err := conf.Load(); err != nil {
+		slog.Error("Failed to load config", "file", conf.File, "error", err)
+	}
+	for _, fn := range conf.callbacks {
+		fn()
+	}
+}
+
+func (conf *Config) saveToken(token string) error {
+	if conf.Secrets == nil {
+		return nil
+	}
+	conf.tokenMu.Lock()
+	defer conf.tokenMu.Unlock()
+	if token == conf.storedToken {
+		return nil
+	}
+
+	var err error
+	if token == "" {
+		err = conf.Secrets.Delete(TokenKey)
+	} else {
+		err = conf.Secrets.Set(TokenKey, token)
+	}
+	if err != nil {
+		return err
+	}
+	conf.storedToken = token
+	return nil
 }
 
 func (conf *Config) AddCallback(fn func()) int {
