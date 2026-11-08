@@ -14,32 +14,41 @@ import (
 	"time"
 
 	"gabe565.com/nightscout-menu-bar/internal/config"
+	"gabe565.com/nightscout-menu-bar/internal/secret"
 	"gabe565.com/nightscout-menu-bar/internal/util"
-	"github.com/fsnotify/fsnotify"
 	"golang.org/x/oauth2"
 )
 
 const (
 	credentialsFile = "oauth.json" //nolint:gosec
+	secretKey       = "nocturne"
 	refreshBefore   = time.Minute
 )
 
 var (
 	ErrNotConnected = errors.New("not connected to Nocturne")
+	ErrNoSecrets    = errors.New("no secret store configured")
 	//nolint:staticcheck
 	ErrExpired = errors.New("Nocturne connection expired or was revoked; reconnect in Preferences")
 )
 
 // Credentials are stored separately from the config file since the refresh token
 // rotates on every refresh, and writing it to the config would trigger a reload.
+// The tokens are kept in the secret store; the rest is saved to a file.
 type Credentials struct {
 	URL          string    `json:"url"`
 	ClientID     string    `json:"client_id"`
 	TokenURL     string    `json:"token_url"`
 	RevokeURL    string    `json:"revoke_url,omitempty"`
-	AccessToken  string    `json:"access_token"`
-	RefreshToken string    `json:"refresh_token"`
+	AccessToken  string    `json:"-"`
+	RefreshToken string    `json:"-"`
 	Expiry       time.Time `json:"expiry"`
+}
+
+// tokens are saved as one secret so they're always updated together.
+type tokens struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 func NewStore(conf *config.Config) *Store {
@@ -83,9 +92,26 @@ func (s *Store) loadLocked() (bool, error) {
 		return false, err
 	}
 
+	var creds Credentials
 	b, err := os.ReadFile(p)
+	if err == nil {
+		err = json.Unmarshal(b, &creds)
+	}
+	var secrets *secret.Store
+	if err == nil {
+		secrets, err = s.secrets()
+	}
+	if err == nil {
+		var raw string
+		if raw, err = secrets.Get(secretKey); err == nil {
+			var t tokens
+			if err = json.Unmarshal([]byte(raw), &t); err == nil {
+				creds.AccessToken, creds.RefreshToken = t.AccessToken, t.RefreshToken
+			}
+		}
+	}
 	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
+		if errors.Is(err, os.ErrNotExist) || errors.Is(err, secret.ErrNotFound) {
 			changed := s.creds != nil
 			s.creds = nil
 			return changed, nil
@@ -93,10 +119,6 @@ func (s *Store) loadLocked() (bool, error) {
 		return false, err
 	}
 
-	var creds Credentials
-	if err := json.Unmarshal(b, &creds); err != nil {
-		return false, err
-	}
 	if s.creds != nil && *s.creds == creds {
 		return false, nil
 	}
@@ -111,55 +133,16 @@ func (s *Store) Watch(ctx context.Context, onChange func()) error {
 	if err != nil {
 		return err
 	}
-	if err := os.MkdirAll(filepath.Dir(p), 0o777); err != nil {
-		return err
-	}
-
-	w, err := fsnotify.NewWatcher()
-	if err != nil {
-		return err
-	}
-	// The file is replaced atomically, so the directory must be watched
-	if err := w.Add(filepath.Dir(p)); err != nil {
-		_ = w.Close()
-		return err
-	}
-
-	go func() {
-		defer func() {
-			_ = w.Close()
-		}()
-
-		var debounce <-chan time.Time
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case event, ok := <-w.Events:
-				if !ok {
-					return
-				}
-				if filepath.Base(event.Name) == credentialsFile {
-					debounce = time.After(100 * time.Millisecond)
-				}
-			case err, ok := <-w.Errors:
-				if !ok {
-					return
-				}
-				slog.Error("Nocturne credentials watcher failed", "error", err)
-			case <-debounce:
-				s.mu.Lock()
-				changed, err := s.loadLocked()
-				s.mu.Unlock()
-				if err != nil {
-					slog.Error("Failed to reload Nocturne credentials", "error", err)
-				} else if changed {
-					onChange()
-				}
-			}
+	return util.WatchFile(ctx, p, func() {
+		s.mu.Lock()
+		changed, err := s.loadLocked()
+		s.mu.Unlock()
+		if err != nil {
+			slog.Error("Failed to reload Nocturne credentials", "error", err)
+		} else if changed {
+			onChange()
 		}
-	}()
-	return nil
+	})
 }
 
 func (s *Store) saveLocked(creds *Credentials) error {
@@ -168,35 +151,26 @@ func (s *Store) saveLocked(creds *Credentials) error {
 		return err
 	}
 
-	b, err := json.MarshalIndent(creds, "", "  ") //nolint:gosec // Stored with 0600 permissions
+	//nolint:gosec // Saved to the secret store
+	t, err := json.Marshal(tokens{AccessToken: creds.AccessToken, RefreshToken: creds.RefreshToken})
+	if err != nil {
+		return err
+	}
+	b, err := json.MarshalIndent(creds, "", "  ")
 	if err != nil {
 		return err
 	}
 
-	if err := os.MkdirAll(filepath.Dir(p), 0o777); err != nil {
-		return err
-	}
-
-	// Write atomically so a crash can't lose a rotated refresh token
-	tmp, err := os.CreateTemp(filepath.Dir(p), credentialsFile+".*")
+	secrets, err := s.secrets()
 	if err != nil {
 		return err
 	}
-	defer func() {
-		_ = os.Remove(tmp.Name())
-	}()
-	if err := tmp.Chmod(0o600); err != nil {
-		_ = tmp.Close()
+	// Save the tokens first so a rotated refresh token is never lost.
+	// The file is written last since other processes watch it.
+	if err := secrets.Set(secretKey, string(t)); err != nil {
 		return err
 	}
-	if _, err := tmp.Write(b); err != nil {
-		_ = tmp.Close()
-		return err
-	}
-	if err := tmp.Close(); err != nil {
-		return err
-	}
-	if err := os.Rename(tmp.Name(), p); err != nil {
+	if err := util.WriteFileAtomic(p, b, 0o600); err != nil {
 		return err
 	}
 
@@ -213,7 +187,18 @@ func (s *Store) clearLocked() error {
 	if err := os.Remove(p); err != nil && !errors.Is(err, os.ErrNotExist) {
 		return err
 	}
-	return nil
+	secrets, err := s.secrets()
+	if err != nil {
+		return err
+	}
+	return secrets.Delete(secretKey)
+}
+
+func (s *Store) secrets() (*secret.Store, error) {
+	if s.config.Secrets == nil {
+		return nil, ErrNoSecrets
+	}
+	return s.config.Secrets, nil
 }
 
 func normalizeURL(u string) string {

@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"gabe565.com/nightscout-menu-bar/internal/config"
+	"gabe565.com/nightscout-menu-bar/internal/secret"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
@@ -110,8 +111,10 @@ func newFakeServer(t *testing.T) *fakeServer {
 
 func newTestStore(t *testing.T) *Store {
 	t.Helper()
+	dir := t.TempDir()
 	conf := config.New()
-	conf.File = filepath.Join(t.TempDir(), "config.toml")
+	conf.File = filepath.Join(dir, "config.toml")
+	conf.Secrets = secret.NewWithBackend(dir, &secret.Memory{})
 	return NewStore(conf)
 }
 
@@ -142,6 +145,12 @@ func TestStore_Connect(t *testing.T) {
 	stat, err := os.Stat(p)
 	require.NoError(t, err)
 	assert.Equal(t, os.FileMode(0o600), stat.Mode().Perm())
+
+	// Tokens are kept in the secret store, not the file
+	contents, err := os.ReadFile(p)
+	require.NoError(t, err)
+	assert.NotContains(t, string(contents), "access-1")
+	assert.NotContains(t, string(contents), "refresh-1")
 
 	reloaded := NewStore(store.config)
 	require.NoError(t, reloaded.Load())

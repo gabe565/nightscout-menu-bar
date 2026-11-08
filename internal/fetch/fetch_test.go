@@ -15,6 +15,7 @@ import (
 	"gabe565.com/nightscout-menu-bar/internal/nightscout"
 	"gabe565.com/nightscout-menu-bar/internal/nightscout/testproperties"
 	"gabe565.com/nightscout-menu-bar/internal/oauth"
+	"gabe565.com/nightscout-menu-bar/internal/secret"
 	"github.com/hhsnopek/etag"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -124,17 +125,17 @@ func TestFetch_Do_OAuth(t *testing.T) {
 
 	dir := t.TempDir()
 	creds, err := json.Marshal(oauth.Credentials{
-		URL:          server.URL,
-		ClientID:     "client-1",
-		AccessToken:  "access-1",
-		RefreshToken: "refresh-1",
-		Expiry:       time.Now().Add(time.Hour),
+		URL:      server.URL,
+		ClientID: "client-1",
+		Expiry:   time.Now().Add(time.Hour),
 	})
 	require.NoError(t, err)
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "oauth.json"), creds, 0o600))
 
 	conf := config.New(config.WithData(config.Data{URL: server.URL, Token: "ignored-when-connected"}))
 	conf.File = filepath.Join(dir, "config.toml")
+	conf.Secrets = secret.NewWithBackend(dir, &secret.Memory{})
+	require.NoError(t, conf.Secrets.Set("nocturne", `{"access_token":"access-1","refresh_token":"refresh-1"}`))
 	store := oauth.NewStore(conf)
 	require.NoError(t, store.Load())
 

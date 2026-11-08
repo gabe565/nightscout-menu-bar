@@ -13,6 +13,7 @@ import (
 	"gabe565.com/nightscout-menu-bar/internal/dynamicicon"
 	"gabe565.com/nightscout-menu-bar/internal/nightscout/testproperties"
 	"gabe565.com/nightscout-menu-bar/internal/oauth"
+	"gabe565.com/nightscout-menu-bar/internal/secret"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/image/font/sfnt"
@@ -22,8 +23,10 @@ func newTestService(t *testing.T) (*Service, *config.Config) {
 	t.Helper()
 	data := config.New().Data()
 	data.URL = "https://example.com"
+	dir := t.TempDir()
 	conf := config.New(config.WithData(data))
-	conf.File = filepath.Join(t.TempDir(), "config.toml")
+	conf.File = filepath.Join(dir, "config.toml")
+	conf.Secrets = secret.NewWithBackend(dir, &secret.Memory{})
 	return NewService(conf, oauth.NewStore(conf)), conf
 }
 

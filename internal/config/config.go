@@ -6,6 +6,7 @@ import (
 	"runtime"
 	"sync/atomic"
 
+	"gabe565.com/nightscout-menu-bar/internal/secret"
 	"gabe565.com/utils/colorx"
 	"gabe565.com/utils/slogx"
 	"github.com/spf13/pflag"
@@ -15,6 +16,7 @@ type Config struct {
 	File      string
 	Flags     *pflag.FlagSet
 	Version   string
+	Secrets   *secret.Store
 	callbacks []func()
 	data      atomic.Pointer[Data]
 }

@@ -12,6 +12,7 @@ import (
 	"slices"
 	"time"
 
+	"gabe565.com/nightscout-menu-bar/internal/secret"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/providers/rawbytes"
 	"github.com/knadh/koanf/providers/structs"
@@ -39,6 +40,10 @@ func (conf *Config) Load() error {
 		}
 
 		conf.File = filepath.Join(cfgDir, configFile)
+	}
+
+	if conf.Secrets == nil {
+		conf.Secrets = secret.New(filepath.Dir(conf.File))
 	}
 
 	// Load config file if exists
