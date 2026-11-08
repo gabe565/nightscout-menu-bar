@@ -95,88 +95,92 @@ func (t *Tray) onReady(ctx context.Context) func() {
 		systray.SetTooltip(t.config.Data().Title)
 
 		t.items = items.New(t.config)
+		go t.eventLoop(ctx)
+	}
+}
 
-		for {
-			select {
-			case <-ctx.Done():
-				systray.Quit()
-			case <-t.items.OpenNightscout.ClickedCh:
-				u, err := fetch.BuildURLWithToken(t.config.Data())
-				if err != nil {
-					t.displayError(err)
-					return
+func (t *Tray) eventLoop(ctx context.Context) {
+	for {
+		select {
+		case <-ctx.Done():
+			systray.Quit()
+			return
+		case <-t.items.OpenNightscout.ClickedCh:
+			u, err := fetch.BuildURLWithToken(t.config.Data())
+			if err != nil {
+				t.displayError(err)
+				continue
+			}
+			slog.Debug("Opening Nightscout", "url", u)
+			if err := open.Run(u.String()); err != nil {
+				t.displayError(err)
+			}
+		case <-t.items.Settings.ClickedCh:
+			if err := t.openSettings(ctx); err != nil {
+				t.displayError(err)
+			}
+		case <-t.items.About.ClickedCh:
+			if err := open.Run(AboutURL); err != nil {
+				t.displayError(err)
+			}
+		case <-t.items.Quit.ClickedCh:
+			systray.Quit()
+		case msg := <-t.bus:
+			switch msg := msg.(type) {
+			case messages.RenderMessage:
+				if msg.Type == messages.RenderTypeFetch {
+					t.items.Error.Hide()
 				}
-				slog.Debug("Opening Nightscout", "url", u)
-				if err := open.Run(u.String()); err != nil {
-					t.displayError(err)
-				}
-			case <-t.items.Settings.ClickedCh:
-				if err := t.openSettings(ctx); err != nil {
-					t.displayError(err)
-				}
-			case <-t.items.About.ClickedCh:
-				if err := open.Run(AboutURL); err != nil {
-					t.displayError(err)
-				}
-			case <-t.items.Quit.ClickedCh:
-				systray.Quit()
-			case msg := <-t.bus:
-				switch msg := msg.(type) {
-				case messages.RenderMessage:
-					if msg.Type == messages.RenderTypeFetch {
-						t.items.Error.Hide()
-					}
 
-					conf := t.config.Data()
-					shortValue := msg.Properties.String(conf)
-					conf.LastReading.HideArrow = false
-					conf.LastReading.HideDelta = false
-					conf.LastReading.HideTimeAgo = false
-					fullValue := msg.Properties.String(conf)
-					isOldReading := time.Since(
-						msg.Properties.Bgnow.Mills.Time,
-					) > conf.LastReading.StaleThreshold.Duration
+				conf := t.config.Data()
+				shortValue := msg.Properties.String(conf)
+				conf.LastReading.HideArrow = false
+				conf.LastReading.HideDelta = false
+				conf.LastReading.HideTimeAgo = false
+				fullValue := msg.Properties.String(conf)
+				isOldReading := time.Since(
+					msg.Properties.Bgnow.Mills.Time,
+				) > conf.LastReading.StaleThreshold.Duration
 
-					slog.Debug("Updating reading", "value", fullValue)
-					if t.dynamicIcon == nil {
-						systray.SetTitleStrikethrough(shortValue, isOldReading)
+				slog.Debug("Updating reading", "value", fullValue)
+				if t.dynamicIcon == nil {
+					systray.SetTitleStrikethrough(shortValue, isOldReading)
+				} else {
+					if icon, err := t.dynamicIcon.Generate(msg.Properties); err == nil {
+						systray.SetTitle("")
+						if t.config.Data().DynamicIcon.FontColor.Color == color.White {
+							systray.SetTemplateIcon(icon, icon)
+						} else {
+							systray.SetIcon(icon)
+						}
 					} else {
-						if icon, err := t.dynamicIcon.Generate(msg.Properties); err == nil {
-							systray.SetTitle("")
-							if t.config.Data().DynamicIcon.FontColor.Color == color.White {
-								systray.SetTemplateIcon(icon, icon)
-							} else {
-								systray.SetIcon(icon)
-							}
-						} else {
-							t.displayError(err)
-							systray.SetTitleStrikethrough(shortValue, isOldReading)
-							systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
-						}
-					}
-					systray.SetTooltip(fullValue)
-					t.items.LastReading.SetTitle(fullValue)
-
-					for i, reading := range msg.Properties.Buckets {
-						if i < len(t.items.History.Subitems) {
-							t.items.History.Subitems[i].SetTitle(reading.String(t.config.Data()))
-						} else {
-							entry := t.items.History.AddSubMenuItem(reading.String(t.config.Data()), "")
-							entry.Disable()
-							t.items.History.Subitems = append(t.items.History.Subitems, entry)
-						}
-					}
-				case error:
-					slog.Error("Displaying error", "error", msg)
-					t.items.Error.SetTitle(msg.Error())
-					t.items.Error.Show()
-				case messages.ReloadConfigMsg:
-					if t.config.Data().DynamicIcon.Enabled {
-						t.dynamicIcon = dynamicicon.New(t.config)
-					} else if t.dynamicIcon != nil {
-						t.dynamicIcon = nil
+						t.displayError(err)
+						systray.SetTitleStrikethrough(shortValue, isOldReading)
 						systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
 					}
+				}
+				systray.SetTooltip(fullValue)
+				t.items.LastReading.SetTitle(fullValue)
+
+				for i, reading := range msg.Properties.Buckets {
+					if i < len(t.items.History.Subitems) {
+						t.items.History.Subitems[i].SetTitle(reading.String(t.config.Data()))
+					} else {
+						entry := t.items.History.AddSubMenuItem(reading.String(t.config.Data()), "")
+						entry.Disable()
+						t.items.History.Subitems = append(t.items.History.Subitems, entry)
+					}
+				}
+			case error:
+				slog.Error("Displaying error", "error", msg)
+				t.items.Error.SetTitle(msg.Error())
+				t.items.Error.Show()
+			case messages.ReloadConfigMsg:
+				if t.config.Data().DynamicIcon.Enabled {
+					t.dynamicIcon = dynamicicon.New(t.config)
+				} else if t.dynamicIcon != nil {
+					t.dynamicIcon = nil
+					systray.SetTemplateIcon(assets.Nightscout, assets.Nightscout)
 				}
 			}
 		}
