@@ -9,7 +9,7 @@ concurrency:
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     steps:
@@ -29,7 +29,7 @@ jobs:
 
   test:
     name: Test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     steps:
@@ -135,7 +135,7 @@ jobs:
   cask:
     name: Generate Cask
     needs: [build-darwin, build-linux]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     steps:
@@ -164,7 +164,7 @@ jobs:
     name: Release
     if: startsWith(github.ref, 'refs/tags/')
     needs: [lint, test, build-windows, build-darwin, build-linux, cask]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: write
     steps:
@@ -189,7 +189,7 @@ jobs:
 
   update-homebrew-tap:
     name: Update Homebrew Tap
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: startsWith(github.ref, 'refs/tags/')
     needs: [release]
     permissions:
