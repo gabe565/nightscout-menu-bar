@@ -141,7 +141,7 @@ func (s *Service) Load() Settings {
 		ShowArrow:      !data.LastReading.HideArrow,
 		ShowDelta:      !data.LastReading.HideDelta,
 		ShowTimeAgo:    !data.LastReading.HideTimeAgo,
-		StaleThreshold: formatDuration(data.LastReading.StaleThreshold),
+		StaleThreshold: data.LastReading.StaleThreshold.String(),
 
 		DynamicIcon: data.DynamicIcon.Enabled,
 		AutoColor:   data.DynamicIcon.AutoColor,
@@ -153,8 +153,8 @@ func (s *Service) Load() Settings {
 		Socket:       data.Socket.Enabled,
 		SocketPath:   data.Socket.Path,
 
-		FetchDelay:       formatDuration(data.Advanced.FetchDelay),
-		FallbackInterval: formatDuration(data.Advanced.FallbackInterval),
+		FetchDelay:       data.Advanced.FetchDelay.String(),
+		FallbackInterval: data.Advanced.FallbackInterval.String(),
 		RoundAge:         data.Advanced.RoundAge,
 		LogLevel:         data.Log.Level.String(),
 	}
@@ -355,9 +355,8 @@ func (s *Service) ServeFont(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
-	w.Header().Set("Content-Type", http.DetectContentType(b))
 	w.Header().Set("X-Content-Type-Options", "nosniff")
-	_, _ = w.Write(b) //nolint:gosec // Font data, served with its detected type
+	http.ServeContent(w, r, name, time.Time{}, bytes.NewReader(b))
 }
 
 func (s *Service) BrowseFont() (string, error) {
@@ -433,11 +432,6 @@ func sampleProperties() *nightscout.Properties {
 		},
 		Delta: nightscout.Delta{Mgdl: 2},
 	}
-}
-
-func formatDuration(d config.Duration) string {
-	b, _ := d.MarshalText()
-	return string(b)
 }
 
 // hexColor formats a color for <input type="color">.
