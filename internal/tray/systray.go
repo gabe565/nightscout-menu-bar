@@ -75,6 +75,7 @@ func (t *Tray) Run(ctx context.Context) {
 		t.Close()
 	}()
 	t.ticker.Start(ctx)
+	t.checkTrayHost(ctx)
 	if err := t.config.Watch(ctx); err != nil {
 		t.displayError(err)
 	}
