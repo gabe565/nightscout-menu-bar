@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Nightscout Menu Bar
+Comment=Display live blood sugar data from Nightscout in your system tray
+Exec=nightscout-menu-bar
+Icon=com.gabe565.nightscout-menu-bar
+Terminal=false
+Categories=Utility;
+Keywords=Nightscout;Nocturne;Glucose;Diabetes;CGM;
