@@ -20,11 +20,10 @@ jobs:
         with:
           go-version-file: go.mod
           cache: false
-      - name: Install systray dependencies
-        uses: awalsh128/cache-apt-pkgs-action@553a35bb8ebd9fcabcb1c9451aa4c98e1b4ca8a9 # v1.6.3
-        with:
-          packages: gcc libgtk-3-dev libayatana-appindicator3-dev libgtk-4-dev libwebkitgtk-6.0-dev libx11-dev
-          version: amd64
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libgtk-4-dev libwebkitgtk-6.0-dev libx11-dev
       - name: Lint
         uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
 
@@ -40,11 +39,10 @@ jobs:
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
-      - name: Install systray dependencies
-        uses: awalsh128/cache-apt-pkgs-action@553a35bb8ebd9fcabcb1c9451aa4c98e1b4ca8a9 # v1.6.3
-        with:
-          packages: gcc libgtk-3-dev libayatana-appindicator3-dev libgtk-4-dev libwebkitgtk-6.0-dev libx11-dev
-          version: amd64
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libgtk-4-dev libwebkitgtk-6.0-dev libx11-dev
       - name: Test
         env:
           TZ: America/Chicago
@@ -69,11 +67,10 @@ jobs:
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
-      - name: Install systray dependencies
-        uses: awalsh128/cache-apt-pkgs-action@553a35bb8ebd9fcabcb1c9451aa4c98e1b4ca8a9 # v1.6.3
-        with:
-          packages: gcc libgtk-3-dev libayatana-appindicator3-dev libgtk-4-dev libwebkitgtk-6.0-dev libx11-dev
-          version: ${{ matrix.platform }}
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libgtk-4-dev libwebkitgtk-6.0-dev libx11-dev
       - name: Build
         env:
           VERSION: ${{ github.ref_name }}
