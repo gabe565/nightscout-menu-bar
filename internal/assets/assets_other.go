@@ -28,6 +28,9 @@ var Quit []byte
 //go:embed dist/reading.png
 var Reading []byte
 
+//go:embed dist/update.png
+var Update []byte
+
 // White variants for dark menus.
 
 //go:embed dist/about-white.png
@@ -50,3 +53,6 @@ var QuitWhite []byte
 
 //go:embed dist/reading-white.png
 var ReadingWhite []byte
+
+//go:embed dist/update-white.png
+var UpdateWhite []byte

@@ -62,6 +62,7 @@ type Settings struct {
 	MaxFontSize float64 `json:"maxFontSize"`
 
 	StartOnLogin bool   `json:"startOnLogin"`
+	CheckUpdates bool   `json:"checkUpdates"`
 	Socket       bool   `json:"socket"`
 	SocketPath   string `json:"socketPath"`
 
@@ -150,6 +151,7 @@ func (s *Service) Load() Settings {
 		MaxFontSize: data.DynamicIcon.MaxFontSize,
 
 		StartOnLogin: startOnLogin,
+		CheckUpdates: data.Updates.Check,
 		Socket:       data.Socket.Enabled,
 		SocketPath:   data.Socket.Path,
 
@@ -206,6 +208,7 @@ func (s *Service) toData(settings Settings) (config.Data, error) {
 	}
 	data.DynamicIcon.MaxFontSize = settings.MaxFontSize
 
+	data.Updates.Check = settings.CheckUpdates
 	data.Socket.Enabled = settings.Socket
 	data.Socket.Path = settings.SocketPath
 

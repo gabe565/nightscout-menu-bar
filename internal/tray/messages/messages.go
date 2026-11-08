@@ -1,10 +1,17 @@
 package messages
 
-import "gabe565.com/nightscout-menu-bar/internal/nightscout"
+import (
+	"gabe565.com/nightscout-menu-bar/internal/nightscout"
+	"gabe565.com/nightscout-menu-bar/internal/update"
+)
 
 type ReloadConfigMsg struct{}
 
 type ThemeChangedMsg struct{}
+
+type UpdateAvailableMsg struct {
+	Release *update.Release
+}
 
 type RenderType uint8
 
