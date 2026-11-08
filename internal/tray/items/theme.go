@@ -1,3 +1,5 @@
+//go:build !darwin
+
 package items
 
 import (
@@ -8,7 +10,7 @@ import (
 // UpdateIcons matches the menu icons to the theme.
 func (i Items) UpdateIcons() {
 	pick := func(black, white []byte) []byte {
-		if systheme.Light() {
+		if systheme.MenuLight() {
 			return black
 		}
 		return white

@@ -27,3 +27,26 @@ var Quit []byte
 
 //go:embed dist/reading.png
 var Reading []byte
+
+// White variants for dark menus.
+
+//go:embed dist/about-white.png
+var AboutWhite []byte
+
+//go:embed dist/error-white.png
+var ErrorWhite []byte
+
+//go:embed dist/history-white.png
+var HistoryWhite []byte
+
+//go:embed dist/open-white.png
+var OpenWhite []byte
+
+//go:embed dist/preferences-white.png
+var PreferencesWhite []byte
+
+//go:embed dist/quit-white.png
+var QuitWhite []byte
+
+//go:embed dist/reading-white.png
+var ReadingWhite []byte
