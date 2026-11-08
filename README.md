@@ -23,6 +23,16 @@ brew install gabe565/tap/nightscout-menu-bar
 
 Automated builds are uploaded during the release process. See the [latest release](https://github.com/gabe565/nightscout-menu-bar/releases/latest) for download links.
 
+### Linux requirements
+
+Linux builds need GTK 4.14+ and WebKitGTK 6.0, which are available on Ubuntu 24.04, Debian 13, Fedora 40, and newer:
+
+- **Debian/Ubuntu:** `sudo apt install libgtk-4-1 libwebkitgtk-6.0-4`
+- **Fedora:** `sudo dnf install gtk4 webkitgtk6.0`
+- **Arch:** `sudo pacman -S gtk4 webkitgtk-6.0`
+
+GNOME needs the [AppIndicator extension](https://extensions.gnome.org/extension/615/appindicator-support/) to show tray icons. If it's missing, the app offers to install it.
+
 ## Usage
 
 After launching Nightscout Menu Bar, open its tray menu and choose "Settings…" to configure the integration.
