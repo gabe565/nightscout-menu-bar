@@ -35,7 +35,7 @@ require (
 	github.com/Masterminds/semver/v3 v3.4.0 // indirect
 	github.com/coder/websocket v1.8.14 // indirect
 	github.com/danieljoos/wincred v1.2.3 // indirect
-	github.com/dmarkham/enumer v1.6.3 // indirect
+	github.com/dmarkham/enumer v1.7.2 // indirect
 	github.com/ebitengine/purego v0.11.1 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
