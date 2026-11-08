@@ -23,6 +23,9 @@ func Light() bool {
 	return err == nil && v == 1
 }
 
+// MenuLight reports whether tray menus are light. They follow the taskbar theme.
+func MenuLight() bool { return Light() }
+
 // Watch calls onChange when the theme changes, until ctx is canceled.
 func Watch(ctx context.Context, onChange func()) error {
 	k, err := registry.OpenKey(registry.CURRENT_USER, personalizeKey, registry.NOTIFY)

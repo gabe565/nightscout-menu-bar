@@ -7,6 +7,7 @@ cd "$(dirname "$0")"
 for icon in about error history open preferences quit reading; do
   ./convert-icon.sh "src/$icon.svg" "dist/$icon.png"
   ./convert-icon.sh "src/$icon.svg" "dist/$icon.ico"
+  ./convert-icon.sh "src/$icon.svg" "dist/$icon-white.png" 8 '#fff'
   ./convert-icon.sh "src/$icon.svg" "dist/$icon-white.ico" 8 '#fff'
 done
 

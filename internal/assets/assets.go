@@ -1,4 +1,3 @@
-// Package assets embeds the icons generated from src by generate.sh.
 package assets
 
 import _ "embed"
