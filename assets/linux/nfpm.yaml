@@ -1,0 +1,37 @@
+name: nightscout-menu-bar
+arch: ${GOARCH}
+platform: linux
+version: ${PKG_VERSION}
+section: utils
+maintainer: Gabe Cook <gabe565@gmail.com>
+vendor: Gabe Cook
+homepage: https://github.com/gabe565/nightscout-menu-bar
+description: Display live blood sugar data from Nightscout in your system tray
+license: MIT
+
+contents:
+  - src: ./dist/linux/nightscout-menu-bar
+    dst: /usr/bin/nightscout-menu-bar
+    file_info:
+      mode: 0755
+  - src: ./dist/linux/share/
+    dst: /usr/share
+    type: tree
+  - src: ./LICENSE
+    dst: /usr/share/licenses/nightscout-menu-bar/LICENSE
+    file_info:
+      mode: 0644
+
+depends:
+  - libgtk-4-1 (>= 4.14)
+  - libwebkitgtk-6.0-4
+  - libx11-6
+recommends:
+  - gnome-shell-extension-appindicator
+
+overrides:
+  rpm:
+    depends:
+      - gtk4 >= 4.14
+      - webkitgtk6.0
+      - libX11

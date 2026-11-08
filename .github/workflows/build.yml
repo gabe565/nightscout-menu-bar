@@ -74,14 +74,12 @@ jobs:
       - name: Build
         env:
           VERSION: ${{ github.ref_name }}
-        run: go build -ldflags="-w -s -X main.version=$VERSION" -trimpath -o dist/nightscout-menu-bar
-      - name: Compress
-        run: tar -czvf nightscout-menu-bar_linux_${{ matrix.platform }}.tar.gz -C dist .
+        run: ./hack/build-linux.sh
       - name: Upload Artifact
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: nightscout-menu-bar_linux_${{ matrix.platform }}
-          path: nightscout-menu-bar_linux_${{ matrix.platform }}.tar.gz
+          path: dist/nightscout-menu-bar_linux_${{ matrix.platform }}.*
 
   build-windows:
     name: Build (windows)
@@ -219,3 +217,24 @@ jobs:
           commit_user_name: ${{ env.commit_name }}
           commit_user_email: ${{ env.commit_email }}
           commit_author: ${{ env.commit_name }} <${{ env.commit_email }}>
+
+  publish-fury:
+    name: Publish to Fury
+    runs-on: ubuntu-26.04
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [release]
+    permissions: {}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: nightscout-menu-bar_linux_*
+          path: dist
+          merge-multiple: true
+      - name: Push packages
+        working-directory: dist
+        env:
+          FURY_TOKEN: ${{ secrets.FURY_TOKEN }}
+        run: |
+          for PACKAGE in *.deb *.rpm; do
+            curl -sf -Fpackage=@"$PACKAGE" "https://$FURY_TOKEN@push.fury.io/gabe565/"
+          done
