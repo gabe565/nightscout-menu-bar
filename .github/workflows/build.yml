@@ -238,3 +238,42 @@ jobs:
           for PACKAGE in *.deb *.rpm; do
             curl -sf -Fpackage=@"$PACKAGE" "https://$FURY_TOKEN@push.fury.io/gabe565/"
           done
+
+  update-aur:
+    name: Update AUR
+    runs-on: ubuntu-26.04
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [release]
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: nightscout-menu-bar_linux_*
+          path: dist
+          merge-multiple: true
+      - name: Set up SSH
+        env:
+          AUR_SSH_KEY: ${{ secrets.AUR_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$AUR_SSH_KEY" > ~/.ssh/aur
+          chmod 600 ~/.ssh/aur
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+      - name: Push PKGBUILD
+        env:
+          VERSION: ${{ github.ref_name }}
+          GIT_SSH_COMMAND: ssh -i ~/.ssh/aur -o IdentitiesOnly=yes
+        run: |
+          git clone ssh://aur@aur.archlinux.org/nightscout-menu-bar-bin.git aur
+          go run ./assets/aur --out aur "$VERSION"
+          cd aur
+          git add PKGBUILD .SRCINFO
+          git -c user.name=goreleaserbot -c user.email=bot@goreleaser.com commit -m "Update to $VERSION"
+          git push origin HEAD:master
