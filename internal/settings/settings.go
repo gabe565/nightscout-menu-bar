@@ -58,6 +58,9 @@ func Run(version string, args []string) error {
 			return false
 		},
 		Assets: application.AssetOptions{Handler: assetHandler(assetFS, svc)},
+		Linux: application.LinuxOptions{
+			ApplicationID: "com.gabe565.nightscout-menu-bar",
+		},
 		Mac: application.MacOptions{
 			// The app bundle is a menu bar agent (LSUIElement); the settings
 			// window should still get a Dock icon and come to the front.
