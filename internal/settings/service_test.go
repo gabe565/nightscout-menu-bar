@@ -255,12 +255,12 @@ func TestFontName(t *testing.T) {
 	assert.Equal(t, "Not A Font", fontName(&buf, notFont))
 }
 
-func TestService_ServeFont(t *testing.T) {
+func TestService_serveFont(t *testing.T) {
 	t.Parallel()
 	s, _ := newTestService(t)
 	serve := func(file string) *httptest.ResponseRecorder {
 		w := httptest.NewRecorder()
-		s.ServeFont(w, httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/font?file="+file, nil))
+		s.serveFont(w, httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/font?file="+file, nil))
 		return w
 	}
 

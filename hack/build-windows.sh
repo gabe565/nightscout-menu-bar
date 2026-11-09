@@ -12,6 +12,10 @@ set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 
+if [[ ! -f internal/settings/frontend/dist/index.html ]]; then
+  go generate ./internal/settings/frontend
+fi
+
 rm -rf -- dist/*.exe assets/windows/*.png *.syso
 mkdir -p dist
 

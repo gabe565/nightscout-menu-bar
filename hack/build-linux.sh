@@ -9,6 +9,10 @@ set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 
+if [[ ! -f internal/settings/frontend/dist/index.html ]]; then
+  go generate ./internal/settings/frontend
+fi
+
 ARCH="$(go env GOARCH)"
 rm -rf "$OUT" dist/"${BINARY_NAME}_linux_$ARCH".*
 mkdir -p "$OUT"

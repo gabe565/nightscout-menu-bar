@@ -124,6 +124,21 @@ The settings window is built with [Wails](https://wails.io), which uses the
 system webview. On Linux, building it requires GTK 4 and WebKitGTK 6.0
 development packages (e.g. `libgtk-4-dev libwebkitgtk-6.0-dev` on Debian/Ubuntu).
 
+The settings frontend is a Vue and TypeScript app in
+[internal/settings/frontend](internal/settings/frontend). Building it requires
+Node.js and [pnpm](https://pnpm.io). This also regenerates the TypeScript bindings
+for the Go settings service:
+
+```shell
+go generate ./internal/settings/frontend
+```
+
+After changing the service, regenerate just the bindings with
+`go generate -run wails3 ./internal/settings/frontend`.
+
+For hot reloading, run `pnpm dev` in that directory, then start the settings window with
+`FRONTEND_DEVSERVER_URL=http://127.0.0.1:5173 go run . settings`.
+
 #### macOS
 
 To generate a Mac app, run [hack/build-darwin.sh](hack/build-darwin.sh).
