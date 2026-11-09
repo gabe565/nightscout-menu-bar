@@ -17,8 +17,6 @@ ARCH="$(go env GOARCH)"
 rm -rf "$OUT" dist/"${BINARY_NAME}_linux_$ARCH".*
 mkdir -p "$OUT"
 
-command -v nfpm &>/dev/null || go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
-
 # Build binary
 export GOOS=linux CGO_ENABLED=1
 echo Build "$BINARY_NAME ($ARCH)"
@@ -44,5 +42,5 @@ fi
 export GOARCH="$ARCH" PKG_VERSION
 for FORMAT in deb rpm; do
   echo Package "$BINARY_NAME ($ARCH $FORMAT)"
-  nfpm package --config assets/linux/nfpm.yaml --packager "$FORMAT" --target "dist/${BINARY_NAME}_linux_$ARCH.$FORMAT"
+  go tool nfpm package --config assets/linux/nfpm.yaml --packager "$FORMAT" --target "dist/${BINARY_NAME}_linux_$ARCH.$FORMAT"
 done
