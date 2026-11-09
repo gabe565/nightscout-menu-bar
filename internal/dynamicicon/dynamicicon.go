@@ -174,7 +174,7 @@ func (d *DynamicIcon) Render(p *nightscout.Properties) (*image.RGBA, error) {
 		const thickness = 4
 		y := readingY.Round() - int(float64(metrics.XHeight)/64/2) - thickness/2
 		rect := image.Rect(readingX.Round(), y, int(drawer.Dot.X/64), y+thickness)
-		draw.Draw(img, rect, image.NewUniform(color.Black), image.Point{}, draw.Over)
+		draw.Draw(img, rect, drawer.Src, image.Point{}, draw.Over)
 	}
 
 	slog.Debug("Rendered dynamic icon", "font_size", fontSize, "value", bgnow)
