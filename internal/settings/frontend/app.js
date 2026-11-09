@@ -1,4 +1,4 @@
-import { Call, Dialogs, Events, Window } from "/wails/runtime.js";
+import { Browser, Call, Dialogs, Events, Window } from "/wails/runtime.js";
 import { createFontPicker } from "./font-picker.js";
 
 const service = "gabe565.com/nightscout-menu-bar/internal/settings.Service.";
@@ -248,7 +248,14 @@ Events.On("nocturne:code", (event) => {
 
 $("nocturne-link").addEventListener("click", (e) => {
   e.preventDefault();
-  if (approvalURL) call("OpenURL", approvalURL);
+  if (approvalURL) Browser.OpenURL(approvalURL);
+});
+
+document.addEventListener("click", (e) => {
+  const link = e.target.closest('a[href^="http"]');
+  if (!link) return;
+  e.preventDefault();
+  Browser.OpenURL(link.href);
 });
 
 $("nocturne-button").addEventListener("click", async () => {

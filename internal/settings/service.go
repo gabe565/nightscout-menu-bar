@@ -418,10 +418,6 @@ func (s *Service) DisconnectNocturne(ctx context.Context) error {
 	return s.store.Disconnect(ctx)
 }
 
-func (s *Service) OpenURL(url string) error {
-	return s.openURL(url)
-}
-
 func sampleProperties() *nightscout.Properties {
 	mills := nightscout.Mills{Time: time.Now().Add(-3 * time.Minute)}
 	return &nightscout.Properties{
