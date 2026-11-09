@@ -1,3 +1,5 @@
+exclude: ^internal/settings/frontend/src/bindings/
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -16,3 +18,13 @@ repos:
       - id: go-mod-tidy-repo
       - id: golangci-lint-mod
         args: [--fix]
+
+  - repo: local
+    hooks:
+      - id: eslint
+        name: eslint
+        entry: pnpm --prefix internal/settings/frontend run lint
+        language: system
+        files: '^internal/settings/frontend/'
+        types_or: [javascript, ts, vue]
+        pass_filenames: false

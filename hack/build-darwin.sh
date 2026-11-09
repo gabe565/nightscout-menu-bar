@@ -10,6 +10,10 @@ set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 
+if [[ ! -f internal/settings/frontend/dist/index.html ]]; then
+  go generate ./internal/settings/frontend
+fi
+
 rm -rf dist/{amd64,arm64} assets/{"$ICONSET","$ICNS"}
 mkdir -p dist
 

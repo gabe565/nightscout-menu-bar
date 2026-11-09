@@ -24,6 +24,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends libgtk-4-dev libwebkitgtk-6.0-dev libx11-dev
+      - name: Check bindings
+        run: |
+          go generate -run wails3 ./internal/settings/frontend
+          if [[ -n "$(git status --porcelain -- internal/settings/frontend/src/bindings)" ]]; then
+            echo "::error::TypeScript bindings are out of date. Run: go generate -run wails3 ./internal/settings/frontend"
+            git status --porcelain -- internal/settings/frontend/src/bindings
+            exit 1
+          fi
       - name: Lint
         uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
         with:
@@ -50,9 +58,42 @@ jobs:
           TZ: America/Chicago
         run: go test ./...
 
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: internal/settings/frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          package_json_file: internal/settings/frontend/package.json
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: internal/settings/frontend/.nvmrc
+          cache: pnpm
+          cache-dependency-path: internal/settings/frontend/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm exec eslint .
+      - name: Build
+        run: pnpm run build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: frontend
+          path: internal/settings/frontend/dist
+
   build-linux:
     name: Build (linux-${{ matrix.platform }})
     runs-on: ${{ matrix.runs-on }}
+    needs: frontend
     permissions:
       contents: read
     strategy:
@@ -65,6 +106,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Download frontend
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: frontend
+          path: internal/settings/frontend/dist
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
@@ -86,11 +132,17 @@ jobs:
   build-windows:
     name: Build (windows)
     runs-on: windows-2025
+    needs: frontend
     permissions:
       contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Download frontend
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: frontend
+          path: internal/settings/frontend/dist
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
@@ -113,11 +165,17 @@ jobs:
   build-darwin:
     name: Build (darwin)
     runs-on: macos-26
+    needs: frontend
     permissions:
       contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Download frontend
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: frontend
+          path: internal/settings/frontend/dist
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
@@ -163,7 +221,7 @@ jobs:
   release:
     name: Release
     if: startsWith(github.ref, 'refs/tags/')
-    needs: [lint, test, build-windows, build-darwin, build-linux, cask]
+    needs: [lint, test, frontend, build-windows, build-darwin, build-linux, cask]
     runs-on: ubuntu-26.04
     permissions:
       contents: write

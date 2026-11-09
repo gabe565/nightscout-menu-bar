@@ -341,8 +341,8 @@ func fontName(buf *sfnt.Buffer, path string) string {
 	return name
 }
 
-// ServeFont serves a font for previews, looked up like the dynamic icon's font.
-func (s *Service) ServeFont(w http.ResponseWriter, r *http.Request) {
+// serveFont serves a font for previews, looked up like the dynamic icon's font.
+func (s *Service) serveFont(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Query().Get("file")
 	switch strings.ToLower(filepath.Ext(name)) {
 	case "", ".ttf", ".otf":

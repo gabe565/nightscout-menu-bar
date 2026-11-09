@@ -3,5 +3,23 @@
   "extends": [
     "local>gabe565/renovate-config",
     "local>gabe565/renovate-config:golang"
+  ],
+  "packageRules": [
+    {
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "npm dependencies",
+      "extends": ["schedule:weekly"]
+    },
+    {
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "matchPackageNames": ["github.com/wailsapp/wails/v3", "@wailsio/runtime"],
+      "groupName": "Wails",
+      "schedule": ["at any time"]
+    }
   ]
 }

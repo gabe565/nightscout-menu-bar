@@ -1,7 +1,6 @@
 package settings
 
 import (
-	"embed"
 	"io/fs"
 	"log/slog"
 	"net/http"
@@ -9,19 +8,17 @@ import (
 	"gabe565.com/nightscout-menu-bar/internal/assets"
 	"gabe565.com/nightscout-menu-bar/internal/config"
 	"gabe565.com/nightscout-menu-bar/internal/oauth"
+	"gabe565.com/nightscout-menu-bar/internal/settings/frontend"
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
 )
 
 const AppID = "com.gabe565.nightscout-menu-bar.settings"
 
-//go:embed frontend
-var frontend embed.FS
-
 func assetHandler(fsys fs.FS, svc *Service) http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("/", application.AssetFileServerFS(fsys))
-	mux.HandleFunc("GET /font", svc.ServeFont)
+	mux.HandleFunc("GET /font", svc.serveFont)
 	return mux
 }
 
@@ -39,10 +36,13 @@ func Run(version string, args []string) error {
 		slog.Error("Failed to load Nocturne credentials", "error", err)
 	}
 
-	assetFS, err := fs.Sub(frontend, "frontend")
+	assetFS, err := frontend.FS()
 	if err != nil {
 		return err
 	}
+
+	application.RegisterEvent[NocturneCode](EventNocturneCode)
+	application.RegisterEvent[application.Void](EventCloseRequested)
 
 	svc := NewService(conf, store)
 	var window *application.WebviewWindow
