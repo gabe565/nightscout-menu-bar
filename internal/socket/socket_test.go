@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"testing"
 	"time"
@@ -23,6 +24,24 @@ func TestNew(t *testing.T) {
 	assert.Equal(t, Path(), socket.path)
 }
 
+func TestPath(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Setenv("TMP", `C:\Temp`)
+		assert.Equal(t, `C:\Temp\nightscout.sock`, Path())
+		return
+	}
+
+	name := "nightscout-" + strconv.Itoa(os.Getuid()) + ".sock"
+	t.Setenv("TMPDIR", "/tmp/test")
+	t.Setenv("XDG_RUNTIME_DIR", "")
+	assert.Equal(t, "/tmp/test/"+name, Path())
+
+	if runtime.GOOS == "linux" {
+		t.Setenv("XDG_RUNTIME_DIR", "/run/user/1000")
+		assert.Equal(t, "/run/user/1000/"+name, Path())
+	}
+}
+
 func newTestSocket(t *testing.T, enabled bool, onCommand func(string)) *Socket {
 	t.Helper()
 	conf := config.New()
@@ -38,7 +57,7 @@ func newTestSocket(t *testing.T, enabled bool, onCommand func(string)) *Socket {
 	})
 
 	socket := New(conf, onCommand)
-	socket.path = filepath.Join(dir, name)
+	socket.path = filepath.Join(dir, "nightscout.sock")
 	t.Cleanup(func() {
 		_ = socket.Close()
 	})
@@ -66,6 +85,12 @@ func TestSocket(t *testing.T) {
 	socket.Write(testproperties.Properties)
 
 	assert.Equal(t, socket.Format(testproperties.Properties), read(t, socket.path))
+
+	if runtime.GOOS != "windows" {
+		info, err := os.Stat(socket.path)
+		require.NoError(t, err)
+		assert.Equal(t, os.FileMode(0o700), info.Mode().Perm())
+	}
 
 	require.NoError(t, socket.Close())
 	assert.NoFileExists(t, socket.path)

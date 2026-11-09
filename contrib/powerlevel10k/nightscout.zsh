@@ -3,9 +3,9 @@
 #################################[ nightscout: blood sugar ]#################################
 # Nightscout socket. Typically does not need to be changed.
 if [[ "$OSTYPE" == linux* && -n "$XDG_RUNTIME_DIR" ]]; then
-  typeset -g NIGHTSCOUT_SOCKET="$XDG_RUNTIME_DIR/nightscout.sock"
+  typeset -g NIGHTSCOUT_SOCKET="$XDG_RUNTIME_DIR/nightscout-$UID.sock"
 else
-  typeset -g NIGHTSCOUT_SOCKET="${TMPDIR:-/tmp}/nightscout.sock"
+  typeset -g NIGHTSCOUT_SOCKET="${TMPDIR:-/tmp}/nightscout-$UID.sock"
 fi
 
 # Nightscout styling will be chosen if the reading is below a given value.

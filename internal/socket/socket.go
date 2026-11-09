@@ -20,7 +20,6 @@ import (
 )
 
 const (
-	name    = "nightscout.sock"
 	timeout = time.Second
 
 	// CommandSettings asks the running instance to open the settings window.
@@ -32,6 +31,12 @@ var ErrRunning = errors.New("another instance is already running")
 
 // Path returns the per-user socket path.
 func Path() string {
+	name := "nightscout.sock"
+	// Windows has no uid, but its temp directory is per-user
+	if uid := os.Getuid(); uid != -1 {
+		name = "nightscout-" + strconv.Itoa(uid) + ".sock"
+	}
+
 	if runtime.GOOS == "linux" {
 		if dir := os.Getenv("XDG_RUNTIME_DIR"); dir != "" {
 			return filepath.Join(dir, name)
@@ -104,6 +109,13 @@ func (s *Socket) Listen() error {
 	}
 	if err != nil {
 		return err
+	}
+
+	if runtime.GOOS != "windows" {
+		if err := os.Chmod(s.path, 0o700); err != nil {
+			_ = listener.Close()
+			return err
+		}
 	}
 
 	s.mu.Lock()
