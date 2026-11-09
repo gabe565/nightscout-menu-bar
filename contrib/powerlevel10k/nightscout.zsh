@@ -1,8 +1,12 @@
 #!/usr/bin/env zsh
 
 #################################[ nightscout: blood sugar ]#################################
-# Nightscout state file. Typically does not need to be changed.
-typeset -g NIGHTSCOUT_SOCKET="$TMPDIR/nightscout.sock"
+# Nightscout socket. Typically does not need to be changed.
+if [[ "$OSTYPE" == linux* && -n "$XDG_RUNTIME_DIR" ]]; then
+  typeset -g NIGHTSCOUT_SOCKET="$XDG_RUNTIME_DIR/nightscout.sock"
+else
+  typeset -g NIGHTSCOUT_SOCKET="${TMPDIR:-/tmp}/nightscout.sock"
+fi
 
 # Nightscout styling will be chosen if the reading is below a given value.
 typeset -g NIGHTSCOUT_THRESHOLD_OLD_MINS=10

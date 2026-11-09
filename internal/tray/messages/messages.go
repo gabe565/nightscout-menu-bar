@@ -9,6 +9,8 @@ type ReloadConfigMsg struct{}
 
 type ThemeChangedMsg struct{}
 
+type OpenSettingsMsg struct{}
+
 type UpdateAvailableMsg struct {
 	Release *update.Release
 }

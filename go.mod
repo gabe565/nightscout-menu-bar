@@ -2,7 +2,7 @@ module gabe565.com/nightscout-menu-bar
 
 go 1.27.3
 
-replace fyne.io/systray => github.com/gabe565/systray v0.0.0-20261107111144-d604a9009717
+replace fyne.io/systray => github.com/gabe565/systray v0.0.0-20261109055231-f648734407ed
 
 require (
 	fyne.io/systray v1.12.2

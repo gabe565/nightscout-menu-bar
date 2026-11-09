@@ -2,6 +2,8 @@ package tray
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"image/color"
 	"io"
 	"log/slog"
@@ -16,6 +18,7 @@ import (
 	"gabe565.com/nightscout-menu-bar/internal/dynamicicon"
 	"gabe565.com/nightscout-menu-bar/internal/fetch"
 	"gabe565.com/nightscout-menu-bar/internal/oauth"
+	"gabe565.com/nightscout-menu-bar/internal/socket"
 	"gabe565.com/nightscout-menu-bar/internal/systheme"
 	"gabe565.com/nightscout-menu-bar/internal/ticker"
 	"gabe565.com/nightscout-menu-bar/internal/tray/items"
@@ -46,7 +49,8 @@ func New(version string) *Tray {
 		t.displayError(err)
 	}
 
-	t.ticker = ticker.New(t.config, t.oauth, t.bus)
+	t.socket = socket.New(t.config, t.handleCommand)
+	t.ticker = ticker.New(t.config, t.oauth, t.socket, t.bus)
 
 	if t.config.Data().DynamicIcon.Enabled {
 		t.dynamicIcon = dynamicicon.New(t.config)
@@ -61,6 +65,7 @@ func New(version string) *Tray {
 type Tray struct {
 	config      *config.Config
 	oauth       *oauth.Store
+	socket      *socket.Socket
 	ticker      *ticker.Ticker
 	dynamicIcon *dynamicicon.DynamicIcon
 	bus         chan any
@@ -77,6 +82,13 @@ func (t *Tray) Run(ctx context.Context) {
 		slog.Info("Exiting")
 		t.Close()
 	}()
+	if err := t.socket.Listen(); err != nil {
+		if errors.Is(err, socket.ErrRunning) {
+			slog.Info("Already running, opening settings in the existing instance")
+			return
+		}
+		t.displayError(fmt.Errorf("failed to listen on socket: %w", err))
+	}
 	t.ticker.Start(ctx)
 	t.checkTrayHost(ctx)
 	go t.checkUpdates(ctx)
@@ -126,6 +138,10 @@ func (t *Tray) eventLoop(ctx context.Context) {
 				t.displayError(err)
 			}
 		case <-t.items.Settings.ClickedCh:
+			if err := t.openSettings(ctx); err != nil {
+				t.displayError(err)
+			}
+		case <-systray.ReopenedCh:
 			if err := t.openSettings(ctx); err != nil {
 				t.displayError(err)
 			}
@@ -191,6 +207,10 @@ func (t *Tray) eventLoop(ctx context.Context) {
 				t.items.Error.Show()
 			case messages.UpdateAvailableMsg:
 				t.items.Update.Show(msg.Release)
+			case messages.OpenSettingsMsg:
+				if err := t.openSettings(ctx); err != nil {
+					t.displayError(err)
+				}
 			case messages.ThemeChangedMsg:
 				t.items.UpdateIcons()
 				t.ticker.Rerender()
@@ -222,10 +242,29 @@ func (t *Tray) displayError(err error) {
 	}
 }
 
+// handleCommand runs commands sent over the socket by another instance.
+func (t *Tray) handleCommand(cmd string) {
+	switch cmd {
+	case socket.CommandSettings:
+		select {
+		case t.bus <- messages.OpenSettingsMsg{}:
+		default:
+			slog.Error("Unable to open settings due to full bus")
+		}
+	default:
+		slog.Warn("Unknown socket command", "command", cmd)
+	}
+}
+
 func (t *Tray) Close() {
 	t.closeSettings()
 	if t.ticker != nil {
 		t.ticker.Close()
+	}
+	if t.socket != nil {
+		if err := t.socket.Close(); err != nil {
+			slog.Error("Failed to close socket", "error", err)
+		}
 	}
 	if t.bus != nil {
 		close(t.bus)

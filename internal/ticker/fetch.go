@@ -39,9 +39,7 @@ func (t *Ticker) Fetch(render chan<- *nightscout.Properties) time.Duration {
 		if render != nil {
 			render <- properties
 		}
-		if data.Socket.Enabled {
-			t.socket.Write(properties)
-		}
+		t.socket.Write(properties)
 		if len(properties.Buckets) != 0 {
 			bucket := properties.Buckets[0]
 			lastDiff := bucket.ToMills.Sub(bucket.FromMills.Time)

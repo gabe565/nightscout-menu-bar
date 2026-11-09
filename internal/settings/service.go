@@ -61,10 +61,9 @@ type Settings struct {
 	FontFile    string  `json:"fontFile"`
 	MaxFontSize float64 `json:"maxFontSize"`
 
-	StartOnLogin bool   `json:"startOnLogin"`
-	CheckUpdates bool   `json:"checkUpdates"`
-	Socket       bool   `json:"socket"`
-	SocketPath   string `json:"socketPath"`
+	StartOnLogin bool `json:"startOnLogin"`
+	CheckUpdates bool `json:"checkUpdates"`
+	Socket       bool `json:"socket"`
 
 	FetchDelay       string `json:"fetchDelay"`
 	FallbackInterval string `json:"fallbackInterval"`
@@ -153,7 +152,6 @@ func (s *Service) Load() Settings {
 		StartOnLogin: startOnLogin,
 		CheckUpdates: data.Updates.Check,
 		Socket:       data.Socket.Enabled,
-		SocketPath:   data.Socket.Path,
 
 		FetchDelay:       data.Advanced.FetchDelay.String(),
 		FallbackInterval: data.Advanced.FallbackInterval.String(),
@@ -210,7 +208,6 @@ func (s *Service) toData(settings Settings) (config.Data, error) {
 
 	data.Updates.Check = settings.CheckUpdates
 	data.Socket.Enabled = settings.Socket
-	data.Socket.Path = settings.SocketPath
 
 	data.Advanced.RoundAge = settings.RoundAge
 	if err := data.Log.Level.UnmarshalText([]byte(settings.LogLevel)); err != nil {

@@ -107,8 +107,6 @@ The settings window contains the following options:
 - **General:** start on login, and exposing readings over a local socket (see [`contrib/powerlevel10k`](contrib/powerlevel10k)).
 - **Advanced:** fetch timing, age rounding, and log level.
 
-The settings window runs in a separate process, so its memory is released when it's closed.
-
 Tokens are stored in the system keyring: Keychain on macOS, Credential Manager on Windows, or the Secret Service on Linux.
 
 ## Contrib

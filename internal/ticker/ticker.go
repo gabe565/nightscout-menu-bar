@@ -2,7 +2,6 @@ package ticker
 
 import (
 	"context"
-	"log/slog"
 	"time"
 
 	"gabe565.com/nightscout-menu-bar/internal/config"
@@ -11,11 +10,11 @@ import (
 	"gabe565.com/nightscout-menu-bar/internal/socket"
 )
 
-func New(conf *config.Config, store *oauth.Store, updateCh chan<- any) *Ticker {
+func New(conf *config.Config, store *oauth.Store, sock *socket.Socket, updateCh chan<- any) *Ticker {
 	t := &Ticker{
 		config: conf,
 		fetch:  fetch.NewFetch(conf, store),
-		socket: socket.New(conf),
+		socket: sock,
 		bus:    updateCh,
 	}
 
@@ -68,8 +67,5 @@ func (t *Ticker) reloadConfig() {
 func (t *Ticker) Close() {
 	if t.cancel != nil {
 		t.cancel()
-	}
-	if err := t.socket.Close(); err != nil {
-		slog.Error("Failed to cleanup socket", "error", err)
 	}
 }

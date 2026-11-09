@@ -76,9 +76,7 @@ type Arrows struct {
 }
 
 type Socket struct {
-	Enabled bool   `toml:"enabled"`
-	Format  string `toml:"format"  comment:"Local file format. (one of: csv)"`
-	Path    string `toml:"path"    comment:"File path. $TMPDIR will be replaced with the current temp directory."`
+	Enabled bool `toml:"enabled"`
 }
 
 type Updates struct {

@@ -2,7 +2,6 @@ package config
 
 import (
 	"image/color"
-	"path/filepath"
 	"runtime"
 	"time"
 
@@ -35,10 +34,6 @@ func New(opts ...Option) *Config {
 			SingleDown:    "↓",
 			DoubleDown:    "⇊",
 			Unknown:       "-",
-		},
-		Socket: Socket{
-			Format: SocketFormatCSV,
-			Path:   filepath.Join("$TMPDIR", "nightscout.sock"),
 		},
 		Updates: Updates{
 			Check: true,

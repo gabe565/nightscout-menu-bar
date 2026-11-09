@@ -136,7 +136,6 @@ function syncDisabled() {
   $("preview-section").hidden = platform === "windows" && !$("dynamicIcon").checked;
   $("dynamic-icon-options").disabled = !$("dynamicIcon").checked;
   if (!$("dynamicIcon").checked) fontPicker.close();
-  $("socket-options").disabled = !$("socket").checked;
   $("fontColor").disabled = $("autoColor").checked;
   $("fontColor-hex").textContent = $("autoColor").checked ? "" : $("fontColor").value;
 }
