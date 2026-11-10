@@ -86,6 +86,7 @@ func Run(version string, args []string) error {
 		MinWidth:         480,
 		MinHeight:        320,
 		URL:              "/",
+		Hidden:           true,
 		BackgroundColour: application.NewRGBA(0, 0, 0, 0),
 		Mac: application.MacWindow{
 			Backdrop:                application.MacBackdropTranslucent,
@@ -94,6 +95,11 @@ func Run(version string, args []string) error {
 		},
 	})
 	svc.window = window
+
+	// Hidden until the page loads to avoid a white flash
+	window.OnWindowEvent(events.Common.WindowRuntimeReady, func(*application.WindowEvent) {
+		window.Show()
+	})
 
 	// Let the page ask about unsaved changes
 	window.RegisterHook(events.Common.WindowClosing, func(e *application.WindowEvent) {
